@@ -8,6 +8,25 @@ use Illuminate\Support\Facades\DB;
 class SalesInvController extends Controller
 {
     //
+    public function getDataSubGros(Request $request)
+    {
+        $term = $request->get('search');
+        $data = DB::table('invoice')
+            ->select('SubGrosir')
+            ->when($term, function ($query, $term) {
+                return $query->where('SubGrosir', 'like', "%{$term}%");
+            })
+            ->groupBy('SubGrosir')
+            ->get();
+        return response()->json($data);
+    }
+    public function getDataGros($id)
+    {
+        $data = DB::table('customer')
+            ->where('ID', $id)
+            ->get();
+        return response()->json($data);
+    }
     public function edit($id)
     {
         $desc = DB::table('product')->select('ID', 'Description')->get();
@@ -19,10 +38,10 @@ class SalesInvController extends Controller
     }
     public function form()
     {
-        $cust = DB::table('pricelist')->select('Customer')->groupBy('Customer')->get();
+        $cust = DB::table('customer')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select('ID', 'SW')->get();
-        return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar ,'cust' => $cust]);
+        return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
     }
     public function show()
     {

@@ -67,12 +67,9 @@
                                 </div>
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Customer</label>
-                                    <div class="col-sm-8 d-flex gap-2">
-                                        <select class="form-control select2" name="customer" style="flex:1">
-                                            @foreach ($cust as $d)
-                                                <option value="{{ $d->Customer }}">{{ $d->Customer }}</option>
-                                            @endforeach
-                                        </select>
+                                    <div class="col-sm-8 d-flex gap-2 ">
+                                        <input type="text" class="form-control" id="customer" name="customer"
+                                            style="flex:1">
                                         <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#scanQRModal">
                                             Scan QR
@@ -89,7 +86,7 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Alamat</label>
                                     <div class="col-sm-8">
-                                        <textarea class="form-control" rows="2" placeholder="Alamat" name="alamat"></textarea>
+                                        <input type="text" class="form-control" rows="2" placeholder="Alamat" name="alamat" id="alamat">
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -111,26 +108,42 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Event</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Event" name="event">
+                                        <select class="form-control select2" name="event">
+                                            <option value="">PIlih Data</option>
+                                            <option value="Pameran">Pameran</option>
+                                            <option value="Event">Event</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Grosir</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Grosir" name="grosir">
+                                        <select class="form-control select2" name="grosir" id="grosir">
+                                            <option value="">PIlih Data</option>
+                                            @foreach ($cust as $d)
+                                                <option value="{{ $d->ID }}">{{ $d->SW }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            name="sub_grosir">
+                                            name="sub_grosir" id="sub_grosir">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Tempat</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" rows="2" placeholder="Tempat" name="tempat">
+                                        <select class="form-control select2" name="tempat">
+                                            <option value="">PIlih Data</option>
+                                            <option value="JCC">JCC</option>
+                                            <option value="Sultan">Sultan</option>
+                                            <option value="Shangri-La">Shangri-La</option>
+                                            <option value="Westin">Westin</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -148,6 +161,7 @@
                                     <label class="form-label col-sm-4">Kadar</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2" id="carat">
+                                            <option value="">Pilih Data</option>
                                             @foreach ($kadar as $d)
                                                 <option value="{{ $d->SW }}">{{ $d->SW }}</option>
                                             @endforeach
@@ -338,12 +352,30 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script>
         $(document).ready(function() {
             $('.select2').select2({
-                placeholder: "Pilih customer",
+                placeholder: "Pilih Data",
                 allowClear: true
             });
+            $("#sub_grosir").autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/sales/getData/subGros/",
+                        data: {
+                            search: request.term
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            response(data.map(item => item
+                                .SubGrosir)); // pakai field sesuai API
+                        }
+                    });
+                },
+                minLength: 2
+            });
+
         });
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -352,6 +384,7 @@
             const itemScanTable = document.getElementById("itemScantable").getElementsByTagName("tbody")[0];
             const barcodeInput = document.getElementById("barcodeInput");
             const caratInput = document.getElementById("carat");
+            const qrInput = document.getElementById("qrcode");
             const isHargaCheck = document.getElementById("is_harga_cust");
             const totalgwallInput = document.getElementById("totalgwall");
             const lastItemlInput = document.getElementById("last_item_scan");
@@ -360,10 +393,11 @@
             const totalItem = document.getElementById("total_item");
             const total_gw = document.getElementById("total_gw");
             const total_nw = document.getElementById("total_nw");
+            let setGrosir = '';
             let totalgw = 0;
             let totalgwall = 0;
             let totalnw = 0;
-            let carat = "{{ $kadar[0]->SW }}";
+            let carat = '';
             let desc_item = '';
             let itemScan = [];
             let options_cat = `
@@ -371,6 +405,25 @@
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
 `;
+
+            $('#grosir').on('change', function() {
+                let id = this.value;
+                if (id) {
+                    setGrosir = id;
+                } else {
+                    document.getElementById("customer").value = "";
+                    setGrosir = '';
+                }
+            });
+
+
+            $('#carat').on('change', function() {
+                carat = this.value;
+                document.querySelectorAll(".cadar_item").forEach(el => {
+                    el.value = carat;
+                })
+            });
+
 
             isHargaCheck.addEventListener("change", function() {
                 console.log(this.checked);
@@ -387,15 +440,12 @@
                 }
 
             });
-            caratInput.addEventListener("change", function() {
-                carat = this.value;
 
-
-                document.querySelectorAll(".cadar_item").forEach(el => {
-                    el.value = carat;
-                })
-            });
             addRowBtn.addEventListener("click", function() {
+                if (setGrosir == '' || carat == '') {
+                    alert('Grosir dan Kadar harus di pilih');
+                    return false;
+                }
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
@@ -511,7 +561,19 @@
 
 
             document.getElementById("btnTambahkanQR").addEventListener("click", function() {
-                alert('ok');
+                let qrValue = qrInput.value; 
+
+                try {
+                    let data = JSON.parse(qrValue);
+                    document.getElementById("customer").value = data.nt;
+                    document.getElementById("alamat").value = data.at;
+                    document.getElementById("sub_grosir").value = data.pt;
+                    
+                } catch (e) {
+                    console.error("QR Code tidak valid:", e);
+                    alert("Format QR salah!");
+                }
+
             });
             document.getElementById("btnTambahkan").addEventListener("click", function() {
                 if (totalItem.innerText <= 0) {
