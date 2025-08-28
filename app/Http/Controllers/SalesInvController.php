@@ -8,6 +8,34 @@ use Illuminate\Support\Facades\DB;
 class SalesInvController extends Controller
 {
     //
+    public function getDataPrice(Request $request)
+    {
+        $category =   DB::table('product')
+            ->where([
+                'Description' => $request->category,
+            ])
+            ->first();
+
+        $carat =  DB::table('carat')
+            ->where([
+                'SW' => $request->carat,
+            ])
+            ->first();
+
+        $data = DB::table('pricelist')
+            ->where([
+                'Customer' => $request->customer,
+                'Category' => $category->ID,
+                'Carat' => $carat->ID
+            ])
+            ->first();
+
+        if ($data) {
+            return response()->json(['data' => $data->Price]);
+        } else {
+            return response()->json(['data' => 0]);
+        }
+    }
     public function getDataSubGros(Request $request)
     {
         $term = $request->get('search');
@@ -38,9 +66,9 @@ class SalesInvController extends Controller
     }
     public function form()
     {
-        $cust = DB::table('customer')->get();
+        $cust = DB::table('customer')->orderBy('Description')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
-        $kadar = DB::table('carat')->select('ID', 'SW')->get();
+        $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
     }
     public function show()

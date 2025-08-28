@@ -86,7 +86,8 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Alamat</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" rows="2" placeholder="Alamat" name="alamat" id="alamat">
+                                        <input type="text" class="form-control" rows="2" placeholder="Alamat"
+                                            name="alamat" id="alamat">
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -441,11 +442,29 @@
 
             });
 
+
+            async function fetchPrice(grosirId, categoryId, caratId, wbruto = 0) {
+                if (!grosirId || !caratId) return 0;
+
+                try {
+                    let res = await fetch(
+                        `/sales/getData/Price?customer=${grosirId}&carat=${caratId}&category=${categoryId}`);
+                    let data = await res.json();
+                    console.log(data)
+                    return data.harga ?? 0;
+                } catch (err) {
+                    console.error("Fetch gagal:", err);
+                    return 0;
+                }
+            }
+
+
             addRowBtn.addEventListener("click", function() {
                 if (setGrosir == '' || carat == '') {
                     alert('Grosir dan Kadar harus di pilih');
                     return false;
                 }
+
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
@@ -460,6 +479,11 @@
             </td>
         `;
                 itemsTable.appendChild(newRow);
+
+                let default_cat = '{{ $desc[0]->Description }}';
+                fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
+                    newRow.querySelector("input[name='price[]']").value = hasil;
+                });
 
                 $(newRow).find('.select2').select2({
                     placeholder: "Pilih kategori",
@@ -561,14 +585,14 @@
 
 
             document.getElementById("btnTambahkanQR").addEventListener("click", function() {
-                let qrValue = qrInput.value; 
+                let qrValue = qrInput.value;
 
                 try {
                     let data = JSON.parse(qrValue);
                     document.getElementById("customer").value = data.nt;
                     document.getElementById("alamat").value = data.at;
                     document.getElementById("sub_grosir").value = data.pt;
-                    
+
                 } catch (e) {
                     console.error("QR Code tidak valid:", e);
                     alert("Format QR salah!");
