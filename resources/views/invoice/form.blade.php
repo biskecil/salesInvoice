@@ -400,6 +400,7 @@
             let totalnw = 0;
             let carat = '';
             let desc_item = '';
+            let default_cat = '{{ $desc[0]->Description }}';
             let itemScan = [];
             let options_cat = `
 @foreach ($desc as $d)
@@ -411,6 +412,31 @@
                 let id = this.value;
                 if (id) {
                     setGrosir = id;
+                    document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+                        let categorySelect = row.querySelector("select[name='category[]']");
+                        let priceInput = row.querySelector(".price");
+                        let brutoInput = row.querySelector(".wbruto");
+                        let netInput = row.querySelector(".wnet");
+                        let priceCustInput = row.querySelector(".pricecust");
+
+                        if (!categorySelect) return;
+
+                        let selectedCat = categorySelect.value;
+
+
+                        fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                            if (priceInput) priceInput.value = hasil.price;
+                            if (priceCustInput) priceCustInput.value = hasil.priceCust;
+
+                            if (brutoInput && priceInput && netInput) {
+                                let bruto = parseFloat(brutoInput.value) || 0;
+                                let price = parseFloat(priceInput.value) || 0;
+                                let net = bruto * price;
+                                netInput.value = net.toFixed(3);
+                            }
+                        });
+                    });
+
                 } else {
                     document.getElementById("customer").value = "";
                     setGrosir = '';
@@ -423,11 +449,35 @@
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
                 })
+
+                document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+                    let categorySelect = row.querySelector("select[name='category[]']");
+                    let priceInput = row.querySelector(".price");
+                    let priceCustInput = row.querySelector(".pricecust");
+                    let brutoInput = row.querySelector(".wbruto");
+                    let netInput = row.querySelector(".wnet");
+
+                    if (!categorySelect) return;
+
+                    let selectedCat = categorySelect.value;
+
+
+                    fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                        if (priceInput) priceInput.value = hasil.price;
+                        if (priceCustInput) priceCustInput.value = hasil.priceCust;
+
+                        if (brutoInput && priceInput && netInput) {
+                            let bruto = parseFloat(brutoInput.value) || 0;
+                            let price = parseFloat(priceInput.value) || 0;
+                            let net = bruto * price;
+                            netInput.value = net.toFixed(3);
+                        }
+                    });
+                });
             });
 
 
             isHargaCheck.addEventListener("change", function() {
-                console.log(this.checked);
                 if (this.checked) {
 
                     document.querySelectorAll(".isPriceCust").forEach(el => {
@@ -450,8 +500,8 @@
                     let res = await fetch(
                         `/sales/getData/Price?customer=${grosirId}&carat=${caratId}&category=${categoryId}`);
                     let data = await res.json();
-                    console.log(data)
-                    return data.harga ?? 0;
+
+                    return data ?? 0;
                 } catch (err) {
                     console.error("Fetch gagal:", err);
                     return 0;
@@ -469,20 +519,36 @@
                 newRow.innerHTML = `
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
-            <td><input type="number" name="wbruto[]" class="form-control form-control-sm" min="0" step="0.01"></td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm" min="0" readonly step="0.01"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm" min="0" step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm " min="0"  readonly step="0.01"></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm " min="0" step="0.01"></td>
+            <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0" step="0.01"></td>
+            <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
+            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0" readonly step="0.01"></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
+            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
             <td class="text-center">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
         `;
                 itemsTable.appendChild(newRow);
 
-                let default_cat = '{{ $desc[0]->Description }}';
+
                 fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
-                    newRow.querySelector("input[name='price[]']").value = hasil;
+                    document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+                        let priceInput = row.querySelector(".price");
+                        let brutoInput = row.querySelector(".wbruto");
+                        let netInput = row.querySelector(".wnet");
+                        let priceCustInput = row.querySelector(".pricecust");
+
+                        if (priceInput) priceInput.value = hasil.price;
+                        if (priceCustInput) priceCustInput.value = hasil.priceCust;
+
+                        if (brutoInput && priceInput && netInput) {
+                            let bruto = parseFloat(brutoInput.value) || 0;
+                            let price = parseFloat(priceInput.value) || 0;
+                            let net = bruto * price;
+
+                            netInput.value = net.toFixed(3);
+                        }
+                    });
                 });
 
                 $(newRow).find('.select2').select2({
@@ -493,7 +559,49 @@
             });
 
 
-            // remove row
+
+            $('#itemsTable tbody').on('change', 'select[name="category[]"]', function() {
+
+                let tr = $(this).closest('tr');
+                let selectedCat = $(this).val();
+
+                let cadarInput = tr.find('.cadar_item');
+                let brutoInput = tr.find('.wbruto');
+                let priceInput = tr.find('.price');
+                let priceCustInput = tr.find(".pricecust");
+                let netInput = tr.find('.wnet');
+
+
+                fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
+                    if (priceInput.length) priceInput.val(hasil.price);
+                    if (priceCustInput.length) priceCustInput.val(hasil.priceCust);
+
+                    if (brutoInput.length && priceInput.length && netInput.length) {
+                        let bruto = parseFloat(brutoInput.val()) || 0;
+                        let price = parseFloat(priceInput.val()) || 0;
+                        let net = bruto * price;
+                        netInput.val(net.toFixed(3));
+                    }
+                });
+            });
+
+            itemsTable.addEventListener("change", function(e) {
+                let tr = e.target.closest("tr");
+                let priceInput = tr.querySelector('.price');
+                let brutoInput = tr.querySelector('.wbruto');
+                let netInput = tr.querySelector('.wnet');
+                let bruto = parseFloat(brutoInput.value) || 0;
+                let price = parseFloat(priceInput.value) || 0;
+                let net = bruto * price;
+                netInput.value = net.toFixed(3);
+                let total = 0;
+
+                document.querySelectorAll(".wbruto").forEach(el => {
+                    total += parseFloat(el.value) || 0;
+                });
+
+                totalgwallInput.value = total.toFixed(2);
+            });
             itemsTable.addEventListener("click", function(e) {
                 if (e.target.classList.contains("removeRow")) {
                     const row = e.target.closest("tr");
@@ -501,7 +609,16 @@
                     const gwall = row.cells[2].querySelector("input").value;
                     totalgwall -= gwall;
                     totalgwallInput.value = totalgwall;
+
+
                     e.target.closest("tr").remove();
+
+                    let total = 0;
+                    document.querySelectorAll(".wbruto").forEach(el => {
+                        total += parseFloat(el.value) || 0;
+                    });
+
+                    totalgwallInput.value = total.toFixed(2);
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -522,7 +639,7 @@
                     // update info
                     totalItem.innerText = parseInt(totalItem.innerText) - 1;
                     total_gw.innerText = totalgw.toFixed(2);
-                    total_nw.innerText = totalnw.toFixed(2);
+                    total_nw.innerText = totalnw.toFixed(3);
 
                     // hapus row
                     row.remove();
@@ -551,7 +668,7 @@
                         //Info
                         totalItem.innerText = parseInt(totalItem.innerText) + 1;
                         total_gw.innerText = totalgw.toFixed(2);
-                        total_nw.innerText = totalnw.toFixed(2);
+                        total_nw.innerText = totalnw.toFixed(3);
 
 
                         row.innerHTML = `
@@ -614,7 +731,7 @@
             <td><input type="text"  style="min-width:100px;" name="cadar[]" class="form-control cadar_item" readonly value="${carat}"></td>
             <td><input type="number"  style="min-width:100px;" name="wbruto[]" class="form-control"  value="${totalgw}" step="0.01"></td>
             <td><input type="number"  style="min-width:100px;" name="price[]" class="form-control" value="0" step="0.01"></td>
-            <td><input type="number"  style="min-width:100px;" name="wnet[]" class="form-control"  value="${totalnw}" step="0.01"></td>
+            <td><input type="number"  style="min-width:100px;" name="wnet[]" class="form-control" readonly value="${totalnw}" step="0.01"></td>
             <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number"  style="min-width:100px;" name="pricecust[]" class="form-control"  readonly value="0" step="0.01"></td>
             <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number"  style="min-width:100px;" name="wnetocust[]" class="form-control" value="0" step="0.01"></td>
             <td class="text-center">

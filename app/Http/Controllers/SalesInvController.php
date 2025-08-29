@@ -26,12 +26,13 @@ class SalesInvController extends Controller
             ->where([
                 'Customer' => $request->customer,
                 'Category' => $category->ID,
-                'Carat' => $carat->ID
+                'Carat' => $carat->ID,
+                'Currency' => 40
             ])
             ->first();
 
         if ($data) {
-            return response()->json(['data' => $data->Price]);
+            return response()->json(['price' => $data->Price,'priceCust' => $data->PriceCust]);
         } else {
             return response()->json(['data' => 0]);
         }
