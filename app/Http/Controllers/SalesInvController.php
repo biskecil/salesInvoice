@@ -32,7 +32,7 @@ class SalesInvController extends Controller
             ->first();
 
         if ($data) {
-            return response()->json(['price' => $data->Price,'priceCust' => $data->PriceCust]);
+            return response()->json(['price' => $data->Price, 'priceCust' => $data->PriceCust]);
         } else {
             return response()->json(['data' => 0]);
         }
@@ -72,6 +72,13 @@ class SalesInvController extends Controller
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
     }
+    public function create()
+    {
+        $cust = DB::table('customer')->orderBy('Description')->get();
+        $desc = DB::table('product')->select('ID', 'Description')->get();
+        $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
+        return view('invoice.create', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
+    }
     public function show()
     {
         $data = DB::table('invoiceitem')
@@ -87,7 +94,7 @@ class SalesInvController extends Controller
             ->get();
         return view('invoice.show', ['data' => $data]);
     }
-    public function create(Request $request)
+    public function store(Request $request)
     {
         // return response()->json($request->all());
         // dd(json_decode(json_encode($request->all())));

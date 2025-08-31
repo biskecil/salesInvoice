@@ -27,7 +27,7 @@
 <body class="bg-light">
 
     {{-- Header merah --}}
-    <div class="bg-primary-color text-white py-2 px-3 d-flex justify-content-between align-items-center">
+    <div class="bg-primary-color text-white py-1 px-3 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <img src="{!! asset('assets/images/favicon.png') !!}" class="w-px-40 h-auto rounded-circle me-2"
                 style="opacity:.9; width:50px; height:50px; object-fit:cover;">
@@ -39,7 +39,7 @@
     </div>
 
     {{-- Navbar menu --}}
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm py-1">
+    {{-- <nav class="navbar navbar-expand-lg bg-white shadow-sm py-1">
         <div class="container-fluid">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -56,7 +56,7 @@
                 </li>
             </ul>
         </div>
-    </nav>
+    </nav> --}}
 
     {{-- Content --}}
     <main class="container-fluid py-4">

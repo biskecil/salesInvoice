@@ -22,7 +22,8 @@ Route::prefix('sales')->group(function () {
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
     Route::get('/getData/Gros/{id}', [SalesInvController::class, 'getDataGros']);
     Route::get('/getData/Price/', [SalesInvController::class, 'getDataPrice']);
-    Route::post('/create', [SalesInvController::class, 'create']);
+    Route::get('/create', [SalesInvController::class, 'create']);
+    Route::post('/store', [SalesInvController::class, 'store']);
     Route::get('/show', [SalesInvController::class, 'show']);
     Route::get('/edit/{id}', [SalesInvController::class, 'edit']);
 });
