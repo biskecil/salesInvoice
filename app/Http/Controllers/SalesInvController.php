@@ -153,7 +153,7 @@ class SalesInvController extends Controller
         $data = DB::table('invoice')->where('SW', $id)->first();
 
         if ($data) {
-            $getGrosirID = DB::select("SELECT ID FROM customer WHERE SW = ?", [$data->Grosir]);
+            $getGrosirID = DB::select("SELECT ID,SW FROM customer WHERE SW = ?", [$data->Grosir]);
             $data_item = DB::table('invoiceitem')
                 ->select(
                     'invoiceitem.*',
@@ -197,7 +197,7 @@ class SalesInvController extends Controller
             $invoice->SubGrosir = $data->SubGrosir;
             $invoice->Phone = $data->Phone;
             $invoice->Event = $data->Event;
-            $invoice->Grosir = $getGrosirID[0]->ID;
+            $invoice->Grosir = $getGrosirID[0]->SW;
             $invoice->Venue = $data->Venue;
             $invoice->Weight = $data->Weight;
             $invoice->Remarks = $data->Remarks;
@@ -365,7 +365,7 @@ class SalesInvController extends Controller
 
         if ($validated->fails()) {
             $data = $this->SetReturn(true, 'Cek Form', null, null);
-            return response()->json($data, 500);
+            return response()->json($data, 422);
         }
 
 

@@ -18,17 +18,22 @@
                 <div class="card-header bg-white border-0">
                     <div class="d-flex gap-2 justify-content-between">
                         <div>
+                            <button type="button" class="btn btn-warning btn-sm fw-bold buttonForm"
+                                id="btnSubmitCreate">Simpan</button>
                             <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnTambah">Tambah</button>
                             <button type="button" class="btn btn-danger btn-sm fw-bold" id="btnBatal">Batal</button>
                             <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnEdit">Edit</button>
                             <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnCari">Lihat</button>
-                            <a href="/sales/cetakNota/1" target="_blank" class="btn btn-info btn-sm fw-bold" id="btnCetak">
+
+                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetak"
+                                onclick="window.open('/sales/cetakNota/1', '_blank')">
                                 Cetak
-                            </a>
-                            <a href="/sales/cetakBarcode/1" target="_blank" class="btn btn-info btn-sm fw-bold" id="btnCetakBarcode">
+                            </button>
+                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetakBarcode"
+                                onclick="window.open('/sales/cetakBarcode/1', '_blank')">
                                 Cetak Barcode
-                            </a>
-                       
+                            </button>
+
                         </div>
                         <div>
                             <div class="d-flex gap-2 ">
@@ -159,23 +164,46 @@
 
     <script>
         $(document).ready(function() {
+            let dataNota = '';
             $('#btnTambah').prop('disabled', false);
             $('#btnBatal').prop('disabled', true);
             $('#btnCetak').prop('disabled', true);
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
+            $('.buttonForm').prop('disabled', true);
 
             $('#btnCari').on('click', function() {
-                let dataNota = $('#cariDataNota').val();
+                dataNota = $('#cariDataNota').val();
                 $.get('/sales/detail/' + dataNota).done(function(response) {
                         $('#formData').html(response.html).removeClass('d-none');
-
                         $('#btnTambah').prop('disabled', true);
                         $('#btnBatal').prop('disabled', false);
                         $('#btnCetak').prop('disabled', false);
                         $('#btnCetakBarcode').prop('disabled', false);
                         $('#btnEdit').prop('disabled', false);
+                        $('.buttonForm').prop('disabled', true);
                         js_form('edit', response.data);
+                        document.querySelectorAll(".isEdit").forEach(el => {
+                            el.classList.add("d-none");
+                        })
+                        document.querySelectorAll(".wbruto").forEach(el => {
+                            el.readOnly = true;
+                        })
+                        document.querySelectorAll(".price").forEach(el => {
+                            el.readOnly = true;
+                        })
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            el.readOnly = true;
+                        })
+                        document.querySelectorAll(".pricecust").forEach(el => {
+                            el.readOnly = true;
+                        })
+                        document.querySelectorAll(".wnetocust").forEach(el => {
+                            el.readOnly = true;
+                        })
+
+                        $('.select2').prop("disabled", true);
+                        $('#cariDataNota').val('')
                     })
                     .fail(function(xhr) {
                         Swal.fire({
@@ -188,15 +216,16 @@
                     });
             });
             $('#btnEdit').on('click', function() {
-                let dataNota = $('#cariDataNota').val();
                 $.get('/sales/edit/' + dataNota).done(function(response) {
                         $('#formData').html(response.html).removeClass('d-none');
-
                         $('#btnTambah').prop('disabled', true);
                         $('#btnBatal').prop('disabled', false);
                         $('#btnCetak').prop('disabled', true);
                         $('#btnCetakBarcode').prop('disabled', true);
+                        $('#btnCari').prop('disabled', true);
                         $('#btnEdit').prop('disabled', false);
+                        $('.buttonForm').attr("id", "btnSubmitEdit");
+                        $('.buttonForm').prop('disabled', false);
                         js_form('edit', response.data);
                     })
                     .fail(function(xhr) {
@@ -210,40 +239,34 @@
                     });
             });
             $('#btnTambah').on('click', function() {
+                dataNota = '';
                 $.get('/sales/create', function(html) {
                     $('#formData').html(html).removeClass('d-none');
-
                     $('#btnTambah').prop('disabled', true);
-
+                    $('#btnCari').prop('disabled', true);
                     $('#btnBatal').prop('disabled', false);
                     $('#btnCetak').prop('disabled', true);
                     $('#btnCetakBarcode').prop('disabled', true);
                     $('#btnEdit').prop('disabled', true);
+                    $('.buttonForm').attr("id", "btnSubmitCreate");
+                    $('.buttonForm').prop('disabled', false);
                     js_form('create');
-
                 });
             });
             $('#btnBatal').on('click', function() {
+                dataNota = '';
                 $('#formData').addClass('d-none');
-
-
+                $('#btnCari').prop('disabled', false);
                 $('#btnTambah').prop('disabled', false);
                 $('#btnBatal').prop('disabled', true);
                 $('#btnCetak').prop('disabled', true);
                 $('#btnCetakBarcode').prop('disabled', true);
                 $('#btnEdit').prop('disabled', true);
+                $('.buttonForm').prop('disabled', true);
             });
-
-
-
         });
 
-
-
         function js_form(typeForm = 'default', dataInv = '') {
-
-
-
             $('.select2').select2({
                 placeholder: "Pilih Data",
                 allowClear: true
@@ -265,7 +288,7 @@
                 minLength: 2
             });
 
-            $("#btnSubmitCreate").on("click", function(e) {
+            $("#btnSubmitCreate").off("click").on("click", function(e) {
                 e.preventDefault(); // prevent normal form submit
 
                 $.ajax({
@@ -278,6 +301,10 @@
                             text: "Data telah berhasil disimpan.",
                             icon: "success",
                             confirmButtonText: "OK"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload(); 
+                            }
                         });
                     },
                     error: function(xhr) {
@@ -301,7 +328,7 @@
                 });
             });
 
-            $("#btnSubmitEdit").on("click", function(e) {
+            $("#btnSubmitEdit").off("click").on("click", function(e) {
                 e.preventDefault(); // prevent normal form submit
 
                 $.ajax({
@@ -314,6 +341,10 @@
                             text: "Data telah berhasil disimpan.",
                             icon: "success",
                             confirmButtonText: "OK"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
                         });
                     },
                     error: function(xhr) {
@@ -474,7 +505,7 @@
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
             <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" value="${item.priceCust}" min="0"  readonly step="0.01"></td>
             <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" value="${item.netCust}" min="0" step="0.01"></td>
-            <td class="text-center">
+            <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
 
@@ -549,7 +580,7 @@
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0" readonly step="0.01"></td>
             <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
             <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
-            <td class="text-center">
+            <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
         `;
@@ -769,7 +800,7 @@
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
             <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
             <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
-            <td class="text-center">
+            <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
 

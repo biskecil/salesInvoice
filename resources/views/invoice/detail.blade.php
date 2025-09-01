@@ -1,5 +1,5 @@
 <div class="mb-10">
-    <h5 class="text-left fw-bold ">Form Invoice - Edit</h5>
+    <h5 class="text-left fw-bold ">Form Invoice - Detail</h5>
 </div>
 <form action="/sales/update/{{ $data->ID }}" method="post" id="salesForm" class="mt-4">
     @method('PUT')
@@ -161,7 +161,7 @@
                             <th style="width: 150px;" class="isPriceCust d-none">Harga Cust</th>
                             <th style="width: 150px;" class="isPriceCust d-none">Brt Bersih Cust
                             </th>
-                            <th style="width: 50px;"></th>
+                            <th style="width: 50px;" class="isEdit"></th>
                         </tr>
                     </thead>
                     <tbody>

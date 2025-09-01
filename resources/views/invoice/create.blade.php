@@ -61,7 +61,7 @@
                    <label class="form-label col-sm-4">Event*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" name="event">
-                           <option value="">PIlih Data</option>
+                           <option value="">Pilih Data</option>
                            <option value="Pameran">Pameran</option>
                            <option value="Event">Event</option>
                        </select>
@@ -71,7 +71,7 @@
                    <label class="form-label col-sm-4">Grosir*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" name="grosir" id="grosir">
-                           <option value="">PIlih Data</option>
+                           <option value="">Pilih Data</option>
                            @foreach ($cust as $d)
                                <option value="{{ $d->ID }}">{{ $d->SW }}</option>
                            @endforeach
@@ -89,7 +89,7 @@
                    <label class="form-label col-sm-4">Tempat*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" name="tempat">
-                           <option value="">PIlih Data</option>
+                           <option value="">Pilih Data</option>
                            <option value="JCC">JCC</option>
                            <option value="Sultan">Sultan</option>
                            <option value="Shangri-La">Shangri-La</option>
@@ -179,13 +179,6 @@
 
                    </table>
                </div>
-           </div>
-       </div>
-
-       <!-- SUBMIT -->
-       <div class="row mt-3">
-           <div class="col text-center">
-               <button type="button" class="btn btn-warning fw-bold px-5" id="btnSubmitCreate" >Simpan</button>
            </div>
        </div>
    </form>
