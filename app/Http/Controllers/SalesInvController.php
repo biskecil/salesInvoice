@@ -4,11 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use stdClass;
 
 class SalesInvController extends Controller
 {
     //
+    private function SetReturn($success, $message, $data, $error)
+    {
+        $data_return = [
+            "success" => $success,
+            "message" => $message,
+            "data" => $data,
+            "error" => $error
+        ];
+        return $data_return;
+    }
+
     public function getDataPrice(Request $request)
     {
         $category =   DB::table('product')
@@ -61,12 +75,153 @@ class SalesInvController extends Controller
     }
     public function edit($id)
     {
-        $desc = DB::table('product')->select('ID', 'Description')->get();
-        $cust = DB::table('pricelist')->select('Customer')->groupBy('Customer')->get();
-        $kadar = DB::table('carat')->select('ID', 'Description')->get();
-        $data = DB::table('invoice')->where('ID', $id)->first();
-        return response()->json(['data' => $data, 'status' => 'success']);
-        return view('invoice.edit', ['desc' => $desc, 'kadar' => $kadar, 'data' => $data, 'cust' => $cust]);
+        $data = DB::table('invoice')->where('SW', $id)->first();
+
+        if ($data) {
+            $getGrosirID = DB::select("SELECT ID FROM customer WHERE SW = ?", [$data->Grosir]);
+            $data_item = DB::table('invoiceitem')
+                ->select(
+                    'invoiceitem.*',
+                    'product.SW as productSW',
+                    'product.Description as desc_item',
+                    'carat.SW as caratSW',
+                )
+                ->addSelect([
+                    'custprice' => DB::table('invoiceitem')
+                        ->selectRaw('SUM(priceCust)')
+                        ->where('invoiceitem.IDM', $data->ID)
+                        ->limit(1),
+                    'nettcust' => DB::table('invoiceitem')
+                        ->selectRaw('SUM(NettoCust) ')
+                        ->where('invoiceitem.IDM', $data->ID)
+                        ->limit(1)
+                ])
+                ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
+                ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+                ->where('invoiceitem.IDM', $data->ID);
+
+            $data_list = $data_item->get()->map(function ($item) {
+                $item->custom_field = $item->IDM;
+                $item->gw = number_format($item->Weight, 2, '.', '');
+                $item->nw =  number_format($item->Netto, 3, '.', '');
+                $item->price =  number_format($item->Price, 3, '.', '');
+                $item->priceCust =  number_format($item->PriceCust, 3, '.', '');
+                $item->netCust =  number_format($item->NettoCust, 3, '.', '');
+                $item->isHargaCheck = $item->custprice + $item->nettcust  > 0 ? true : false;
+                return $item;
+            });
+
+
+            $invoice = new stdClass();
+            $invoice->ID = $data->ID;
+            $invoice->SW = $data->SW;
+            $invoice->TransDate = $data->TransDate;
+            $invoice->Customer = $data->Customer;
+            $invoice->Person = $data->Person;
+            $invoice->Address = $data->Address;
+            $invoice->SubGrosir = $data->SubGrosir;
+            $invoice->Phone = $data->Phone;
+            $invoice->Event = $data->Event;
+            $invoice->Grosir = $getGrosirID[0]->ID;
+            $invoice->Venue = $data->Venue;
+            $invoice->Weight = $data->Weight;
+            $invoice->Remarks = $data->Remarks;
+            $invoice->Carat = $data_item->first()->caratSW;
+            $invoice->ItemList = $data_list;
+            $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
+
+
+            //return response()->json($invoice);
+
+            $cust = DB::table('customer')->orderBy('Description')->get();
+            $desc = DB::table('product')->select('ID', 'Description')->get();
+            $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
+
+
+            $html = view('invoice.edit', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust])->render();
+
+            return response()->json([
+                'html' => $html,
+                'data' => $invoice
+            ]);
+        } else {
+            return response()->json(['status' => 'Data kosong'], 500);
+        }
+    }
+    public function detail($id)
+    {
+        $data = DB::table('invoice')->where('SW', $id)->first();
+
+        if ($data) {
+            $getGrosirID = DB::select("SELECT ID FROM customer WHERE SW = ?", [$data->Grosir]);
+            $data_item = DB::table('invoiceitem')
+                ->select(
+                    'invoiceitem.*',
+                    'product.SW as productSW',
+                    'product.Description as desc_item',
+                    'carat.SW as caratSW',
+                )
+                ->addSelect([
+                    'custprice' => DB::table('invoiceitem')
+                        ->selectRaw('SUM(priceCust)')
+                        ->where('invoiceitem.IDM', $data->ID)
+                        ->limit(1),
+                    'nettcust' => DB::table('invoiceitem')
+                        ->selectRaw('SUM(NettoCust) ')
+                        ->where('invoiceitem.IDM', $data->ID)
+                        ->limit(1)
+                ])
+                ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
+                ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+                ->where('invoiceitem.IDM', $data->ID);
+
+            $data_list = $data_item->get()->map(function ($item) {
+                $item->custom_field = $item->IDM;
+                $item->gw = number_format($item->Weight, 2, '.', '');
+                $item->nw =  number_format($item->Netto, 3, '.', '');
+                $item->price =  number_format($item->Price, 3, '.', '');
+                $item->priceCust =  number_format($item->PriceCust, 3, '.', '');
+                $item->netCust =  number_format($item->NettoCust, 3, '.', '');
+                $item->isHargaCheck = $item->custprice + $item->nettcust  > 0 ? true : false;
+                return $item;
+            });
+
+
+            $invoice = new stdClass();
+            $invoice->ID = $data->ID;
+            $invoice->SW = $data->SW;
+            $invoice->TransDate = $data->TransDate;
+            $invoice->Customer = $data->Customer;
+            $invoice->Person = $data->Person;
+            $invoice->Address = $data->Address;
+            $invoice->SubGrosir = $data->SubGrosir;
+            $invoice->Phone = $data->Phone;
+            $invoice->Event = $data->Event;
+            $invoice->Grosir = $getGrosirID[0]->ID;
+            $invoice->Venue = $data->Venue;
+            $invoice->Weight = $data->Weight;
+            $invoice->Remarks = $data->Remarks;
+            $invoice->Carat = $data_item->first()->caratSW;
+            $invoice->ItemList = $data_list;
+            $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
+
+
+            //return response()->json($invoice);
+
+            $cust = DB::table('customer')->orderBy('Description')->get();
+            $desc = DB::table('product')->select('ID', 'Description')->get();
+            $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
+
+
+            $html = view('invoice.detail', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust])->render();
+
+            return response()->json([
+                'html' => $html,
+                'data' => $invoice
+            ]);
+        } else {
+            return response()->json(['status' => 'Data kosong'], 500);
+        }
     }
     public function form()
     {
@@ -74,6 +229,20 @@ class SalesInvController extends Controller
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
+    }
+    public function cetakNota()
+    {
+        return view('invoice.cetakNota');
+    }
+    public function cetakBarcode()
+    {
+        // $qr = QrCode::format('png')->generate('https://chatgpt.com/');
+        // $qrImageName = 'xx.png';
+
+        // // simpan ke local storage
+        // Storage::put('public/qr/' . $qrImageName, $qr);
+
+        return view('invoice.cetakBarcode');
     }
     public function create()
     {
@@ -97,12 +266,8 @@ class SalesInvController extends Controller
             ->get();
         return view('invoice.show', ['data' => $data]);
     }
-    public function store(Request $request)
+    public function update($id, Request $request)
     {
-
-        // return response()->json($request->all());
-        // dd(json_decode(json_encode($request->all())));
-
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'noNota'    => 'required',
@@ -117,10 +282,90 @@ class SalesInvController extends Controller
         ]);
 
         if ($validated->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $validated->errors()
-            ], 422);
+            $data = $this->SetReturn(true, 'Cek Form', null, null);
+            return response()->json($data, 500);
+        }
+
+
+        try {
+            DB::beginTransaction();
+            //code...
+            $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
+
+            DB::table('invoice')
+                ->where('ID', $id)
+                ->update([
+                    'SW' => $request->noNota,
+                    'TransDate' => $request->transDate,
+                    'Customer' => $request->customer,
+                    'Address' => $request->alamat,
+                    'Phone' => $request->phone,
+                    'Event' => $request->event,
+                    'Grosir' => $getGrosirID[0]->SW,
+                    'Weight' => 0,
+                    'Remarks' => $request->catatan,
+                    'Venue' => $request->tempat,
+                    'DocNo' => NULL,
+                    'Currency' => NULL,
+                    'Person' => $request->pembeli,
+                    'SubGrosir' => $request->sub_grosir,
+                ]);
+
+            $cekOpnameItem = DB::table('invoiceitem')->where('IDM', $id);
+
+            if (count($request->cadar) > 0) {
+                $cekOpnameItem->delete();
+                $total_weight = 0;
+                for ($i = 0; $i < count($request->cadar); $i++) {
+                    $total_weight +=  $request->wbruto[$i];
+                    $descCat = $request->category[$i];
+                    $descCarat = $request->cadar[$i];
+                    $getProductSW = DB::select("SELECT ID FROM product WHERE Description = ?", [$descCat]);
+                    $getCarat = DB::select("SELECT ID FROM carat  WHERE SW  = ?", [$descCarat]);
+
+                    DB::table('invoiceitem')->insertGetId([
+                        'IDM' => $id,
+                        'Ordinal' => $i + 1,
+                        'Product' =>  $getProductSW[0]->ID,
+                        'Carat' =>  $getCarat[0]->ID,
+                        'Weight' => $request->wbruto[$i],
+                        'Price' => $request->price[$i],
+                        'Netto' => $request->wnet[$i],
+                        'PriceCust' => isset($request->harga) ? $request->pricecust[$i] : 0,
+                        'NettoCust' => isset($request->harga) ? $request->wnetocust[$i] : 0,
+                    ]);
+                }
+                DB::table('invoice')->where('ID', $id)->update(["Weight" => $total_weight]);
+            }
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'transDate'   => 'required|date',
+            'noNota'    => 'required',
+            'customer'    => 'required',
+            'event'       => 'required',
+            'grosir'      => 'required',
+            'tempat'      => 'required',
+            'pembeli'     => 'required',
+            'sub_grosir'  => 'required',
+            'alamat'      => 'required',
+            'cadar'       => 'required|array|min:1',
+        ]);
+
+        if ($validated->fails()) {
+            $data = $this->SetReturn(true, 'Cek Form', null, null);
+            return response()->json($data, 500);
         }
 
 
@@ -169,14 +414,16 @@ class SalesInvController extends Controller
                         'NettoCust' => isset($request->harga) ? $request->wnetocust[$i] : 0,
                     ]);
                 }
-                DB::table('invoice')->where('id', $getLastInvID)->update(["Weight" => $total_weight]);
+                DB::table('invoice')->where('ID', $getLastInvID)->update(["Weight" => $total_weight]);
             }
             DB::commit();
-            return redirect()->route('sales.form')->with('success', "Invoice berhasil dibuat");
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            return redirect()->route('sales.form')->with('error', "Gagal membuat invoice");
+            $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
         }
     }
 }

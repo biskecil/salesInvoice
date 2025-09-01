@@ -14,6 +14,9 @@
         .bg-primary-color {
             background-color: #913030 !important;
         }
+        .btn-primary {
+            background-color: #913030 !important;
+        }
 
         input[readonly],
         textarea[readonly] {

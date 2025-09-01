@@ -1,5 +1,5 @@
    <div class="mb-10">
-       <h5 class="text-left fw-bold ">Form Invoice</h5>
+       <h5 class="text-left fw-bold ">Form Invoice - Tambah</h5>
    </div>
    <form action="/sales/store" method="post" id="salesForm" class="mt-4">
        @csrf
@@ -31,7 +31,7 @@
                <div class="mb-2 row">
                    <label class="form-label col-sm-4">Nama Pembeli*</label>
                    <div class="col-sm-8">
-                       <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"="">
+                       <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli">
                    </div>
                </div>
                <div class="mb-2 row">
@@ -44,7 +44,7 @@
                <div class="mb-2 row">
                    <label class="form-label col-sm-4">Phone</label>
                    <div class="col-sm-8">
-                       <input type="text" class="form-control" placeholder="Phone" name="phone"="">
+                       <input type="text" class="form-control" placeholder="Phone" name="phone">
                    </div>
                </div>
 
@@ -185,7 +185,7 @@
        <!-- SUBMIT -->
        <div class="row mt-3">
            <div class="col text-center">
-               <button type="button" class="btn btn-danger fw-bold px-5" id="btnSubmitCreate" >Simpan</button>
+               <button type="button" class="btn btn-warning fw-bold px-5" id="btnSubmitCreate" >Simpan</button>
            </div>
        </div>
    </form>

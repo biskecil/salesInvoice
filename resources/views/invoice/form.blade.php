@@ -18,58 +18,31 @@
                 <div class="card-header bg-white border-0">
                     <div class="d-flex gap-2 justify-content-between">
                         <div>
-                            <button type="button" class="btn btn-danger fw-bold" id="btnTambah">Tambah</button>
-                            <button type="button" class="btn btn-danger fw-bold" id="btnBatal">Batal</button>
-                            <button type="button" class="btn btn-danger fw-bold" id="btnEdit">Edit</button>
-                            <button type="button" class="btn btn-danger fw-bold" id="btnCetak">Cetak</button>
-                            <button type="button" class="btn btn-danger fw-bold" id="btnCetakBarcode">Cetak
-                                Barcode</button>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnTambah">Tambah</button>
+                            <button type="button" class="btn btn-danger btn-sm fw-bold" id="btnBatal">Batal</button>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnEdit">Edit</button>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnCari">Lihat</button>
+                            <a href="/sales/cetakNota/1" target="_blank" class="btn btn-info btn-sm fw-bold" id="btnCetak">
+                                Cetak
+                            </a>
+                            <a href="/sales/cetakBarcode/1" target="_blank" class="btn btn-info btn-sm fw-bold" id="btnCetakBarcode">
+                                Cetak Barcode
+                            </a>
+                       
                         </div>
                         <div>
                             <div class="d-flex gap-2 ">
-                                <input type="text" class="form-control" id="customer" name="customer" style="flex:1">
-                                <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#scanQRModal">
-                                    Cari Data
-                                </button>
+                                <input type="text" class="form-control" id="cariDataNota" style="flex:1"
+                                    placeholder="Cari Nota">
                             </div>
                         </div>
                     </div>
 
                 </div>
                 <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-
-                            </ul>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-
                     <!-- FORM UTAMA -->
-                    <div id="edit_form" class="d-none">
-                        call from another blade send id to render in html
-                    </div>
-                    <div id="create_form" class="d-none">
+
+                    <div id="formData" class="d-none">
 
                     </div>
                 </div>
@@ -192,22 +165,66 @@
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
 
+            $('#btnCari').on('click', function() {
+                let dataNota = $('#cariDataNota').val();
+                $.get('/sales/detail/' + dataNota).done(function(response) {
+                        $('#formData').html(response.html).removeClass('d-none');
+
+                        $('#btnTambah').prop('disabled', true);
+                        $('#btnBatal').prop('disabled', false);
+                        $('#btnCetak').prop('disabled', false);
+                        $('#btnCetakBarcode').prop('disabled', false);
+                        $('#btnEdit').prop('disabled', false);
+                        js_form('edit', response.data);
+                    })
+                    .fail(function(xhr) {
+                        Swal.fire({
+                            title: "Info",
+                            text: "Data tidak ditemukan",
+                            icon: "warning",
+                            confirmButtonText: "OK"
+                        });
+
+                    });
+            });
+            $('#btnEdit').on('click', function() {
+                let dataNota = $('#cariDataNota').val();
+                $.get('/sales/edit/' + dataNota).done(function(response) {
+                        $('#formData').html(response.html).removeClass('d-none');
+
+                        $('#btnTambah').prop('disabled', true);
+                        $('#btnBatal').prop('disabled', false);
+                        $('#btnCetak').prop('disabled', true);
+                        $('#btnCetakBarcode').prop('disabled', true);
+                        $('#btnEdit').prop('disabled', false);
+                        js_form('edit', response.data);
+                    })
+                    .fail(function(xhr) {
+                        Swal.fire({
+                            title: "Info",
+                            text: "Data tidak ditemukan",
+                            icon: "warning",
+                            confirmButtonText: "OK"
+                        });
+
+                    });
+            });
             $('#btnTambah').on('click', function() {
                 $.get('/sales/create', function(html) {
-                    $('#create_form').html(html).removeClass('d-none');
-                    $('#edit_form').addClass('d-none');
+                    $('#formData').html(html).removeClass('d-none');
+
                     $('#btnTambah').prop('disabled', true);
 
                     $('#btnBatal').prop('disabled', false);
                     $('#btnCetak').prop('disabled', true);
                     $('#btnCetakBarcode').prop('disabled', true);
                     $('#btnEdit').prop('disabled', true);
-                    js_form();
+                    js_form('create');
 
                 });
             });
             $('#btnBatal').on('click', function() {
-                $('#create_form').addClass('d-none');
+                $('#formData').addClass('d-none');
 
 
                 $('#btnTambah').prop('disabled', false);
@@ -223,7 +240,7 @@
 
 
 
-        function js_form() {
+        function js_form(typeForm = 'default', dataInv = '') {
 
 
 
@@ -284,7 +301,43 @@
                 });
             });
 
-            console.log('js_load');
+            $("#btnSubmitEdit").on("click", function(e) {
+                e.preventDefault(); // prevent normal form submit
+
+                $.ajax({
+                    url: $("#salesForm").attr("action"),
+                    type: "POST",
+                    data: $("#salesForm").serialize(),
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: "Data telah berhasil disimpan.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        });
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Silakan periksa kembali form yang Anda isi.",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Server Error",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+
+                    }
+                });
+            });
+
+
             const addRowBtn = document.getElementById("addRow");
             const itemsTable = document.getElementById("itemsTable").getElementsByTagName("tbody")[0];
             const itemScanTable = document.getElementById("itemScantable").getElementsByTagName("tbody")[0];
@@ -396,13 +449,59 @@
 
             });
 
+            if (typeForm == 'edit') {
+                setGrosir = dataInv.Grosir;
+                carat = dataInv.Carat;
+                itemScan = dataInv.ItemList;
+                addRowItemsTable(itemScan, options_cat);
+            }
+
+            function addRowItemsTable(item, options_cat) {
+
+                if (item[0].isHargaCheck) {
+                    document.querySelectorAll(".isPriceCust").forEach(el => {
+                        el.classList.remove("d-none");
+                    });
+                }
+
+                itemScan.forEach(item => {
+                    let newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
+            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${item.caratSW}" readonly></td>
+            <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01"></td>
+            <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"  value="${item.price}"></td>
+            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
+            <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" value="${item.priceCust}" min="0"  readonly step="0.01"></td>
+            <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" value="${item.netCust}" min="0" step="0.01"></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
+            </td>
+
+                        `;
+                    itemsTable.appendChild(newRow);
+
+                    let $select = $(newRow).find('.select2').select2({
+                        placeholder: "Pilih kategori",
+                        allowClear: true,
+                        width: '100%'
+                    });
+
+                    $select.val(item.desc_item).trigger("change");
+
+                });
+            }
+
+
+
 
             async function fetchPrice(grosirId, categoryId, caratId, wbruto = 0) {
                 if (!grosirId || !caratId) return 0;
 
                 try {
                     let res = await fetch(
-                        `/sales/getData/Price?customer=${grosirId}&carat=${caratId}&category=${categoryId}`);
+                        `/sales/getData/Price?customer=${grosirId}&carat=${caratId}&category=${categoryId}`
+                    );
                     let data = await res.json();
 
                     return data ?? 0;
