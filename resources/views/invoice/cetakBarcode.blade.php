@@ -63,7 +63,7 @@
             width: 2cm;
             height: 2cm;
             margin: 0 auto;
-            border: 1px solid #000;
+           
             /* placeholder, nanti diganti QR asli */
         }
 
