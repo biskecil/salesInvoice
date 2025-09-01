@@ -96,6 +96,7 @@ class SalesInvController extends Controller
     }
     public function store(Request $request)
     {
+        dd($request->all());
         // return response()->json($request->all());
         // dd(json_decode(json_encode($request->all())));
 

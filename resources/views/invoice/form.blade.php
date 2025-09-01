@@ -185,9 +185,10 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
+    <script src="{{ asset('select2/select2.min.js') }}"></script>
+
     <script>
         $(document).ready(function() {
             $('#btnTambah').prop('disabled', false);
@@ -207,6 +208,7 @@
                     $('#btnCetakBarcode').prop('disabled', true);
                     $('#btnEdit').prop('disabled', true);
                     js_form();
+
                 });
             });
             $('#btnBatal').on('click', function() {
@@ -224,7 +226,11 @@
 
         });
 
+
+
         function js_form() {
+
+
 
             $('.select2').select2({
                 placeholder: "Pilih Data",
@@ -245,6 +251,31 @@
                     });
                 },
                 minLength: 2
+            });
+
+            $("#btnSubmitCreate").on("click", function(e) {
+                e.preventDefault(); // prevent normal form submit
+
+                $.ajax({
+                    url: $("#salesForm").attr("action"),
+                    type: "POST",
+                    data: $("#salesForm").serialize(), // serialize form fields
+                    success: function(response) {
+                        // ✅ server responded successfully
+                        alert("Data berhasil disimpan!");
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        // ❌ handle error
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Data berhasil disimpan.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        });
+                        console.error(xhr.responseText);
+                    }
+                });
             });
 
             console.log('js_load');

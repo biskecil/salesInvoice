@@ -1,7 +1,7 @@
    <div class="mb-10">
        <h5 class="text-left fw-bold ">Form Invoice</h5>
    </div>
-   <form action="/sales/store" method="post" class="mt-4">
+   <form action="/sales/store" method="post" id="salesForm" class="mt-4">
        @csrf
        <div class="row">
            <!-- LEFT -->
@@ -185,7 +185,7 @@
        <!-- SUBMIT -->
        <div class="row mt-3">
            <div class="col text-center">
-               <button type="submit" class="btn btn-danger fw-bold px-5">Simpan</button>
+               <button type="button" class="btn btn-danger fw-bold px-5" id="btnSubmitCreate" >Simpan</button>
            </div>
        </div>
    </form>
