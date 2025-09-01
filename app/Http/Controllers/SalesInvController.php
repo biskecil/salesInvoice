@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SalesInvController extends Controller
 {
@@ -31,8 +32,10 @@ class SalesInvController extends Controller
             ])
             ->first();
 
+
+
         if ($data) {
-            return response()->json(['price' => $data->Price, 'priceCust' => $data->PriceCust]);
+            return response()->json(['price' => $data->Price > 0 ?  $data->Price / 100  : 0, 'priceCust' => $data->PriceCust > 0 ? $data->PriceCust / 100 : 0]);
         } else {
             return response()->json(['data' => 0]);
         }
@@ -96,39 +99,46 @@ class SalesInvController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->all());
+
         // return response()->json($request->all());
         // dd(json_decode(json_encode($request->all())));
 
-
-        $validated = $request->validate([
+        $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
-            'customer'    => 'required|string',
-            'event'       => 'required|string',
-            'grosir'      => 'required|string',
-            'tempat'      => 'required|string',
-            'pembeli'     => 'required|string',
-            'sub_grosir'  => 'required|string',
-            'alamat'      => 'required|string',
+            'noNota'    => 'required',
+            'customer'    => 'required',
+            'event'       => 'required',
+            'grosir'      => 'required',
+            'tempat'      => 'required',
+            'pembeli'     => 'required',
+            'sub_grosir'  => 'required',
+            'alamat'      => 'required',
             'cadar'       => 'required|array|min:1',
-            'phone'       => 'nullable|string',
-            'catatan'     => 'nullable|string',
         ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validated->errors()
+            ], 422);
+        }
+
 
         try {
             DB::beginTransaction();
             //code...
             $getLastInvID = DB::table('invoice')->max('ID') + 1;
+            $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
 
             $inv =  DB::table('invoice')->insert([
                 'ID' => $getLastInvID,
-                'SW' => 1,
+                'SW' => $request->noNota,
                 'TransDate' => $request->transDate,
                 'Customer' => $request->customer,
                 'Address' => $request->alamat,
                 'Phone' => $request->phone,
                 'Event' => $request->event,
-                'Grosir' => $request->grosir,
+                'Grosir' => $getGrosirID[0]->SW,
                 'Weight' => 0,
                 'Remarks' => $request->catatan,
                 'Venue' => $request->tempat,
@@ -139,12 +149,13 @@ class SalesInvController extends Controller
             ]);
 
             if (count($request->cadar) > 0) {
-
+                $total_weight = 0;
                 for ($i = 0; $i < count($request->cadar); $i++) {
+                    $total_weight +=  $request->wbruto[$i];
                     $descCat = $request->category[$i];
                     $descCarat = $request->cadar[$i];
-                    $getProductSW = DB::select("SELECT ID FROM product WHERE Description = '$descCat' ");
-                    $getCarat = DB::select("SELECT ID FROM carat  WHERE SW  = '$descCarat'");
+                    $getProductSW = DB::select("SELECT ID FROM product WHERE Description = ?", [$descCat]);
+                    $getCarat = DB::select("SELECT ID FROM carat  WHERE SW  = ?", [$descCarat]);
 
                     DB::table('invoiceitem')->insertGetId([
                         'IDM' => $getLastInvID,
@@ -154,10 +165,11 @@ class SalesInvController extends Controller
                         'Weight' => $request->wbruto[$i],
                         'Price' => $request->price[$i],
                         'Netto' => $request->wnet[$i],
-                        'PriceCust' => $request->pricecust[$i],
-                        'NettoCust' => $request->wnetocust[$i],
+                        'PriceCust' => isset($request->harga) ? $request->pricecust[$i] : 0,
+                        'NettoCust' => isset($request->harga) ? $request->wnetocust[$i] : 0,
                     ]);
                 }
+                DB::table('invoice')->where('id', $getLastInvID)->update(["Weight" => $total_weight]);
             }
             DB::commit();
             return redirect()->route('sales.form')->with('success', "Invoice berhasil dibuat");

@@ -7,19 +7,19 @@
            <!-- LEFT -->
            <div class="col-md-4">
                <div class="mb-2 row">
-                   <label class="form-label col-sm-4 ">No Nota</label>
+                   <label class="form-label col-sm-4 ">No Nota*</label>
                    <div class="col-sm-8">
                        <input type="text" class="form-control" name="noNota">
                    </div>
                </div>
                <div class="mb-2 row">
-                   <label class="form-label col-sm-4">Tanggal</label>
+                   <label class="form-label col-sm-4">Tanggal*</label>
                    <div class="col-sm-8">
                        <input type="date" class="form-control" name="transDate">
                    </div>
                </div>
                <div class="mb-2 row">
-                   <label class="form-label col-sm-4">Customer</label>
+                   <label class="form-label col-sm-4">Customer*</label>
                    <div class="col-sm-8 d-flex gap-2 ">
                        <input type="text" class="form-control" id="customer" name="customer" style="flex:1">
                        <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
@@ -29,13 +29,13 @@
                    </div>
                </div>
                <div class="mb-2 row">
-                   <label class="form-label col-sm-4">Nama Pembeli</label>
+                   <label class="form-label col-sm-4">Nama Pembeli*</label>
                    <div class="col-sm-8">
                        <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"="">
                    </div>
                </div>
                <div class="mb-2 row">
-                   <label class="form-label col-sm-4">Alamat</label>
+                   <label class="form-label col-sm-4">Alamat*</label>
                    <div class="col-sm-8">
                        <input type="text" class="form-control" rows="2" placeholder="Alamat" name="alamat"
                            id="alamat">
@@ -58,7 +58,7 @@
                                     <input type="text" class="form-control" value="-" name="nota" readonly>
                                 </div> --}}
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4">Event</label>
+                   <label class="form-label col-sm-4">Event*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" name="event">
                            <option value="">PIlih Data</option>
@@ -68,7 +68,7 @@
                    </div>
                </div>
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4">Grosir</label>
+                   <label class="form-label col-sm-4">Grosir*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" name="grosir" id="grosir">
                            <option value="">PIlih Data</option>
@@ -79,14 +79,14 @@
                    </div>
                </div>
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4">Sub Grosir</label>
+                   <label class="form-label col-sm-4">Sub Grosir*</label>
                    <div class="col-sm-8">
                        <input type="text" class="form-control" placeholder="Sub Grosir" name="sub_grosir"
                            id="sub_grosir">
                    </div>
                </div>
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4">Tempat</label>
+                   <label class="form-label col-sm-4">Tempat*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" name="tempat">
                            <option value="">PIlih Data</option>
@@ -110,7 +110,7 @@
            <!-- RIGHT -->
            <div class="col-md-4">
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4">Kadar</label>
+                   <label class="form-label col-sm-4">Kadar*</label>
                    <div class="col-sm-8">
                        <select class="form-control select2" id="carat">
                            <option value="">Pilih Data</option>
@@ -122,7 +122,7 @@
                    </div>
                </div>
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4 d-block">Harga</label>
+                   <label class="form-label col-sm-4 d-block">Harga*</label>
                    <div class="col-sm-8">
                        <div class="form-check form-check-inline">
                            <input class="form-check-input" type="checkbox" name="harga" id="is_harga_cust">
@@ -145,8 +145,8 @@
            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                <h6 class="mb-0 fw-bold">Daftar Item</h6>
                <div>
-                   <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                       data-bs-target="#scanModal">
+                   <button type="button" id="btnScan" class="btn btn-sm btn-success" 
+                     >
                        Scan Item
                    </button>
                    <button type="button" class="btn btn-sm btn-success" id="addRow">

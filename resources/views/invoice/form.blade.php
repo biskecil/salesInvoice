@@ -149,11 +149,6 @@
                                         <span>Total NW :</span>
                                         <span id="total_nw" class="fw-bold">0</span>
                                     </div>
-                                    <div class="d-flex flex-column">
-                                        <span>Item terakhir :</span>
-                                        </br>
-                                        <span id="last_item_scan" class="fw-bold">-</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -259,21 +254,32 @@
                 $.ajax({
                     url: $("#salesForm").attr("action"),
                     type: "POST",
-                    data: $("#salesForm").serialize(), // serialize form fields
+                    data: $("#salesForm").serialize(),
                     success: function(response) {
-                        // ✅ server responded successfully
-                        alert("Data berhasil disimpan!");
-                        console.log(response);
-                    },
-                    error: function(xhr) {
-                        // ❌ handle error
                         Swal.fire({
-                            title: "Berhasil!",
-                            text: "Data berhasil disimpan.",
+                            title: "Berhasil",
+                            text: "Data telah berhasil disimpan.",
                             icon: "success",
                             confirmButtonText: "OK"
                         });
-                        console.error(xhr.responseText);
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Silakan periksa kembali form yang Anda isi.",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Server Error",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+
                     }
                 });
             });
@@ -287,7 +293,6 @@
             const qrInput = document.getElementById("qrcode");
             const isHargaCheck = document.getElementById("is_harga_cust");
             const totalgwallInput = document.getElementById("totalgwall");
-            const lastItemlInput = document.getElementById("last_item_scan");
             const descInput = document.getElementById("descItem");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");
@@ -407,10 +412,32 @@
                 }
             }
 
+            document.getElementById("btnScan").addEventListener("click", function() {
+                if (setGrosir == '' || carat == '') {
+                    Swal.fire({
+                        title: "Info",
+                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return;
+                }
+
+                let myModal = new bootstrap.Modal(document.getElementById("scanModal"));
+                myModal.show();
+            });
+
 
             addRowBtn.addEventListener("click", function() {
                 if (setGrosir == '' || carat == '') {
-                    alert('Grosir dan Kadar harus di pilih');
+
+                    Swal.fire({
+                        title: "Info",
+                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+
                     return false;
                 }
 
@@ -562,8 +589,12 @@
                         totalgw += gw;
                         totalnw += nw;
 
+                        itemScan.push({
+                            gw: gw,
+                            nw: nw
+                        });
+
                         const row = document.createElement("tr");
-                        lastItemlInput.innerText = code;
                         //Info
                         totalItem.innerText = parseInt(totalItem.innerText) + 1;
                         total_gw.innerText = totalgw.toFixed(2);
@@ -578,7 +609,7 @@
             <button type="button" class="btn btn-sm btn-danger removeRowScan">&times;</button>
         </td>
       `;
-                        itemScantableBody.appendChild(row);
+                        itemScantableBody.prepend(row);
                         barcodeInput.value = "";
                     }
                 }
@@ -592,7 +623,6 @@
                 totalItem.innerText = 0;
                 total_gw.innerText = "0.00 gram";
                 total_nw.innerText = "0.00 gram";
-                lastItemlInput.innerText = '-';
             }
 
             document.getElementById('scanModal').addEventListener('hidden.bs.modal', function() {
@@ -617,27 +647,45 @@
             });
             document.getElementById("btnTambahkan").addEventListener("click", function() {
                 if (totalItem.innerText <= 0) {
-                    alert('Item kosong')
+                    Swal.fire({
+                        title: "Info",
+                        text: "Data Scan Kosong",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
                     return false;
                 }
+
                 totalgwall += totalgw;
                 totalgwallInput.value = totalgwall;
                 desc_item = descInput.value;
                 carat = caratInput.value;
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = `
-            <td><input type="text"   style="min-width:100px;" name="category[]" class="form-control" readonly value="${desc_item}"></td>
-            <td><input type="text"  style="min-width:100px;" name="cadar[]" class="form-control cadar_item" readonly value="${carat}"></td>
-            <td><input type="number"  style="min-width:100px;" name="wbruto[]" class="form-control"  value="${totalgw}" step="0.01"></td>
-            <td><input type="number"  style="min-width:100px;" name="price[]" class="form-control" value="0" step="0.01"></td>
-            <td><input type="number"  style="min-width:100px;" name="wnet[]" class="form-control" readonly value="${totalnw}" step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number"  style="min-width:100px;" name="pricecust[]" class="form-control"  readonly value="0" step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number"  style="min-width:100px;" name="wnetocust[]" class="form-control" value="0" step="0.01"></td>
+                itemScan.forEach(item => {
+                    let newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
+            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
+            <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01"></td>
+            <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
+            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
+            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
             <td class="text-center">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
-        `;
-                itemsTable.appendChild(newRow);
+
+                        `;
+                    itemsTable.appendChild(newRow);
+
+                    let $select = $(newRow).find('.select2').select2({
+                        placeholder: "Pilih kategori",
+                        allowClear: true,
+                        width: '100%'
+                    });
+
+                    $select.val(desc_item).trigger("change");
+                });
+                itemScan = [];
                 resetTableScan()
             });
 
