@@ -18,21 +18,21 @@
                 <div class="card-header bg-white border-0">
                     <div class="d-flex gap-2 justify-content-between">
                         <div>
-                            <button type="button" class="btn btn-warning btn-sm fw-bold buttonForm" id="btnSubmitCreate"><i
+                            <button type="button" class="btn btn-warning btn-sm buttonForm" id="btnSubmitCreate"><i
                                     class="fa-solid fa-floppy-disk"></i> Simpan</button>
-                            <button type="button" class="btn btn-danger btn-sm fw-bold" id="btnBatal"><i
+                            <button type="button" class="btn btn-danger btn-sm" id="btnBatal"><i
                                     class="fa-regular fa-circle-xmark"></i> Batal</button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnTambah"><i
-                                    class="fa-solid fa-plus"></i> Tambah</button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnEdit"><i
-                                    class="fa-regular fa-pen-to-square"></i> Edit</button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnCari"><i
+                            <button type="button" class="btn btn-primary btn-sm" id="btnTambah"><i
+                                    class="fa-solid fa-plus"></i> Baru</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="btnEdit"><i
+                                    class="fa-regular fa-pen-to-square"></i> Ubah</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="btnCari"><i
                                     class="fa-solid fa-list"></i> Lihat</button>
-                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetak"><i
+                            <button type="button" class="btn btn-info btn-sm" id="btnCetak"><i
                                     class="fa-solid fa-print"></i>
                                 Cetak
                             </button>
-                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetakBarcode">
+                            <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
                                 Cetak Barcode
                             </button>
 
@@ -68,12 +68,36 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="qrcode">
+                    <input type="text" class="form-control" id="qrcode" placeholder="Scan Barcode di sini" autofocus>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary" id="btnTambahkanQR">Simpan</button>
+                    {{-- <button type="button" class="btn btn-primary" id="btnTambahkanQR">Simpan</button> --}}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal  Camera QR Scan -->
+    <div class="modal fade" id="scanQRModalCamera" tabindex="-1" aria-labelledby="scanQRModalCameraLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scanQRModalCameraLabel">Scan QR Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="reader"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    {{-- <button type="button" class="btn btn-primary" id="btnTambahkanQR">Simpan</button> --}}
                 </div>
 
             </div>
@@ -163,6 +187,7 @@
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
+   
 
     <script>
         $(document).ready(function() {
@@ -276,6 +301,12 @@
         });
 
         function js_form(typeForm = 'default', dataInv = '') {
+            document.getElementById('scanQRModal').addEventListener('shown.bs.modal', function() {
+                document.getElementById('qrcode').focus();
+            });
+            scanQRModal.addEventListener('hidden.bs.modal', function() {
+                document.getElementById('qrcode').value = "";
+            });
             $('.select2').select2({
                 placeholder: "Pilih Data",
                 allowClear: true
@@ -768,20 +799,32 @@
                 resetTableScan();
             });
 
+            qrInput.addEventListener("keypress", function(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    try {
+                        let data = JSON.parse(qrInput.value);
+                        document.getElementById("sub_grosir").value = data.nt;
+                        document.getElementById("alamat").value = data.at;
+                        document.getElementById("customer").value = data.pt;
+                        let modalEl = document.getElementById('scanQRModal');
+                        let modal = bootstrap.Modal.getInstance(modalEl);
+                        modal.hide();
+                    } catch (e) {
+                        Swal.fire({
+                            title: "Info",
+                            text: "Format QR Salah",
+                            icon: "warning",
+                            confirmButtonText: "OK"
+                        })
+                        qrInput.value = '';
 
-            document.getElementById("btnTambahkanQR").addEventListener("click", function() {
-                let qrValue = qrInput.value;
+                    }
 
-                try {
-                    let data = JSON.parse(qrValue);
-                    document.getElementById("customer").value = data.nt;
-                    document.getElementById("alamat").value = data.at;
-                    document.getElementById("sub_grosir").value = data.pt;
-
-                } catch (e) {
-                    console.error("QR Code tidak valid:", e);
-                    alert("Format QR salah!");
                 }
+
+                // let modal = new bootstrap.Modal(document.getElementById('scanQRModal'));
+                // modal.hide();
 
             });
             document.getElementById("btnTambahkan").addEventListener("click", function() {

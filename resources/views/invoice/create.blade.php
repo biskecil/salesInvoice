@@ -24,7 +24,11 @@
                        <input type="text" class="form-control" id="customer" name="customer" style="flex:1">
                        <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
                            data-bs-target="#scanQRModal">
-                           <i class="fa-solid fa-qrcode"></i> Scan 
+                           <i class="fa-solid fa-qrcode"></i>  
+                       </button>
+                       <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
+                           data-bs-target="#scanQRModalCamera">
+                           <i class="fa-solid fa-camera"></i>
                        </button>
                    </div>
                </div>

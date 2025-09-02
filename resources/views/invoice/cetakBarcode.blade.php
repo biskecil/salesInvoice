@@ -79,7 +79,7 @@
             <div class="kode">LMS</div>
             <div class="nama">{{ $data->subgrosir }}</div>
             <div class="area">{{ $data->tempat }}</div>
-            <div class="pelanggan">{{ $data->pelanggan }}</div>
+            <div class="pelanggan">{{ $data->QRvalue }}</div>
         </div>
         <div class="right">
             <div class="qrcode"> {!! QrCode::size(80)->generate($data->QRvalue) !!}</div>
