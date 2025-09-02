@@ -81,13 +81,13 @@
     </div>
 
     <!-- Modal  Camera QR Scan -->
-    <div class="modal fade" id="scanQRModalCamera" tabindex="-1" aria-labelledby="scanQRModalCameraLabel"
+    {{-- <div class="modal fade" id="scanQRModalCamera" tabindex="-1" aria-labelledby="scanQRModalCameraLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="scanQRModalCameraLabel">Scan QR Code</h5>
+                    <h5 class="modal-title" id="scanQRModalCameraLabel">Scan QR Camera</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -97,12 +97,11 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    {{-- <button type="button" class="btn btn-primary" id="btnTambahkanQR">Simpan</button> --}}
                 </div>
 
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Modal  Item Scan -->
     <div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true"
@@ -125,14 +124,7 @@
                         @endforeach
                     </select>
 
-
-                    <button id="scanBtn" class="btn btn-success btn-sm mb-3 d-none">Scan Kamera</button>
-                    <div id="reader" style="width:100%; max-width:400px; display:none;"></div>
-
                     <div class="row mt-3">
-                        <!-- KIRI: Table -->
-
-
                         <!-- KANAN: Total -->
                         <div class="col-md-4">
                             <h6 class="mt-3">Barcode</h6>
@@ -874,34 +866,7 @@
             let html5QrcodeScanner;
             let cameraId;
 
-            document.getElementById('scanBtn').addEventListener('click', async () => {
-                const reader = document.getElementById('reader');
-                reader.style.display = 'block';
-
-                let html5QrcodeScanner = new Html5Qrcode("reader");
-
-
-                try {
-                    // await hanya boleh di async function
-                    const devices = await Html5Qrcode.getCameras();
-                    if (devices && devices.length) {
-                        const cameraId = devices.find(d => d.label.toLowerCase().includes('back'))
-                            ?.id || devices[0].id;
-                        html5QrcodeScanner.start(
-                            cameraId, {
-                                fps: 10,
-                                qrbox: 250
-                            },
-                            decodedText => {
-                                document.getElementById('barcodeInput').value = decodedText;
-                                html5QrcodeScanner.stop().then(() => reader.style.display = 'none');
-                            }
-                        ).catch(err => console.error(err));
-                    }
-                } catch (err) {
-                    console.error("Gagal dapat kamera:", err);
-                }
-            });
+            
         };
     </script>
     <script src="{{ asset('scanner/html5-qrcode.min.js') }}"></script>
