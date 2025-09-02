@@ -6,7 +6,7 @@
     <title>Label Customer</title>
     <style>
         @page {
-            size: 8cm 3.5cm;
+            size: 80mm 30mm;
             margin: 0;
         }
 
@@ -18,18 +18,20 @@
         }
 
         .label {
-            width: 8cm;
-            height: 3.5cm;
-            border: 1px dotted #000;
+            /* width: 7cm;
+            height: 3cm; */
+            /* border: 1px dotted #000; */
             display: flex;
-            justify-content: space-between;
+           
             align-items: center;
-            padding: 4px 6px;
+            padding-left: 20mm;
+            padding-right: 20mm;
+            padding-top: 4mm;
             box-sizing: border-box;
         }
 
         .left {
-            width: 5cm;
+            width: 40mm;
         }
 
         .left .kode {
@@ -55,13 +57,13 @@
         }
 
         .right {
-            width: 3cm;
+            /* width: 30m; */
             text-align: center;
         }
 
         .qrcode {
-            width: 2cm;
-            height: 2cm;
+            width: 20mm;
+            height: 20mm;
             margin: 0 auto;
         }
 
@@ -74,18 +76,23 @@
 </head>
 
 <body>
-    <div class="label">
-        <div class="left">
-            <div class="kode">LMS</div>
-            <div class="nama">{{ $data->subgrosir }}</div>
-            <div class="area">{{ $data->tempat }}</div>
-            <div class="pelanggan">{{ $data->QRvalue }}</div>
-        </div>
-        <div class="right">
-            <div class="qrcode"> {!! QrCode::size(80)->generate($data->QRvalue) !!}</div>
-            <div class="kode2">SA</div>
+    <div style="display:flex; justify-content:center; align-items:center;"">
+        <div class="label">
+            <div class="left">
+                <div class="kode">LMS</div>
+                <div class="nama">{{ $data->subgrosir }}</div>
+                <div class="area">{{ $data->tempat }}</div>
+                <div class="pelanggan">{{ $data->pelanggan }}</div>
+            </div>
+            <div class="right">
+                <div class="qrcode"> {!! QrCode::size(80)->generate($data->QRvalue) !!}</div>
+                <div class="kode2">SA</div>
+            </div>
         </div>
     </div>
+    {{-- <div class="label">
+        11ABCDEFGHIJKLMNOPQRTSYU
+    </div> --}}
 </body>
 <script>
     window.onload = function() {
