@@ -65,7 +65,7 @@
                 <label class="form-label col-sm-4">Event*</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="event">
-                        <option value="JCC" > {{ $data->Event }}</option>
+                        <option value="0" > {{ $data->Event }}</option>
                     </select>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 <label class="form-label col-sm-4">Grosir*</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="grosir" id="grosir">
-                        <option value="JCC" > {{ $data->Grosir }}</option>
+                        <option value="0" > {{ $data->Grosir }}</option>
                     </select>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 <label class="form-label col-sm-4">Tempat*</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="tempat">
-                        <option value="JCC" > {{ $data->Venue }}</option>
+                        <option value="0" > {{ $data->Venue }}</option>
                     </select>
                 </div>
             </div>

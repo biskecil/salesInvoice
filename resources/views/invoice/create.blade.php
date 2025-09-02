@@ -15,7 +15,7 @@
                <div class="mb-2 row">
                    <label class="form-label col-sm-4">Tanggal*</label>
                    <div class="col-sm-8">
-                       <input type="date" class="form-control" name="transDate">
+                       <input type="date" class="form-control" name="transDate" id="transDate">
                    </div>
                </div>
                <div class="mb-2 row">
@@ -67,7 +67,7 @@
                        <select class="form-control select2" name="event">
                            <option value="">Pilih Data</option>
                            <option value="Pameran">Pameran</option>
-                           <option value="Event">Event</option>
+                           <option value="In House">In House</option>
                        </select>
                    </div>
                </div>

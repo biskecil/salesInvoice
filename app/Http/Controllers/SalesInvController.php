@@ -67,6 +67,18 @@ class SalesInvController extends Controller
             ->get();
         return response()->json($data);
     }
+    public function getDataNota(Request $request)
+    {
+        $term = $request->get('search');
+        $data = DB::table('invoice')
+            ->select('SW')
+            ->when($term, function ($query, $term) {
+                return $query->where('SW', 'like', "%{$term}%");
+            })
+            ->groupBy('SW')
+            ->get();
+        return response()->json($data);
+    }
     public function getDataGros($id)
     {
         $data = DB::table('customer')

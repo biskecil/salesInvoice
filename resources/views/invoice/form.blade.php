@@ -17,7 +17,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-0">
                     <div class="d-flex gap-2 justify-content-between">
-                        <div>
+                        <div class="d-flex flex-wrap gap-2">
                             <button type="button" class="btn btn-warning btn-sm buttonForm" id="btnSubmitCreate"><i
                                     class="fa-solid fa-floppy-disk"></i> Simpan</button>
                             <button type="button" class="btn btn-danger btn-sm" id="btnBatal"><i
@@ -179,7 +179,7 @@
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
-   
+
 
     <script>
         $(document).ready(function() {
@@ -289,6 +289,24 @@
                 $('#btnCetakBarcode').prop('disabled', true);
                 $('#btnEdit').prop('disabled', true);
                 $('.buttonForm').prop('disabled', true);
+            });
+            $("#cariDataNota").autocomplete({
+               
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/sales/getData/Nota/",
+                        data: {
+                            search: request.term
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            response(data.map(item => item
+                                .SW)); 
+                                console.log(data[0].item.SW)
+                        }
+                    });
+                },
+                minLength: 2
             });
         });
 
@@ -414,6 +432,11 @@
             const totalItem = document.getElementById("total_item");
             const total_gw = document.getElementById("total_gw");
             const total_nw = document.getElementById("total_nw");
+            const transDateinput = document.getElementById("transDate");
+            let today = new Date();
+            let yyyy = today.getFullYear();
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let dd = String(today.getDate()).padStart(2, '0');
             let setGrosir = '';
             let totalgw = 0;
             let totalgwall = 0;
@@ -427,6 +450,10 @@
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
 `;
+
+
+
+            transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
             $('#grosir').on('change', function() {
                 let id = this.value;
@@ -866,7 +893,7 @@
             let html5QrcodeScanner;
             let cameraId;
 
-            
+
         };
     </script>
     <script src="{{ asset('scanner/html5-qrcode.min.js') }}"></script>

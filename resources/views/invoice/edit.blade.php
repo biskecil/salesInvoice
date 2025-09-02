@@ -67,7 +67,7 @@
                     <select class="form-control select2" name="event">
                         <option value="">Pilih Data</option>
                         <option value="Pameran" {{ $data->Event == 'Pameran' ? 'selected' : '' }}>Pameran</option>
-                        <option value="Event" {{ $data->Event == 'Event' ? 'selected' : '' }}>Event</option>
+                        <option value="In House" {{ $data->Event == 'In House' ? 'selected' : '' }}>Event</option>
                     </select>
                 </div>
             </div>

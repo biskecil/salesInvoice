@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS - ERP</title>
-  
+
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
@@ -15,6 +15,7 @@
         .bg-primary-color {
             background-color: #913030 !important;
         }
+
         .btn-primary {
             background-color: #913030 !important;
         }
@@ -25,6 +26,13 @@
             /* warna abu-abu Bootstrap */
             opacity: 1;
             /* biar teks tetap jelas */
+        }
+
+
+        .app-brand-text.demo {
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+            /* text-transform: lowercase; */
         }
     </style>
 </head>
@@ -37,7 +45,7 @@
             <img src="{!! asset('assets/images/favicon.png') !!}" class="w-px-40 h-auto rounded-circle me-2"
                 style="opacity:.9; width:50px; height:50px; object-fit:cover;">
             <span class="app-brand-text demo menu-text fw-bolder text-white">
-                LMS - SALES
+                LMS - ERP
             </span>
         </div>
 
@@ -67,10 +75,10 @@
     <main class="container-fluid py-4">
         @yield('content')
     </main>
-   
+
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
-   
+
 </body>
 
 </html>
