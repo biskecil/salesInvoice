@@ -18,19 +18,21 @@
                 <div class="card-header bg-white border-0">
                     <div class="d-flex gap-2 justify-content-between">
                         <div>
-                            <button type="button" class="btn btn-warning btn-sm fw-bold buttonForm"
-                                id="btnSubmitCreate">Simpan</button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnTambah">Tambah</button>
-                            <button type="button" class="btn btn-danger btn-sm fw-bold" id="btnBatal">Batal</button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnEdit">Edit</button>
-                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnCari">Lihat</button>
-
-                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetak"
-                                onclick="window.open('/sales/cetakNota/1', '_blank')">
+                            <button type="button" class="btn btn-warning btn-sm fw-bold buttonForm" id="btnSubmitCreate"><i
+                                    class="fa-solid fa-floppy-disk"></i> Simpan</button>
+                            <button type="button" class="btn btn-danger btn-sm fw-bold" id="btnBatal"><i
+                                    class="fa-regular fa-circle-xmark"></i> Batal</button>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnTambah"><i
+                                    class="fa-solid fa-plus"></i> Tambah</button>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnEdit"><i
+                                    class="fa-regular fa-pen-to-square"></i> Edit</button>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnCari"><i
+                                    class="fa-solid fa-list"></i> Lihat</button>
+                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetak"><i
+                                    class="fa-solid fa-print"></i>
                                 Cetak
                             </button>
-                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetakBarcode"
-                                onclick="window.open('/sales/cetakBarcode/1', '_blank')">
+                            <button type="button" class="btn btn-info btn-sm fw-bold" id="btnCetakBarcode">
                                 Cetak Barcode
                             </button>
 
@@ -42,9 +44,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="card-body">
+                    <hr class="my-2">
                     <!-- FORM UTAMA -->
 
                     <div id="formData" class="d-none">
@@ -171,6 +173,13 @@
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', true);
+
+            $('#btnCetak').on('click', function() {
+                window.open('/sales/cetakNota/' + dataNota, '_blank');
+            });
+            $('#btnCetakBarcode').on('click', function() {
+                window.open('/sales/cetakBarcode/' + dataNota, '_blank');
+            });
 
             $('#btnCari').on('click', function() {
                 dataNota = $('#cariDataNota').val();
@@ -303,7 +312,7 @@
                             confirmButtonText: "OK"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                location.reload(); 
+                                location.reload();
                             }
                         });
                     },

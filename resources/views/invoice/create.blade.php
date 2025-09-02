@@ -24,7 +24,7 @@
                        <input type="text" class="form-control" id="customer" name="customer" style="flex:1">
                        <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
                            data-bs-target="#scanQRModal">
-                           Scan QR
+                           <i class="fa-solid fa-qrcode"></i> Scan 
                        </button>
                    </div>
                </div>
@@ -147,7 +147,7 @@
                <div>
                    <button type="button" id="btnScan" class="btn btn-sm btn-success" 
                      >
-                       Scan Item
+                     <i class="fa-solid fa-expand"></i>  Scan 
                    </button>
                    <button type="button" class="btn btn-sm btn-success" id="addRow">
                        + Item

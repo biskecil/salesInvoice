@@ -26,7 +26,7 @@
                         value="{{ $data->Customer }}">
                     <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#scanQRModal">
-                        Scan QR
+                        <i class="fa-solid fa-qrcode"></i> Scan 
                     </button>
                 </div>
             </div>
@@ -153,7 +153,7 @@
             <h6 class="mb-0 fw-bold">Daftar Item</h6>
             <div>
                 <button type="button" id="btnScan" class="btn btn-sm btn-success">
-                    Scan Item
+                    <i class="fa-solid fa-expand"></i> Scan
                 </button>
                 <button type="button" class="btn btn-sm btn-success" id="addRow">
                     + Item

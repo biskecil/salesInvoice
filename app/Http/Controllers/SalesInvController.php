@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -230,19 +231,85 @@ class SalesInvController extends Controller
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
     }
-    public function cetakNota()
+    public function cetakNota($id)
     {
-        return view('invoice.cetakNota');
+        $data = DB::table('invoice')
+            ->addSelect([
+                'totalgw' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Weight)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.id')
+                    ->limit(1),
+                'totalnw' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Netto)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.id')
+                    ->limit(1)
+            ])
+            ->where('SW', $id)->first();
+        if ($data) {
+            $getGrosirID = DB::select("SELECT ID,Description FROM customer WHERE SW = ?", [$data->Grosir]);
+            $data_item = DB::table('invoiceitem')
+                ->select(
+                    'invoiceitem.*',
+                    'product.SW as productSW',
+                    'product.Description as productDesc',
+                    'carat.SW as caratSW',
+                    'carat.Description as caratDesc',
+                )
+                ->addSelect([
+                    'custprice' => DB::table('invoiceitem')
+                        ->selectRaw('SUM(priceCust)')
+                        ->where('invoiceitem.IDM', $data->ID)
+                        ->limit(1),
+                    'nettcust' => DB::table('invoiceitem')
+                        ->selectRaw('SUM(NettoCust) ')
+                        ->where('invoiceitem.IDM', $data->ID)
+                        ->limit(1)
+                ])
+                ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
+                ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+                ->where('invoiceitem.IDM', $data->ID);
+
+            $data_list = $data_item->get()->map(function ($item) {
+                $item->custom_field = $item->IDM;
+                $item->gw = number_format($item->Weight, 2, '.', '');
+                $item->nw =  number_format($item->Netto, 3, '.', '');
+                $item->price =  number_format($item->Price * 100, 1, '.', '');
+                return $item;
+            });
+
+            $invoice = new stdClass();
+            $invoice->ID = $data->ID;
+            $invoice->SW = $data->SW;
+            $invoice->TransDate = Carbon::parse($data->TransDate)->format('d/m/Y');
+            $invoice->Customer = $data->Customer;
+            $invoice->Grosir = $getGrosirID[0]->Description;
+            $invoice->Person = $data->Person;
+            $invoice->Address = $data->Address;
+            $invoice->Remarks = $data->Remarks;
+            $invoice->totalgw = $data->totalgw;
+            $invoice->totalnw = $data->totalnw;
+            $invoice->Carat = $data_item->first()->caratSW;
+            $invoice->ItemList = $data_list;
+        }
+        return view('invoice.cetakNota', ['data' => $invoice]);
     }
-    public function cetakBarcode()
+    public function cetakBarcode($id)
     {
-        // $qr = QrCode::format('png')->generate('https://chatgpt.com/');
-        // $qrImageName = 'xx.png';
+        $data = DB::table('invoice')
+            ->selectRaw('UPPER(SubGrosir) as subgrosir')
+            ->selectRaw('UPPER(Address) as tempat')
+            ->selectRaw('UPPER(Customer) as pelanggan')
+            ->where('SW', $id)->first();
 
-        // // simpan ke local storage
-        // Storage::put('public/qr/' . $qrImageName, $qr);
+        $QRvalue = new stdClass();
+        $QRvalue->it = 1;
+        $QRvalue->nt = $data->subgrosir;
+        $QRvalue->at = $data->tempat;
+        $QRvalue->pt = $data->pelanggan;
 
-        return view('invoice.cetakBarcode');
+        $data->QRvalue = json_encode($QRvalue);
+
+        return view('invoice.cetakBarcode', ['data' => $data]);
     }
     public function create()
     {

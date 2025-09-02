@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS - ERP</title>
   
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">

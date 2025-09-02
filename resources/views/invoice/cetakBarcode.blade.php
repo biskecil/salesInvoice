@@ -63,8 +63,6 @@
             width: 2cm;
             height: 2cm;
             margin: 0 auto;
-           
-            /* placeholder, nanti diganti QR asli */
         }
 
         .right .kode2 {
@@ -78,16 +76,21 @@
 <body>
     <div class="label">
         <div class="left">
-            <div class="kode">KH</div>
-            <div class="nama">KARYA EMAS KRESNO ANDALAN CV</div>
-            <div class="area">UJUNG PANDANG</div>
-            <div class="pelanggan">TOKO MAS ABC</div>
+            <div class="kode">LMS</div>
+            <div class="nama">{{ $data->subgrosir }}</div>
+            <div class="area">{{ $data->tempat }}</div>
+            <div class="pelanggan">{{ $data->pelanggan }}</div>
         </div>
         <div class="right">
-            <div class="qrcode"> {!! QrCode::size(80)->generate('ID123456') !!}</div>
+            <div class="qrcode"> {!! QrCode::size(80)->generate($data->QRvalue) !!}</div>
             <div class="kode2">SA</div>
         </div>
     </div>
 </body>
+<script>
+    window.onload = function() {
+        window.print();
+    };
+</script>
 
 </html>
