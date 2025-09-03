@@ -1,17 +1,14 @@
-   <div class="mb-10">
-       <h5 class="text-left fw-bold ">Form Invoice - Tambah</h5>
-   </div>
    <form action="/sales/store" method="post" id="salesForm" class="mt-4">
        @csrf
        <div class="row">
            <!-- LEFT -->
            <div class="col-md-4">
-               <div class="mb-2 row">
+               {{-- <div class="mb-2 row">
                    <label class="form-label col-sm-4 ">No Nota*</label>
                    <div class="col-sm-8">
                        <input type="text" class="form-control" name="noNota">
                    </div>
-               </div>
+               </div> --}}
                <div class="mb-2 row">
                    <label class="form-label col-sm-4">Tanggal*</label>
                    <div class="col-sm-8">

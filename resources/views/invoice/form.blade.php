@@ -35,12 +35,19 @@
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
                                 Cetak Barcode
                             </button>
+                            <button type="button" class="btn btn-info btn-sm" id="btnInfo"><i
+                                    class="fa-solid fa-list"></i> Info</button>
 
                         </div>
                         <div>
                             <div class="d-flex gap-2 ">
-                                <input type="text" class="form-control" id="cariDataNota" style="flex:1"
-                                    placeholder="Cari Nota">
+                                <input type="search" class="form-control" id="cariDataNota" list="datalistNota"
+                                    style="flex:1" placeholder="Cari Nota">
+                                <datalist id="datalistNota">
+                                    @foreach ($data as $list)
+                                        <option value="{{ $list->SW }}">{{ $list->SW }}</option>
+                                    @endforeach
+                                </datalist>
                             </div>
                         </div>
                     </div>
@@ -290,24 +297,24 @@
                 $('#btnEdit').prop('disabled', true);
                 $('.buttonForm').prop('disabled', true);
             });
-            $("#cariDataNota").autocomplete({
-               
-                source: function(request, response) {
-                    $.ajax({
-                        url: "/sales/getData/Nota/",
-                        data: {
-                            search: request.term
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            response(data.map(item => item
-                                .SW)); 
-                                console.log(data[0].item.SW)
-                        }
-                    });
-                },
-                minLength: 2
-            });
+            // $("#cariDataNota").autocomplete({
+
+            //     source: function(request, response) {
+            //         $.ajax({
+            //             url: "/sales/getData/Nota/",
+            //             data: {
+            //                 search: request.term
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 response(data.map(item => item
+            //                     .SW)); 
+            //                     console.log(data[0].item.SW)
+            //             }
+            //         });
+            //     },
+            //     minLength: 2
+            // });
         });
 
         function js_form(typeForm = 'default', dataInv = '') {
@@ -353,7 +360,7 @@
                             confirmButtonText: "OK"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                location.reload();
+                                // location.reload();
                             }
                         });
                     },
@@ -453,7 +460,7 @@
 
 
 
-            transDateinput.value = `${yyyy}-${mm}-${dd}`;
+            // transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
             $('#grosir').on('change', function() {
                 let id = this.value;

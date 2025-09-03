@@ -79,7 +79,7 @@
     <div style="display:flex; justify-content:center; align-items:center;"">
         <div class="label">
             <div class="left">
-                <div class="kode">LMS</div>
+                <div class="kode">LG</div>
                 <div class="nama">{{ $data->subgrosir }}</div>
                 <div class="area">{{ $data->tempat }}</div>
                 <div class="pelanggan">{{ $data->pelanggan }}</div>

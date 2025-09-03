@@ -238,10 +238,11 @@ class SalesInvController extends Controller
     }
     public function form()
     {
+        $invoice =  DB::table('invoice')->select('ID', 'SW')->orderByDesc('ID')->whereNotIN('id',[0])->limit(10)->get();
         $cust = DB::table('customer')->orderBy('Description')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
-        return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
+        return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust,'data' => $invoice]);
     }
     public function cetakNota($id)
     {
@@ -318,6 +319,7 @@ class SalesInvController extends Controller
         $QRvalue->nt = $data->subgrosir;
         $QRvalue->at = $data->tempat;
         $QRvalue->pt = $data->pelanggan;
+        $QRvalue->kp = 'LG';
 
         $data->QRvalue = json_encode($QRvalue);
 
@@ -431,7 +433,6 @@ class SalesInvController extends Controller
     {
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
-            'noNota'    => 'required',
             'customer'    => 'required',
             'event'       => 'required',
             'grosir'      => 'required',
@@ -454,9 +455,15 @@ class SalesInvController extends Controller
             $getLastInvID = DB::table('invoice')->max('ID') + 1;
             $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
 
+            $kode_pameran = $request->event == 'Pameran' ? 'P' : 'I';
+            $transDate = Carbon::parse($request->transDate);
+            $monthMM = $transDate->format('m');
+            $yearYY = $transDate->format('y');
+            $notaNum = str_pad($getLastInvID, 4, '0', STR_PAD_LEFT);
+
             $inv =  DB::table('invoice')->insert([
                 'ID' => $getLastInvID,
-                'SW' => $request->noNota,
+                'SW' => $kode_pameran . $getGrosirID[0]->SW . $yearYY . $monthMM . $notaNum,
                 'TransDate' => $request->transDate,
                 'Customer' => $request->customer,
                 'Address' => $request->alamat,

@@ -1,6 +1,3 @@
-<div class="mb-10">
-    <h5 class="text-left fw-bold ">Form Invoice - Edit</h5>
-</div>
 <form action="/sales/update/{{ $data->ID }}" method="post" id="salesForm" class="mt-4">
     @method('PUT')
     @csrf
