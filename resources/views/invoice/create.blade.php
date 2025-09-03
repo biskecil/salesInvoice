@@ -18,15 +18,11 @@
                <div class="mb-2 row">
                    <label class="form-label col-sm-4">Customer*</label>
                    <div class="col-sm-8 d-flex gap-2 ">
-                       <input type="text" class="form-control" id="customer" name="customer" style="flex:1">
                        <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
                            data-bs-target="#scanQRModal">
-                           <i class="fa-solid fa-qrcode"></i>  
+                           <i class="fa-solid fa-qrcode"></i>
                        </button>
-                       {{-- <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
-                           data-bs-target="#scanQRModalCamera">
-                           <i class="fa-solid fa-camera"></i>
-                       </button> --}}
+                       <input type="text" class="form-control" id="customer" name="customer" style="flex:1">
                    </div>
                </div>
                <div class="mb-2 row">
@@ -113,7 +109,7 @@
                <div class="mb-3 row">
                    <label class="form-label col-sm-4">Kadar*</label>
                    <div class="col-sm-8">
-                       <select class="form-control select2" id="carat">
+                       <select class="form-control select2 " id="carat">
                            <option value="">Pilih Data</option>
                            @foreach ($kadar as $d)
                                <option value="{{ $d->SW }}">{{ $d->SW }}</option>
@@ -146,9 +142,8 @@
            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                <h6 class="mb-0 fw-bold">Daftar Item</h6>
                <div>
-                   <button type="button" id="btnScan" class="btn btn-sm btn-success" 
-                     >
-                     <i class="fa-solid fa-expand"></i>  Scan 
+                   <button type="button" id="btnScan" class="btn btn-sm btn-success">
+                       <i class="fa-solid fa-expand"></i> Scan
                    </button>
                    <button type="button" class="btn btn-sm btn-success" id="addRow">
                        + Item

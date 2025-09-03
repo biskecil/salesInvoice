@@ -21,13 +21,14 @@ Route::get('/', [SalesInvController::class, 'form'])->name('sales.form');
 Route::prefix('sales')->group(function () {
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNota']);
+    Route::get('/getData/NotaAll/', [SalesInvController::class, 'getDataNotaAll']);
     Route::get('/getData/Gros/{ID}', [SalesInvController::class, 'getDataGros']);
     Route::get('/getData/Price/', [SalesInvController::class, 'getDataPrice']);
     Route::get('/create', [SalesInvController::class, 'create']);
     Route::post('/store', [SalesInvController::class, 'store']);
     Route::get('/show', [SalesInvController::class, 'show']);
     Route::get('/edit/{SW}', [SalesInvController::class, 'edit']);
-    Route::get('/detail/{SW}', [SalesInvController::class, 'detail']);
+    Route::get('/detail/{ID}', [SalesInvController::class, 'detail']);
     Route::put('/update/{ID}', [SalesInvController::class, 'update']);
     Route::get('/cetakNota/{ID}', [SalesInvController::class, 'cetakNota']);
     Route::get('/cetakBarcode/{ID}', [SalesInvController::class, 'cetakBarcode']);

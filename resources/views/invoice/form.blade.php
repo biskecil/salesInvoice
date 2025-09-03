@@ -15,7 +15,7 @@
     <div class="row justify-content-center">
         <div class="col-md-11">
             <div class="card shadow-sm">
-                <div class="card-header bg-white border-0">
+                <div class="card-header bg-white border-1 pb-2">
                     <div class="d-flex gap-2 justify-content-between">
                         <div class="d-flex flex-wrap gap-2">
                             <button type="button" class="btn btn-warning btn-sm buttonForm" id="btnSubmitCreate"><i
@@ -35,8 +35,6 @@
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
                                 Cetak Barcode
                             </button>
-                            <button type="button" class="btn btn-info btn-sm" id="btnInfo"><i
-                                    class="fa-solid fa-list"></i> Info</button>
 
                         </div>
                         <div>
@@ -45,17 +43,15 @@
                                     style="flex:1" placeholder="Cari Nota">
                                 <datalist id="datalistNota">
                                     @foreach ($data as $list)
-                                        <option value="{{ $list->SW }}">{{ $list->SW }}</option>
+                                        <option value="{{ $list->ID }}" >{{ $list->invoice_number }}</option>
                                     @endforeach
                                 </datalist>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <hr class="my-2">
+                <div class="card-body pt-0">
                     <!-- FORM UTAMA -->
-
                     <div id="formData" class="d-none">
 
                     </div>
@@ -260,6 +256,7 @@
                         $('.buttonForm').attr("id", "btnSubmitEdit");
                         $('.buttonForm').prop('disabled', false);
                         js_form('edit', response.data);
+                        hotkeys();
                     })
                     .fail(function(xhr) {
                         Swal.fire({
@@ -284,6 +281,7 @@
                     $('.buttonForm').attr("id", "btnSubmitCreate");
                     $('.buttonForm').prop('disabled', false);
                     js_form('create');
+                    hotkeys()
                 });
             });
             $('#btnBatal').on('click', function() {
@@ -297,37 +295,80 @@
                 $('#btnEdit').prop('disabled', true);
                 $('.buttonForm').prop('disabled', true);
             });
-            // $("#cariDataNota").autocomplete({
-
-            //     source: function(request, response) {
-            //         $.ajax({
-            //             url: "/sales/getData/Nota/",
-            //             data: {
-            //                 search: request.term
-            //             },
-            //             dataType: "json",
-            //             success: function(data) {
-            //                 response(data.map(item => item
-            //                     .SW)); 
-            //                     console.log(data[0].item.SW)
-            //             }
-            //         });
-            //     },
-            //     minLength: 2
-            // });
         });
 
+        function hotkeys() {
+            document.addEventListener("keydown", function(e) {
+                if (e.altKey && e.key === "ArrowDown") {
+                    e.preventDefault();
+                    document.getElementById("addRow").click();
+                }
+                if (e.altKey && e.key.toLowerCase() === "q") {
+                    e.preventDefault();
+                    document.querySelector('[data-bs-target="#scanQRModal"]').click();
+                }
+                if (e.altKey && e.key.toLowerCase() === "s") {
+                    e.preventDefault();
+                    document.getElementById("btnScan").click();
+                }
+                if (e.altKey && e.key === "ArrowUp") {
+                    e.preventDefault();
+                    const itemsTable = document.getElementById("itemsTable").getElementsByTagName("tbody")[0];
+                    const totalgwallInput = document.getElementById("totalgwall");
+                    const rows = itemsTable.querySelectorAll("tr");
+                    if (rows.length > 1) { // misal biar header ga kehapus
+                        const lastRow = rows[rows.length - 1];
+
+                        // ambil nilai gwall (kolom ke-3)
+                        const gwall = lastRow.cells[2].querySelector("input").value;
+                        totalgwall -= gwall;
+                        totalgwallInput.value = totalgwall;
+
+                        // hapus baris
+                        lastRow.remove();
+
+                        // hitung ulang total
+                        let total = 0;
+                        document.querySelectorAll(".wbruto").forEach(el => {
+                            total += parseFloat(el.value) || 0;
+                        });
+
+                        totalgwallInput.value = total.toFixed(2);
+                    }
+                }
+            });
+        }
+
+        function loadSelect2() {
+            $(document).on('focus', '.select2-selection.select2-selection--single', function() {
+                let $select = $(this).closest('.select2-container').siblings('select:enabled');
+                $select.select2('open');
+            });
+
+
+            $('select.select2').on('select2:open', function() {
+                setTimeout(() => {
+                    document.querySelector('.select2-search__field').focus();
+                }, 50);
+            });
+
+            $('.select2').select2({
+                placeholder: "Pilih Data",
+                allowClear: true,
+                width: '100%'
+            });
+        }
+
         function js_form(typeForm = 'default', dataInv = '') {
+            loadSelect2();
             document.getElementById('scanQRModal').addEventListener('shown.bs.modal', function() {
                 document.getElementById('qrcode').focus();
             });
             scanQRModal.addEventListener('hidden.bs.modal', function() {
                 document.getElementById('qrcode').value = "";
             });
-            $('.select2').select2({
-                placeholder: "Pilih Data",
-                allowClear: true
-            });
+
+
             $("#sub_grosir").autocomplete({
                 source: function(request, response) {
                     $.ajax({
@@ -673,11 +714,12 @@
                     });
                 });
 
-                $(newRow).find('.select2').select2({
-                    placeholder: "Pilih kategori",
-                    allowClear: true,
-                    width: '100%'
-                });
+                // $(newRow).find('.select2').select2({
+                //     placeholder: "Pilih kategori",
+                //     allowClear: true,
+                //     width: '100%'
+                // });
+                loadSelect2();
             });
 
 
@@ -892,6 +934,7 @@
                     });
 
                     $select.val(desc_item).trigger("change");
+                    loadSelect2();
                 });
                 itemScan = [];
                 resetTableScan()

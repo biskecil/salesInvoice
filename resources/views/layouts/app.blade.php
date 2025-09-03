@@ -7,6 +7,8 @@
     <title>LMS - ERP</title>
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.common-new.css') }}">
+    <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.light.compact.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
@@ -45,14 +47,14 @@
             <img src="{!! asset('assets/images/favicon.png') !!}" class="w-px-40 h-auto rounded-circle me-2"
                 style="opacity:.9; width:50px; height:50px; object-fit:cover;">
             <span class="app-brand-text demo menu-text fw-bolder text-white">
-                LMS - ERP
+                LMS - Sales
             </span>
         </div>
 
     </div>
 
     {{-- Navbar menu --}}
-    {{-- <nav class="navbar navbar-expand-lg bg-white shadow-sm py-1">
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm py-1">
         <div class="container-fluid">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -64,12 +66,12 @@
                 <li class="nav-item">
                     <a class="nav-link text-secondary fw-semibold d-flex align-items-center" href="/sales/show">
                         <i class="bi bi-receipt me-2"></i>
-                        List Tagihan
+                        Informasi
                     </a>
                 </li>
             </ul>
         </div>
-    </nav> --}}
+    </nav>
 
     {{-- Content --}}
     <main class="container-fluid py-4">
@@ -78,7 +80,8 @@
 
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
-
+    <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
+    <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
 </body>
 
 </html>

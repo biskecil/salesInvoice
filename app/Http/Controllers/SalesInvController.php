@@ -88,7 +88,7 @@ class SalesInvController extends Controller
     }
     public function edit($id)
     {
-        $data = DB::table('invoice')->where('SW', $id)->first();
+        $data = DB::table('invoice')->where('ID', $id)->first();
 
         if ($data) {
             $getGrosirID = DB::select("SELECT ID FROM customer WHERE SW = ?", [$data->Grosir]);
@@ -163,7 +163,7 @@ class SalesInvController extends Controller
     }
     public function detail($id)
     {
-        $data = DB::table('invoice')->where('SW', $id)->first();
+        $data = DB::table('invoice')->where('ID', $id)->first();
 
         if ($data) {
             $getGrosirID = DB::select("SELECT ID,SW FROM customer WHERE SW = ?", [$data->Grosir]);
@@ -238,11 +238,27 @@ class SalesInvController extends Controller
     }
     public function form()
     {
-        $invoice =  DB::table('invoice')->select('ID', 'SW')->orderByDesc('ID')->whereNotIN('id',[0])->limit(10)->get();
+        $invoice =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+
+        $invoice->transform(function ($row) {
+
+            $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+            $transDate = Carbon::parse($row->TransDate);
+            $monthMM   = $transDate->format('m');
+            $yearYY    = $transDate->format('y');
+
+            $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+
+            $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+
+            return $row;
+        });
+
         $cust = DB::table('customer')->orderBy('Description')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
-        return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust,'data' => $invoice]);
+        return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'data' => $invoice]);
     }
     public function cetakNota($id)
     {
@@ -257,7 +273,7 @@ class SalesInvController extends Controller
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1)
             ])
-            ->where('SW', $id)->first();
+            ->where('ID', $id)->first();
         if ($data) {
             $getGrosirID = DB::select("SELECT ID,Description FROM customer WHERE SW = ?", [$data->Grosir]);
             $data_item = DB::table('invoiceitem')
@@ -309,10 +325,34 @@ class SalesInvController extends Controller
     public function cetakBarcode($id)
     {
         $data = DB::table('invoice')
+            ->select('*')
             ->selectRaw('UPPER(SubGrosir) as subgrosir')
             ->selectRaw('UPPER(Address) as tempat')
             ->selectRaw('UPPER(Customer) as pelanggan')
-            ->where('SW', $id)->first();
+            ->addSelect([
+                'totalgw' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Weight)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.id')
+                    ->limit(1),
+            ])
+            ->where('ID', $id)->first();
+
+        $data_item = DB::table('invoiceitem')
+            ->select(
+                'carat.SW as caratSW'
+            )
+            ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+            ->where('invoiceitem.IDM', $id)
+            ->first();
+
+        $kode_pameran =  $data->Event == 'Pameran' ? 'P' : 'I';
+        $transDate = Carbon::parse($data->TransDate);
+        $monthMM   = $transDate->format('m');
+        $yearYY    = $transDate->format('y');
+        $notaNum = str_pad($data->SW, 4, '0', STR_PAD_LEFT);
+        $data->invoice_number = $kode_pameran . $data->Grosir . $yearYY . $monthMM . $notaNum;
+        $data->totalgw = number_format($data->totalgw, 2, '.', '');
+        $data->carat = $data_item->caratSW;
 
         $QRvalue = new stdClass();
         $QRvalue->it = 1;
@@ -332,20 +372,27 @@ class SalesInvController extends Controller
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.create', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
     }
-    public function show()
+    public function getDataNotaAll()
     {
         $data = DB::table('invoiceitem')
             ->select(
                 'invoiceitem.*',
                 'invoice.*',
-                'product.Description as category_name',
-                'carat.Description as carat_name'
+                'product.SW as productSW',
+                'product.Description as productDesc',
+                'carat.Description as caratDesc',
+                'carat.SW as caratSW'
             )
             ->leftJoin('invoice', 'invoiceitem.IDM', '=', 'invoice.ID')
             ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
             ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+            ->whereNotIn('invoice.ID', [0])
             ->get();
-        return view('invoice.show', ['data' => $data]);
+        return response()->json(['data' => $data]);
+    }
+    public function show()
+    {
+        return view('invoice.show');
     }
     public function update($id, Request $request)
     {
@@ -455,15 +502,18 @@ class SalesInvController extends Controller
             $getLastInvID = DB::table('invoice')->max('ID') + 1;
             $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
 
-            $kode_pameran = $request->event == 'Pameran' ? 'P' : 'I';
             $transDate = Carbon::parse($request->transDate);
-            $monthMM = $transDate->format('m');
-            $yearYY = $transDate->format('y');
-            $notaNum = str_pad($getLastInvID, 4, '0', STR_PAD_LEFT);
+            $month     = $transDate->format('m');
+            $year      = $transDate->format('Y');
+
+            $getLastNotaID = DB::table('invoice')
+                ->whereMonth('TransDate', $month)
+                ->whereYear('TransDate', $year)
+                ->max('SW');
 
             $inv =  DB::table('invoice')->insert([
                 'ID' => $getLastInvID,
-                'SW' => $kode_pameran . $getGrosirID[0]->SW . $yearYY . $monthMM . $notaNum,
+                'SW' => $getLastNotaID ? $getLastNotaID + 1 : 1,
                 'TransDate' => $request->transDate,
                 'Customer' => $request->customer,
                 'Address' => $request->alamat,

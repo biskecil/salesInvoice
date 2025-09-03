@@ -19,12 +19,12 @@
             <div class="mb-2 row">
                 <label class="form-label col-sm-4">Customer*</label>
                 <div class="col-sm-8 d-flex gap-2 ">
-                    <input type="text" class="form-control" id="customer" name="customer" style="flex:1"
-                        value="{{ $data->Customer }}">
                     <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#scanQRModal">
-                        <i class="fa-solid fa-qrcode"></i> 
+                        <i class="fa-solid fa-qrcode"></i>
                     </button>
+                    <input type="text" class="form-control" id="customer" name="customer" style="flex:1"
+                        value="{{ $data->Customer }}">
                 </div>
             </div>
             <div class="mb-2 row">
@@ -129,7 +129,8 @@
                 <label class="form-label col-sm-4 d-block">Harga*</label>
                 <div class="col-sm-8">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="harga" id="is_harga_cust"  {{ $data->isHarga? 'checked' : '' }}>
+                        <input class="form-check-input" type="checkbox" name="harga" id="is_harga_cust"
+                            {{ $data->isHarga ? 'checked' : '' }}>
                         <label class="form-check-label" for="is_harga_cust">Iya</label>
                     </div>
                 </div>

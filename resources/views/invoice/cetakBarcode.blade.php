@@ -12,7 +12,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 10px;
             margin: 0;
             padding: 0;
         }
@@ -35,24 +35,24 @@
         }
 
         .left .kode {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: bold;
         }
 
         .left .nama {
             font-weight: bold;
-            font-size: 12px;
+            font-size: 10px;
             line-height: 1.2em;
         }
 
         .left .area {
-            font-size: 11px;
+            font-size: 10px;
             font-style: italic;
         }
 
         .left .pelanggan {
             font-weight: bold;
-            font-size: 12px;
+            font-size: 10px;
             margin-top: 3px;
         }
 
@@ -68,7 +68,7 @@
         }
 
         .right .kode2 {
-            font-size: 20px;
+            font-size: 21px;
             font-weight: bold;
             margin-top: 3px;
         }
@@ -79,10 +79,11 @@
     <div style="display:flex; justify-content:center; align-items:center;"">
         <div class="label">
             <div class="left">
-                <div class="kode">LG</div>
+                <div class="kode">LG &nbsp;&nbsp;{{ $data->carat }}</div>
                 <div class="nama">{{ $data->subgrosir }}</div>
                 <div class="area">{{ $data->tempat }}</div>
                 <div class="pelanggan">{{ $data->pelanggan }}</div>
+                <div class="pelanggan">{{ $data->invoice_number }} / {{$data->totalgw}}</div>
             </div>
             <div class="right">
                 <div class="qrcode"> {!! QrCode::size(80)->generate($data->QRvalue) !!}</div>
