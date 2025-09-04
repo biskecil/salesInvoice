@@ -27,9 +27,9 @@ Route::prefix('sales')->group(function () {
     Route::get('/create', [SalesInvController::class, 'create']);
     Route::post('/store', [SalesInvController::class, 'store']);
     Route::get('/show', [SalesInvController::class, 'show']);
-    Route::get('/edit/{SW}', [SalesInvController::class, 'edit']);
-    Route::get('/detail/{ID}', [SalesInvController::class, 'detail']);
+    Route::get('/edit/{Nota}', [SalesInvController::class, 'edit']);
+    Route::get('/detail/{Nota}', [SalesInvController::class, 'detail']);
     Route::put('/update/{ID}', [SalesInvController::class, 'update']);
     Route::get('/cetakNota/{ID}', [SalesInvController::class, 'cetakNota']);
-    Route::get('/cetakBarcode/{ID}', [SalesInvController::class, 'cetakBarcode']);
+    Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
 });

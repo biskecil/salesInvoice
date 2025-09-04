@@ -43,7 +43,7 @@
                                     style="flex:1" placeholder="Cari Nota">
                                 <datalist id="datalistNota">
                                     @foreach ($data as $list)
-                                        <option value="{{ $list->ID }}" >{{ $list->invoice_number }}</option>
+                                        <option value="{{ $list->invoice_number }}">{{ $list->invoice_number }}</option>
                                     @endforeach
                                 </datalist>
                             </div>
@@ -232,7 +232,7 @@
                         })
 
                         $('.select2').prop("disabled", true);
-                        $('#cariDataNota').val('')
+
                     })
                     .fail(function(xhr) {
                         Swal.fire({
@@ -281,11 +281,13 @@
                     $('.buttonForm').attr("id", "btnSubmitCreate");
                     $('.buttonForm').prop('disabled', false);
                     js_form('create');
-                    hotkeys()
+                    hotkeys();
+                    DateNow();
                 });
             });
             $('#btnBatal').on('click', function() {
                 dataNota = '';
+                $('#cariDataNota').val('')
                 $('#formData').addClass('d-none');
                 $('#btnCari').prop('disabled', false);
                 $('#btnTambah').prop('disabled', false);
@@ -296,6 +298,14 @@
                 $('.buttonForm').prop('disabled', true);
             });
         });
+
+        function DateNow() {
+            let today = new Date();
+            let yyyy = today.getFullYear();
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById("transDate").value = `${yyyy}-${mm}-${dd}`;
+        }
 
         function hotkeys() {
             document.addEventListener("keydown", function(e) {

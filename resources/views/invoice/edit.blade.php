@@ -7,7 +7,7 @@
             <div class="mb-2 row">
                 <label class="form-label col-sm-4 ">No Nota*</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="noNota" readonly value="{{ $data->SW }}">
+                    <input type="text" class="form-control" name="noNota" readonly value="{{ $data->invoice_number }}">
                 </div>
             </div>
             <div class="mb-2 row">

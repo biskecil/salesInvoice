@@ -86,9 +86,37 @@ class SalesInvController extends Controller
             ->get();
         return response()->json($data);
     }
-    public function edit($id)
+    public function noNotaFormat($kodePameran, $grosir, $transDate, $urutan)
     {
-        $data = DB::table('invoice')->where('ID', $id)->first();
+        $kode_pameran =  $kodePameran == 'Pameran' ? 'P' : 'I';
+        $transDate = Carbon::parse($transDate);
+        $monthMM   = $transDate->format('m');
+        $yearYY    = $transDate->format('y');
+        $notaNum = str_pad($urutan, 4, '0', STR_PAD_LEFT);
+
+        $noNota = $kode_pameran . $grosir . $yearYY . $monthMM . $notaNum;
+
+        return $noNota;
+    }
+    public function edit($noNota)
+    {
+        $data = DB::table('invoice')
+            ->select(
+                'invoice.*',
+                DB::raw("CONCAT(
+            CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+            Grosir,
+            DATE_FORMAT(TransDate, '%y%m'),
+            LPAD(SW, 4, '0')
+        ) as noNota")
+            )
+            ->whereRaw("CONCAT(
+        CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+        Grosir,
+        DATE_FORMAT(TransDate, '%y%m'),
+        LPAD(SW, 4, '0')
+    ) = ?", [$noNota])
+            ->first();
 
         if ($data) {
             $getGrosirID = DB::select("SELECT ID FROM customer WHERE SW = ?", [$data->Grosir]);
@@ -125,7 +153,9 @@ class SalesInvController extends Controller
             });
 
 
+
             $invoice = new stdClass();
+            $invoice->invoice_number = $data->noNota;
             $invoice->ID = $data->ID;
             $invoice->SW = $data->SW;
             $invoice->TransDate = $data->TransDate;
@@ -161,9 +191,25 @@ class SalesInvController extends Controller
             return response()->json(['status' => 'Data kosong'], 500);
         }
     }
-    public function detail($id)
+    public function detail($noNota)
     {
-        $data = DB::table('invoice')->where('ID', $id)->first();
+        $data = DB::table('invoice')
+            ->select(
+                'invoice.*',
+                DB::raw("CONCAT(
+                CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+                Grosir,
+                DATE_FORMAT(TransDate, '%y%m'),
+                LPAD(SW, 4, '0')
+            ) as noNota")
+            )
+            ->whereRaw("CONCAT(
+            CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+            Grosir,
+            DATE_FORMAT(TransDate, '%y%m'),
+            LPAD(SW, 4, '0')
+        ) = ?", [$noNota])
+            ->first();
 
         if ($data) {
             $getGrosirID = DB::select("SELECT ID,SW FROM customer WHERE SW = ?", [$data->Grosir]);
@@ -186,6 +232,7 @@ class SalesInvController extends Controller
                 ])
                 ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
                 ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+
                 ->where('invoiceitem.IDM', $data->ID);
 
             $data_list = $data_item->get()->map(function ($item) {
@@ -201,6 +248,7 @@ class SalesInvController extends Controller
 
 
             $invoice = new stdClass();
+            $invoice->invoice_number = $data->noNota;
             $invoice->ID = $data->ID;
             $invoice->SW = $data->SW;
             $invoice->TransDate = $data->TransDate;
@@ -260,9 +308,21 @@ class SalesInvController extends Controller
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'data' => $invoice]);
     }
-    public function cetakNota($id)
+    public function cetakNota($noNota)
     {
         $data = DB::table('invoice')
+            ->select(
+                'invoice.*',
+                DB::raw("CONCAT(
+            CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+            Grosir,
+            DATE_FORMAT(TransDate, '%y%m'),
+            LPAD(SW, 4, '0')
+        ) as noNota")
+            )
+            ->selectRaw('UPPER(SubGrosir) as subgrosir')
+            ->selectRaw('UPPER(Address) as tempat')
+            ->selectRaw('UPPER(Customer) as pelanggan')
             ->addSelect([
                 'totalgw' => DB::table('invoiceitem')
                     ->selectRaw('SUM(Weight)')
@@ -273,7 +333,13 @@ class SalesInvController extends Controller
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1)
             ])
-            ->where('ID', $id)->first();
+            ->whereRaw("CONCAT(
+                CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+                Grosir,
+                DATE_FORMAT(TransDate, '%y%m'),
+                LPAD(SW, 4, '0')
+            ) = ?", [$noNota])
+            ->first();
         if ($data) {
             $getGrosirID = DB::select("SELECT ID,Description FROM customer WHERE SW = ?", [$data->Grosir]);
             $data_item = DB::table('invoiceitem')
@@ -308,7 +374,7 @@ class SalesInvController extends Controller
 
             $invoice = new stdClass();
             $invoice->ID = $data->ID;
-            $invoice->SW = $data->SW;
+            $invoice->SW = $data->noNota;
             $invoice->TransDate = Carbon::parse($data->TransDate)->format('d/m/Y');
             $invoice->Customer = $data->Customer;
             $invoice->Grosir = $getGrosirID[0]->Description;
@@ -319,13 +385,22 @@ class SalesInvController extends Controller
             $invoice->totalnw = $data->totalnw;
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
+            $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
         }
         return view('invoice.cetakNota', ['data' => $invoice]);
     }
-    public function cetakBarcode($id)
+    public function cetakBarcode($noNota)
     {
         $data = DB::table('invoice')
-            ->select('*')
+            ->select(
+                'invoice.*',
+                DB::raw("CONCAT(
+            CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+            Grosir,
+            DATE_FORMAT(TransDate, '%y%m'),
+            LPAD(SW, 4, '0')
+        ) as noNota")
+            )
             ->selectRaw('UPPER(SubGrosir) as subgrosir')
             ->selectRaw('UPPER(Address) as tempat')
             ->selectRaw('UPPER(Customer) as pelanggan')
@@ -335,35 +410,40 @@ class SalesInvController extends Controller
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1),
             ])
-            ->where('ID', $id)->first();
+            ->whereRaw("CONCAT(
+                CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+                Grosir,
+                DATE_FORMAT(TransDate, '%y%m'),
+                LPAD(SW, 4, '0')
+            ) = ?", [$noNota])->first();
 
         $data_item = DB::table('invoiceitem')
             ->select(
                 'carat.SW as caratSW'
             )
             ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
-            ->where('invoiceitem.IDM', $id)
+            ->where('invoiceitem.IDM', $data->ID)
             ->first();
 
-        $kode_pameran =  $data->Event == 'Pameran' ? 'P' : 'I';
-        $transDate = Carbon::parse($data->TransDate);
-        $monthMM   = $transDate->format('m');
-        $yearYY    = $transDate->format('y');
-        $notaNum = str_pad($data->SW, 4, '0', STR_PAD_LEFT);
-        $data->invoice_number = $kode_pameran . $data->Grosir . $yearYY . $monthMM . $notaNum;
+
+        $data->invoice_number = $data->noNota;
         $data->totalgw = number_format($data->totalgw, 2, '.', '');
         $data->carat = $data_item->caratSW;
 
-        $QRvalue = new stdClass();
-        $QRvalue->it = 1;
-        $QRvalue->nt = $data->subgrosir;
-        $QRvalue->at = $data->tempat;
-        $QRvalue->pt = $data->pelanggan;
-        $QRvalue->kp = 'LG';
-
-        $data->QRvalue = json_encode($QRvalue);
+        $data->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
 
         return view('invoice.cetakBarcode', ['data' => $data]);
+    }
+    public function Qrformat($subgrosir, $tempat, $pelanggan)
+    {
+        $QRvalue = new stdClass();
+        $QRvalue->it = 1;
+        $QRvalue->nt = $subgrosir;
+        $QRvalue->at = $tempat;
+        $QRvalue->pt = $pelanggan;
+        $QRvalue->kp = 'LG';
+
+        return json_encode($QRvalue);
     }
     public function create()
     {
@@ -387,7 +467,13 @@ class SalesInvController extends Controller
             ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
             ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
             ->whereNotIn('invoice.ID', [0])
-            ->get();
+            ->get()
+            ->map(function ($row) {
+
+                $row->invoice_number =   $this->noNotaFormat($row->Event, $row->Grosir, $row->TransDate, $row->SW);
+
+                return $row;
+            });
         return response()->json(['data' => $data]);
     }
     public function show()
@@ -398,7 +484,6 @@ class SalesInvController extends Controller
     {
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
-            'noNota'    => 'required',
             'customer'    => 'required',
             'event'       => 'required',
             'grosir'      => 'required',
@@ -423,7 +508,6 @@ class SalesInvController extends Controller
             DB::table('invoice')
                 ->where('ID', $id)
                 ->update([
-                    'SW' => $request->noNota,
                     'TransDate' => $request->transDate,
                     'Customer' => $request->customer,
                     'Address' => $request->alamat,
