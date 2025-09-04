@@ -6,10 +6,10 @@
     <title>Nota CT</title>
     <style>
         @page {
-            size: 140mm 220mm landscape;
-            margin-top: 2mm;
+            size: 130mm 210mm landscape;
+            margin-top: 4.5mm;
             margin-left: 4mm;
-            margin-right: 4mm;
+            margin-right: 10mm;
             margin-bottom: 2mm;
         }
 
@@ -69,7 +69,7 @@
         }
 
         .note {
-            margin-top: 30px;
+            margin-top: 10px;
             font-size: 10px;
             font-weight: bold;
         }
@@ -154,14 +154,14 @@
 
         <div class="footer">
             <div class="sign">
-                Customer<br><br><br>
+                Customer<br><br>
                 ( _____________________ )
             </div>
             <div class="sign">
-                Sales<br><br><br>
+                Sales<br><br>
                 ( _____________________ )
             </div>
-            <div class="box">
+            <div class="box" style="height: 60px">
                 Keterangan : {{ $data->Remarks }}
             </div>
         </div>

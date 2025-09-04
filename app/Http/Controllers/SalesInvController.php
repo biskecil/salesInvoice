@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -429,9 +430,17 @@ class SalesInvController extends Controller
         $data->invoice_number = $data->noNota;
         $data->totalgw = number_format($data->totalgw, 2, '.', '');
         $data->carat = $data_item->caratSW;
-
         $data->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
-               
+        $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate('string'));
+        $width = 80 / 25.4 * 72;  // 80 mm
+        $height = 30 / 25.4 * 72; // 30 mm
+        $pdf = PDF::loadView('invoice.cetakBarcode', ['data' => $data,  'qrCode' => $qrCode])
+            ->setPaper([0, 0, $height, $width,], 'landscape');
+
+     //   return $pdf->stream("barcode.pdf");
+
+
+        //  return $pdf->stream("barcode.pdf");
         return view('invoice.cetakBarcode', ['data' => $data]);
     }
     public function Qrformat($subgrosir, $tempat, $pelanggan)

@@ -182,9 +182,17 @@
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
-
+    <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
 
     <script>
+        let printService = new WebSocketPrinter();
+
+        function printPDF(data) {
+            printService.submit({
+                'type': 'BARCODE',
+                'url': '/sales/cetakBarcode/' + data
+            });
+        }
         $(document).ready(function() {
             let dataNota = '';
             $('#btnTambah').prop('disabled', false);
@@ -199,6 +207,7 @@
             });
             $('#btnCetakBarcode').on('click', function() {
                 window.open('/sales/cetakBarcode/' + dataNota, '_blank');
+                //printPDF(dataNota)
             });
 
             $('#btnCari').on('click', function() {
