@@ -431,13 +431,13 @@ class SalesInvController extends Controller
         $data->carat = $data_item->caratSW;
 
         $data->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
-
+               
         return view('invoice.cetakBarcode', ['data' => $data]);
     }
     public function Qrformat($subgrosir, $tempat, $pelanggan)
     {
         $QRvalue = new stdClass();
-        $QRvalue->it = 1;
+        $QRvalue->it = '1';
         $QRvalue->nt = $subgrosir;
         $QRvalue->at = $tempat;
         $QRvalue->pt = $pelanggan;
@@ -457,7 +457,15 @@ class SalesInvController extends Controller
         $data = DB::table('invoiceitem')
             ->select(
                 'invoiceitem.*',
-                'invoice.*',
+                'invoice.Event',
+                'invoice.Grosir',
+                'invoice.TransDate',
+                'invoice.SW',
+                'invoice.ID',
+                'invoice.Customer',
+                'invoice.Address',
+                'invoice.Phone',
+                'invoice.Venue',
                 'product.SW as productSW',
                 'product.Description as productDesc',
                 'carat.Description as caratDesc',
@@ -471,7 +479,6 @@ class SalesInvController extends Controller
             ->map(function ($row) {
 
                 $row->invoice_number =   $this->noNotaFormat($row->Event, $row->Grosir, $row->TransDate, $row->SW);
-
                 return $row;
             });
         return response()->json(['data' => $data]);
@@ -487,10 +494,6 @@ class SalesInvController extends Controller
             'customer'    => 'required',
             'event'       => 'required',
             'grosir'      => 'required',
-            'tempat'      => 'required',
-            'pembeli'     => 'required',
-            'sub_grosir'  => 'required',
-            'alamat'      => 'required',
             'cadar'       => 'required|array|min:1',
         ]);
 
@@ -567,10 +570,6 @@ class SalesInvController extends Controller
             'customer'    => 'required',
             'event'       => 'required',
             'grosir'      => 'required',
-            'tempat'      => 'required',
-            'pembeli'     => 'required',
-            'sub_grosir'  => 'required',
-            'alamat'      => 'required',
             'cadar'       => 'required|array|min:1',
         ]);
 

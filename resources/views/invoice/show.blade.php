@@ -74,13 +74,13 @@
                                 caption: "Tanggal",
                                 cssClass: "cls"
                             },
-                            // {
-                            //     dataField: "IDM",
-                            //     dataType: "string",
-                            //     caption: "ID",
-                            //     width: '5%',
-                            //     cssClass: "cls"
-                            // },
+                            {
+                                dataField: "IDM",
+                                dataType: "string",
+                                caption: "ID",
+                                width: '5%',
+                                cssClass: "cls"
+                            },
                             {
                                 dataField: "invoice_number",
                                 dataType: "string",

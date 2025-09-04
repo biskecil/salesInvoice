@@ -28,14 +28,14 @@
                 </div>
             </div>
             <div class="mb-2 row">
-                <label class="form-label col-sm-4">Nama Pembeli*</label>
+                <label class="form-label col-sm-4">Nama Pembeli</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
                         value="{{ $data->Person }}">
                 </div>
             </div>
             <div class="mb-2 row">
-                <label class="form-label col-sm-4">Alamat*</label>
+                <label class="form-label col-sm-4">Alamat</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" rows="2" placeholder="Alamat" name="alamat"
                         value="{{ $data->Address }}" id="alamat">
@@ -81,14 +81,14 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <label class="form-label col-sm-4">Sub Grosir*</label>
+                <label class="form-label col-sm-4">Sub Grosir</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" placeholder="Sub Grosir" name="sub_grosir"
                         value="{{ $data->SubGrosir }}" id="sub_grosir">
                 </div>
             </div>
             <div class="mb-3 row">
-                <label class="form-label col-sm-4">Tempat*</label>
+                <label class="form-label col-sm-4">Tempat</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="tempat">
                         <option value="">Pilih Data</option>
