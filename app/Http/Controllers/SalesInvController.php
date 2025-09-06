@@ -388,7 +388,13 @@ class SalesInvController extends Controller
             $invoice->ItemList = $data_list;
             $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
         }
-        return view('invoice.cetakNota', ['data' => $invoice]);
+
+        $html = view('invoice.cetakNota', [
+            'data' => $invoice,
+        ])->render();
+
+        return $this->cetakNotaDirectPrinting($html, $data->noNota);
+       // return view('invoice.cetakNota', ['data' => $invoice]);
     }
     public function cetakBarcode($noNota)
     {
@@ -445,6 +451,24 @@ class SalesInvController extends Controller
         ])->render();
 
         return $this->cetakBarcodeDirectPrinting($html, $data->noNota);
+    }
+
+    public function cetakNotaDirectPrinting($returnHTML, $nota)
+    {
+        $width = 130 / 25.4 * 72;
+        $height = 210 / 25.4 * 72;
+        $pdf = PDF::loadHtml($returnHTML);
+        $customPaper = array(0, 0, $height, $width);
+        $pdf->setPaper($customPaper, 'landscape');
+
+        $hasilpdf = $pdf->output();
+        Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
+        return response()->json([
+            'status' => 200,
+            'html' => $returnHTML,
+            'id' => $nota,
+            'url' => asset('storage/nota/' . $nota . '.pdf'),
+        ]);
     }
 
     public function cetakBarcodeDirectPrinting($returnHTML, $nota)

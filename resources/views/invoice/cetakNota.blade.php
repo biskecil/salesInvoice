@@ -6,11 +6,11 @@
     <title>Nota CT</title>
     <style>
         @page {
-            size: 130mm 210mm landscape;
-            margin-top: 4.5mm;
+            size: 140mm 210mm landscape;
+            margin-top: 2mm;
             margin-left: 4mm;
             margin-right: 10mm;
-            margin-bottom: 2mm;
+            margin-bottom: 1mm;
         }
 
         body {
@@ -35,21 +35,21 @@
             display: flex;
         }
 
-        table {
+        .items-list {
             width: 100%;
             border-collapse: collapse;
             margin-top: 5px;
         }
 
-        table th,
-        table td {
-            border: 1px solid #000;
+        .items-list th,
+        .items-list td {
+            border: 1px solid #000000;
             padding: 4px;
             text-align: center;
             font-size: 12px;
         }
 
-        table th {
+         .items-list th {
             background: #f0f0f0;
         }
 
@@ -91,25 +91,22 @@
 
 <body>
     <div class="container">
-        <div class="header">
-            <div class="left">
+         <table style=" width: 100%;">
+            <tr>
+                <td style="text-align: left">
                 <div style="font-size: 17px;"><b><u>NOTA CT</u></b></div>
                 <div>Nota No : {{ $data->SW }}</div>
                 <div>Tanggal : {{ $data->TransDate }}</div>
-            </div>
-            <div class="info-cust">
-                <div class="qrcode"> {!! QrCode::size(60)->generate($data->QRvalue) !!}</div>
-                <div class="right">
-                    <div>Customer : {{ $data->Customer }}</div>
+                </td>
+                <td style="text-align: right">
+                     <div>Customer : {{ $data->Customer }}</div>
                     <div>{{ $data->Address }}</div>
-                    <br>
-                    <div><b>Grosir : {{ $data->Grosir }}</b></div>
-                </div>
-
-            </div>
-        </div>
-
-        <table>
+                     <div><b>Grosir : {{ $data->Grosir }}</b></div>
+                </td>
+            </tr>
+         </table>
+       
+        <table class="items-list">
             <thead>
                 <tr>
                     <th>Kadar</th>
@@ -129,8 +126,6 @@
                         <td  style="text-align: right;">{{ $item->nw }}</td>
                     </tr>
                 @endforeach
-
-
                 @for ($i = count($data->ItemList); $i < 10; $i++)
                     <tr>
                         <td>&nbsp;</td>
@@ -140,7 +135,6 @@
                         <td>&nbsp;</td>
                     </tr>
                 @endfor
-
             </tbody>
             <tfoot>
                 <tr class="totals">
@@ -151,30 +145,29 @@
                 </tr>
             </tfoot>
         </table>
-
-        <div class="footer">
-            <div class="sign">
-                Customer<br><br>
-                ( _____________________ )
-            </div>
-            <div class="sign">
-                Sales<br><br>
-                ( _____________________ )
-            </div>
-            <div class="box" style="height: 60px">
+       <table style="width: 100%;" border="0">
+    <tr>
+        <td style="vertical-align: bottom; text-align: center; height: 70px;">
+            Customer<br><br><br>
+            ( _____________________ )<br>
+        </td>
+        <td style="vertical-align: bottom; text-align: center; height: 70px;">
+            Sales<br><br><br>
+            ( _____________________ )<br>
+        </td>
+        <td style="text-align: left; vertical-align: top; width: 60px;" >
+            <div class="box" style="height: 120px;">
                 Keterangan : {{ $data->Remarks }}
             </div>
-        </div>
-
-        <div class="note">
-            <u> *Pastikan Berat Barang yang Anda Terima sesuai dengan Nota </u>
-        </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align: left; vertical-align: bottom; padding: 0; font-size: 10px; line-height: 1;">
+            <u>*Pastikan Berat Barang yang Anda Terima sesuai dengan Nota</u>
+        </td>
+        <td style="border: none;"></td> <!-- empty to align with remarks column -->
+    </tr>
+</table>
     </div>
 </body>
-<script>
-    window.onload = function() {
-        window.print();
-    };
-</script>
-
 </html>

@@ -186,7 +186,7 @@
 
     <script>
         var printService = new WebSocketPrinter();
-        function printPDF(data) {
+        function printDirectBarcode(data) {
             if (!printService.isConnected()) {
                 console.error("Printer WebSocket tidak aktif");
                 return;
@@ -205,6 +205,25 @@
                 console.error("Gagal Cetak :", err);
             }
         }
+        function printDirectNota(data) {
+            if (!printService.isConnected()) {
+                console.error("Printer WebSocket tidak aktif");
+                return;
+            }
+            try {
+                fetch('/sales/cetakNota/' + data)
+                    .then(res => res.json())
+                    .then(res => {
+                        printService.submit({
+                            type: 'Nota',
+                            url: res.url
+                        });
+                    });
+                console.log("Berhasil");
+            } catch (err) {
+                console.error("Gagal Cetak :", err);
+            }
+        }
         $(document).ready(function() {
             let dataNota = '';
             $('#btnTambah').prop('disabled', false);
@@ -215,11 +234,12 @@
             $('.buttonForm').prop('disabled', true);
 
             $('#btnCetak').on('click', function() {
-                window.open('/sales/cetakNota/' + dataNota, '_blank');
+                // window.open('/sales/cetakNota/' + dataNota, '_blank');
+                printDirectNota(dataNota);
             });
             $('#btnCetakBarcode').on('click', function() {
                 // window.open('/sales/cetakBarcode/' + dataNota, '_blank');
-                printPDF(dataNota)
+                printDirectBarcode(dataNota)
             });
 
             $('#btnCari').on('click', function() {
@@ -432,7 +452,7 @@
                             confirmButtonText: "OK"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                //location.reload();
+                                location.reload();
                             }
                         });
                     },
