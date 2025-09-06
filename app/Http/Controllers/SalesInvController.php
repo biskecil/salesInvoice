@@ -430,18 +430,39 @@ class SalesInvController extends Controller
         $data->invoice_number = $data->noNota;
         $data->totalgw = number_format($data->totalgw, 2, '.', '');
         $data->carat = $data_item->caratSW;
-        $data->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
-        $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate('string'));
-        $width = 80 / 25.4 * 72;  // 80 mm
-        $height = 30 / 25.4 * 72; // 30 mm
-        $pdf = PDF::loadView('invoice.cetakBarcode', ['data' => $data,  'qrCode' => $qrCode])
-            ->setPaper([0, 0, $height, $width,], 'landscape');
 
-     //   return $pdf->stream("barcode.pdf");
+        $qrValue =  $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
+        $qrCode = QrCode::format('png')
+            ->size(200)
+            ->generate($qrValue);
 
+        $fileName =  $data->noNota . '.png';
 
-        //  return $pdf->stream("barcode.pdf");
-        return view('invoice.cetakBarcode', ['data' => $data]);
+        Storage::put('public/qrcode/' . $fileName, $qrCode);
+
+        $html = view('invoice.cetakBarcode', [
+            'data' => $data,
+        ])->render();
+
+        return $this->cetakBarcodeDirectPrinting($html, $data->noNota);
+    }
+
+    public function cetakBarcodeDirectPrinting($returnHTML, $nota)
+    {
+        $width = 80 / 25.4 * 72;
+        $height = 40 / 25.4 * 72;
+        $pdf = PDF::loadHtml($returnHTML);
+        $customPaper = array(0, 0, $height, $width);
+        $pdf->setPaper($customPaper, 'landscape');
+
+        $hasilpdf = $pdf->output();
+        Storage::disk('public')->put('label/' . $nota . '.pdf', $hasilpdf);
+        return response()->json([
+            'status' => 200,
+            'html' => $returnHTML,
+            'id' => $nota,
+            'url' => asset('storage/label/' . $nota . '.pdf'),
+        ]);
     }
     public function Qrformat($subgrosir, $tempat, $pelanggan)
     {
@@ -516,6 +537,7 @@ class SalesInvController extends Controller
             DB::beginTransaction();
             //code...
             $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
+            $getNotaSW = DB::select("SELECT SW FROM invoice WHERE ID = ?", [$id]);
 
             DB::table('invoice')
                 ->where('ID', $id)
@@ -561,6 +583,7 @@ class SalesInvController extends Controller
                 }
                 DB::table('invoice')->where('ID', $id)->update(["Weight" => $total_weight]);
             }
+
             DB::commit();
             $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
             return response()->json($data, 200);
@@ -644,6 +667,7 @@ class SalesInvController extends Controller
                 }
                 DB::table('invoice')->where('ID', $getLastInvID)->update(["Weight" => $total_weight]);
             }
+
             DB::commit();
             $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
             return response()->json($data, 200);

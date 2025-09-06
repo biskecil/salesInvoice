@@ -18,56 +18,38 @@
         }
 
         .label {
-            /* width: 7cm;
-            height: 3cm; */
-            /* border: 1px dotted #000; */
             display: flex;
-           
             align-items: center;
-            padding-left: 20mm;
-            padding-right: 20mm;
+            padding-left: 0mm;
+            padding-right: 00mm;
             padding-top: 4mm;
             box-sizing: border-box;
         }
 
-        .left {
-            width: 40mm;
-        }
-
-        .left .kode {
+        .kode {
             font-size: 21px;
             font-weight: bold;
         }
 
-        .left .nama {
+        .nama {
             font-weight: bold;
             font-size: 10px;
             line-height: 1.2em;
         }
 
-        .left .area {
+        .area {
             font-size: 10px;
             font-style: italic;
         }
 
-        .left .pelanggan {
+        .pelanggan {
             font-weight: bold;
             font-size: 10px;
             margin-top: 3px;
         }
 
-        .right {
-            /* width: 30m; */
-            text-align: center;
-        }
 
-        .qrcode {
-            width: 20mm;
-            height: 20mm;
-            margin: 0 auto;
-        }
-
-        .right .kode2 {
+        .kode2 {
             font-size: 21px;
             font-weight: bold;
             margin-top: 3px;
@@ -76,29 +58,23 @@
 </head>
 
 <body>
-    <div style="display:flex; justify-content:center; align-items:center;"">
-        <div class="label">
-            <div class="left">
+    <table style="width:100%;  padding-top: 1mm;padding-left: 11mm;padding-right: 8mm;">
+        <tr>
+            <td style="text-align:left;">
                 <div class="kode">LG &nbsp;&nbsp;{{ $data->carat }}</div>
                 <div class="nama">{{ $data->subgrosir }}</div>
                 <div class="area">{{ $data->tempat }}</div>
                 <div class="pelanggan">{{ $data->pelanggan }}</div>
-                <div class="pelanggan">{{ $data->invoice_number }} / {{$data->totalgw}}</div>
-            </div>
-            <div class="right">
-                <div class="qrcode"> {!! QrCode::size(80)->generate($data->QRvalue) !!}</div>
+                <div class="pelanggan">{{ $data->invoice_number }} / {{ $data->totalgw }}</div>
+            </td>
+            <td style="text-align:center; width:80px;">
+                <img src="{{ storage_path('app/public/qrcode/' . $data->invoice_number . '.png') }}" width="60"
+                    height="60">
                 <div class="kode2">SA</div>
-            </div>
-        </div>
-    </div>
-    {{-- <div class="label">
-        11ABCDEFGHIJKLMNOPQRTSYU
-    </div> --}}
+            </td>
+        </tr>
+    </table>
 </body>
-<script>
-    window.onload = function() {
-        window.print();
-    };
-</script>
+
 
 </html>

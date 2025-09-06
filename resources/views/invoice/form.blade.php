@@ -185,13 +185,25 @@
     <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
 
     <script>
-        let printService = new WebSocketPrinter();
-
+        var printService = new WebSocketPrinter();
         function printPDF(data) {
-            printService.submit({
-                'type': 'BARCODE',
-                'url': '/sales/cetakBarcode/' + data
-            });
+            if (!printService.isConnected()) {
+                console.error("Printer WebSocket tidak aktif");
+                return;
+            }
+            try {
+                fetch('/sales/cetakBarcode/' + data)
+                    .then(res => res.json())
+                    .then(res => {
+                        printService.submit({
+                            type: 'Barcode',
+                            url: res.url
+                        });
+                    });
+                console.log("Berhasil");
+            } catch (err) {
+                console.error("Gagal Cetak :", err);
+            }
         }
         $(document).ready(function() {
             let dataNota = '';
@@ -206,8 +218,8 @@
                 window.open('/sales/cetakNota/' + dataNota, '_blank');
             });
             $('#btnCetakBarcode').on('click', function() {
-                window.open('/sales/cetakBarcode/' + dataNota, '_blank');
-                //printPDF(dataNota)
+                // window.open('/sales/cetakBarcode/' + dataNota, '_blank');
+                printPDF(dataNota)
             });
 
             $('#btnCari').on('click', function() {
@@ -420,7 +432,7 @@
                             confirmButtonText: "OK"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // location.reload();
+                                //location.reload();
                             }
                         });
                     },

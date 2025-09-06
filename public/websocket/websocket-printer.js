@@ -19,11 +19,13 @@ function WebSocketPrinter(options) {
 
     var onConnect = function () {
         connected = true;
+        console.log("WebSocket connected!");
         settings.onConnect();
     };
 
     var onDisconnect = function () {
         connected = false;
+        console.log("WebSocket disconnected!");
         settings.onDisconnect();
         reconnect();
     };
