@@ -7,7 +7,7 @@
     <style>
         @page {
             size: 140mm 210mm landscape;
-            margin-top: 2mm;
+            margin-top: 5mm;
             margin-left: 4mm;
             margin-right: 10mm;
             margin-bottom: 1mm;
@@ -43,13 +43,13 @@
 
         .items-list th,
         .items-list td {
-            border: 1px solid #000000;
+            border: 1px solid #000;
             padding: 4px;
             text-align: center;
             font-size: 12px;
         }
 
-         .items-list th {
+        .items-list th {
             background: #f0f0f0;
         }
 
@@ -91,21 +91,35 @@
 
 <body>
     <div class="container">
-         <table style=" width: 100%;">
+        <table style=" width: 100%;" border="0">
             <tr>
-                <td style="text-align: left">
-                <div style="font-size: 17px;"><b><u>NOTA CT</u></b></div>
-                <div>Nota No : {{ $data->SW }}</div>
-                <div>Tanggal : {{ $data->TransDate }}</div>
+                <td style="text-align: left" rowspan="2"  width="70%">
+                    <div style="font-size: 17px; margin-bottom: 8px;"><b><u>NOTA CT</u></b></div>
+                    <div style="margin-bottom: 4px;">Nota No : {{ $data->SW }}</div>
+                    <div>Tanggal : {{ $data->TransDate }}</div>
                 </td>
-                <td style="text-align: right">
-                     <div>Customer : {{ $data->Customer }}</div>
-                    <div>{{ $data->Address }}</div>
-                     <div><b>Grosir : {{ $data->Grosir }}</b></div>
+                <td style="text-align: right; vertical-align: center;" width="10%">
+                    Customer :
+                </td>
+                <td style="text-align: left; vertical-align: center;" width="20%">
+                    {{ $data->Customer }}<br>
+                    {{ $data->Address }}
+
                 </td>
             </tr>
-         </table>
-       
+            <td  style="text-align: right; vertical-align: center;" >
+                <b>Grosir:</b>
+            </td>
+            <td  style="text-align: left; vertical-align: center;">
+                {{ $data->Grosir }}
+                
+
+            </td>
+            <tr>
+
+            </tr>
+        </table>
+
         <table class="items-list">
             <thead>
                 <tr>
@@ -119,11 +133,11 @@
             <tbody>
                 @foreach ($data->ItemList as $item)
                     <tr>
-                        <td style="text-align: left;">{{ $item->caratDesc }}</td>
-                        <td  style="text-align: left;">{{ $item->productDesc }}</td>
-                        <td  style="text-align: right;">{{ $item->gw }}</td>
+                        <td style="text-align: center;">{{ $item->caratDesc }}</td>
+                        <td style="text-align: left;padding-left:10px">{{ $item->productDesc }}</td>
+                        <td style="text-align: right;padding-right:10px">{{ $item->gw }}</td>
                         <td>{{ $item->price }}</td>
-                        <td  style="text-align: right;">{{ $item->nw }}</td>
+                        <td style="text-align: right;padding-right:10px">{{ $item->nw }}</td>
                     </tr>
                 @endforeach
                 @for ($i = count($data->ItemList); $i < 10; $i++)
@@ -139,35 +153,38 @@
             <tfoot>
                 <tr class="totals">
                     <td colspan="2">Total</td>
-                    <td  style="text-align: right;">{{ $data->totalgw }}</td>
+                    <td style="text-align: right;padding-right:10px">{{ $data->totalgw }}</td>
                     <td></td>
-                    <td  style="text-align: right;">{{ $data->totalnw }}</td>
+                    <td style="text-align: right;padding-right:10px">{{ $data->totalnw }}</td>
                 </tr>
             </tfoot>
         </table>
-       <table style="width: 100%;" border="0">
-    <tr>
-        <td style="vertical-align: bottom; text-align: center; height: 70px;">
-            Customer<br><br><br>
-            ( _____________________ )<br>
-        </td>
-        <td style="vertical-align: bottom; text-align: center; height: 70px;">
-            Sales<br><br><br>
-            ( _____________________ )<br>
-        </td>
-        <td style="text-align: left; vertical-align: top; width: 60px;" >
-            <div class="box" style="height: 120px;">
-                Keterangan : {{ $data->Remarks }}
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" style="text-align: left; vertical-align: bottom; padding: 0; font-size: 10px; line-height: 1;">
-            <u>*Pastikan Berat Barang yang Anda Terima sesuai dengan Nota</u>
-        </td>
-        <td style="border: none;"></td> <!-- empty to align with remarks column -->
-    </tr>
-</table>
+        <table style="width: 101%" border="0">
+            <tr>
+                <td style="vertical-align: bottom; text-align: center; height: 70px;">
+                    Customer<br><br><br><br><br><br>
+                    ( _____________________ )<br>
+                </td>
+                <td style="vertical-align: bottom; text-align: center; height: 70px;">
+                    Sales<br><br><br><br><br><br>
+                    ( _____________________ )<br>
+                </td>
+                <td style="text-align: left; vertical-align: top; width: 270px; border-top: 1px solid black; border-left: 1px solid black;border-right: 1px solid black; border-bottom: 1px solid black;"  rowspan="2">
+                    {{-- <div class="box" style="height: 120px;">
+                        Keterangan : {{ $data->Remarks }}
+                    </div> --}}
+                    Keterangan :   {{ $data->Remarks }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"
+                    style="text-align: left; vertical-align: top; padding: 0; font-size: 10px; line-height: 1;padding-top:5px">
+                    <u>*Pastikan Berat Barang yang Anda Terima sesuai dengan Nota</u>
+                </td>
+                <td style="border: none;"></td> <!-- empty to align with remarks column -->
+            </tr>
+        </table>
     </div>
 </body>
+
 </html>
