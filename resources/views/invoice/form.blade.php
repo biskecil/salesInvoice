@@ -254,7 +254,6 @@
                         $('#btnCetakBarcode').prop('disabled', false);
                         $('#btnEdit').prop('disabled', false);
                         $('.buttonForm').prop('disabled', true);
-                        js_form('edit', response.data);
                         document.querySelectorAll(".isEdit").forEach(el => {
                             el.classList.add("d-none");
                         })
@@ -339,6 +338,7 @@
                 $('#btnCetakBarcode').prop('disabled', true);
                 $('#btnEdit').prop('disabled', true);
                 $('.buttonForm').prop('disabled', true);
+                location.reload();
             });
         });
 
@@ -967,7 +967,6 @@
                 let = desc_item = descInput.value;
                 let carat = caratInput.value;
                 itemScanBcd.forEach(item => {
-                    console.log("Appending item:", item); // Debug
                     let newRow = document.createElement("tr");
                     newRow.innerHTML = `
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>

@@ -7,7 +7,8 @@
             <div class="mb-2 row">
                 <label class="form-label col-sm-4 ">No Nota*</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="noNota" readonly value="{{ $data->invoice_number }}" >
+                    <input type="text" class="form-control" name="noNota" readonly
+                        value="{{ $data->invoice_number }}">
                 </div>
             </div>
             <div class="mb-2 row">
@@ -62,7 +63,7 @@
                 <label class="form-label col-sm-4">Event*</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="event">
-                        <option value="0" > {{ $data->Event }}</option>
+                        <option value="0"> {{ $data->Event }}</option>
                     </select>
                 </div>
             </div>
@@ -70,7 +71,7 @@
                 <label class="form-label col-sm-4">Grosir*</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="grosir" id="grosir">
-                        <option value="0" > {{ $data->Grosir }}</option>
+                        <option value="0"> {{ $data->Grosir }}</option>
                     </select>
                 </div>
             </div>
@@ -85,15 +86,15 @@
                 <label class="form-label col-sm-4">Tempat</label>
                 <div class="col-sm-8">
                     <select class="form-control select2" name="tempat">
-                        <option value="0" > {{ $data->Venue }}</option>
+                        <option value="0"> {{ $data->Venue }}</option>
                     </select>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label class="form-label col-sm-4">Total Berat</label>
                 <div class="col-sm-8">
-                    <input class="form-control" id="totalgwall" type="number" rows="2"
-                        placeholder="Total Berat" name="total_berat" readonly value="{{ $data->Weight }}">
+                    <input class="form-control" id="totalgwall" type="number" rows="2" placeholder="Total Berat"
+                        name="total_berat" readonly value="{{ $data->Weight }}">
                 </div>
             </div>
         </div>
@@ -137,17 +138,17 @@
         <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
             <h6 class="mb-0 fw-bold">Daftar Item</h6>
             <div>
-                <button type="button" id="btnScan" class="btn btn-sm btn-success d-none">
+                <button type="button" class="btn btn-sm btn-success d-none">
                     Scan Item
                 </button>
-                <button type="button" class="btn btn-sm btn-success d-none" id="addRow">
+                <button type="button" class="btn btn-sm btn-success d-none">
                     + Item
                 </button>
             </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
-                <table class="table table-bordered mb-0" id="itemsTable">
+                <table class="table table-bordered mb-0">
                     <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                         <tr>
                             <th style="width: 120px;">Kategori</th>
@@ -155,17 +156,40 @@
                             <th style="width: 150px;">Brt Kotor</th>
                             <th style="width: 150px;">Harga</th>
                             <th style="width: 150px;">Berat Bersih</th>
-                            <th style="width: 150px;" class="isPriceCust d-none">Harga Cust</th>
-                            <th style="width: 150px;" class="isPriceCust d-none">Brt Bersih Cust
-                            </th>
-                            <th style="width: 50px;" class="isEdit"></th>
+                            @if ($data->isHarga)
+                                <th style="width: 150px;">Harga Cust</th>
+                                <th style="width: 150px;">Brt Bersih Cust
+                            @endif
+
+
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- <tr>
-                                         <td colspan="8" class="text-center"> Data kosong</td>
-                                     </tr> --}}
-
+                        @foreach ($data->ItemList as $item)
+                            <tr>
+                                <td><input type="text" name="category[]"
+                                        class="form-control form-control-sm" value="{{ $item->desc_item }}" readonly>
+                                </td>
+                                <td><input type="text" name="cadar[]"
+                                        class="form-control form-control-sm cadar_item" value="{{ $item->caratSW }}"
+                                        readonly></td>
+                                <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto"
+                                        min="0" value="{{ $item->gw }}" step="0.01"></td>
+                                <td><input type="number" name="price[]" class="form-control form-control-sm price"
+                                        min="0" readonly step="0.01" value="{{ $item->price }}"></td>
+                                <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet"
+                                        min="0" value="{{ $item->nw }}" readonly step="0.01"></td>
+                                @if ($data->isHarga)
+                                    <td class="isPriceCust"><input type="number" name="pricecust[]"
+                                            class="form-control form-control-sm pricecust"
+                                            value="{{ $item->priceCust }}" min="0" readonly step="0.01">
+                                    </td>
+                                    <td class="isPriceCust "><input type="number" name="wnetocust[]"
+                                            class="form-control form-control-sm wnetocust"
+                                            value="{{ $item->netCust }}" min="0" step="0.01"></td>
+                                @endif
+                            </tr>
+                        @endforeach
                     </tbody>
 
                 </table>
