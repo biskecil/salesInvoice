@@ -93,6 +93,32 @@
     <div class="container">
         <table style=" width: 100%;" border="0">
             <tr>
+                <td width="70%" style="font-size: 17px;" ><b><u>NOTA CT</u></b></td>
+                <td width="10%" style="text-align: right;" >Customer :</td>
+                <td> {{ $data->Customer }}</td>
+            </tr>
+            <tr>
+                <td>Nota No : {{ $data->SW }}</td>
+                <td></td>
+                <td> {{ $data->Address }}
+                </td>
+            </tr>
+            <tr>
+                <td>Tanggal : {{ $data->TransDate }}</td>
+                <td></td>
+                <td> {{ $data->Phone }}</td>
+            </tr>
+            @if ($data->Grosir != '')
+                <tr>
+                    <td></td>
+                    <td style="text-align: right;"><b>Grosir:</b></td>
+                    <td> {{ $data->Grosir }}</td>
+                </tr>
+            @endif
+
+        </table>
+        {{-- <table style=" width: 100%;" border="1">
+            <tr>
                 <td style="text-align: left" rowspan="2"  width="70%">
                     <div style="font-size: 17px; margin-bottom: 8px;"><b><u>NOTA CT</u></b></div>
                     <div style="margin-bottom: 4px;">Nota No : {{ $data->SW }}</div>
@@ -118,7 +144,7 @@
             <tr>
 
             </tr>
-        </table>
+        </table> --}}
 
         <table class="items-list">
             <thead>
@@ -169,11 +195,12 @@
                     Sales<br><br><br><br><br><br>
                     ( _____________________ )<br>
                 </td>
-                <td style="text-align: left; vertical-align: top; width: 270px; border-top: 1px solid black; border-left: 1px solid black;border-right: 1px solid black; border-bottom: 1px solid black;"  rowspan="2">
+                <td style="text-align: left; vertical-align: top; width: 270px; border-top: 1px solid black; border-left: 1px solid black;border-right: 1px solid black; border-bottom: 1px solid black;"
+                    rowspan="2">
                     {{-- <div class="box" style="height: 120px;">
                         Keterangan : {{ $data->Remarks }}
                     </div> --}}
-                    Keterangan :   {{ $data->Remarks }}
+                    Keterangan : {{ $data->Venue }}
                 </td>
             </tr>
             <tr>

@@ -381,9 +381,11 @@ class SalesInvController extends Controller
             $invoice->Grosir = $getGrosirID[0]->Description;
             $invoice->Person = $data->Person;
             $invoice->Address = $data->Address;
+            $invoice->Venue = $data->Venue;
+            $invoice->Phone = $data->Phone;
             $invoice->Remarks = $data->Remarks;
-            $invoice->totalgw = $data->totalgw;
-            $invoice->totalnw = $data->totalnw;
+            $invoice->totalgw = number_format($data->totalgw, 2, '.', '');
+            $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');  
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
             $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
@@ -460,7 +462,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-       // return $pdf->stream('filename.pdf');
+     //  return $pdf->stream('filename.pdf');
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
