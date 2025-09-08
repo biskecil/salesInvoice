@@ -186,6 +186,7 @@
 
     <script>
         var printService = new WebSocketPrinter();
+
         function printDirectBarcode(data) {
             if (!printService.isConnected()) {
                 console.error("Printer WebSocket tidak aktif");
@@ -205,6 +206,7 @@
                 console.error("Gagal Cetak :", err);
             }
         }
+
         function printDirectNota(data) {
             if (!printService.isConnected()) {
                 console.error("Printer WebSocket tidak aktif");
@@ -404,8 +406,9 @@
             });
 
             $('.select2').select2({
-                placeholder: "Pilih Data",
-                allowClear: true,
+                // placeholder: "Pilih kategori",
+                // allowClear: true,
+                theme: 'bootstrap-5',
                 width: '100%'
             });
         }
@@ -544,6 +547,7 @@
             let desc_item = '';
             let default_cat = '{{ $desc[0]->Description }}';
             let itemScan = [];
+            let itemScanBcd = [];
             let options_cat = `
 @foreach ($desc as $d)
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
@@ -671,8 +675,9 @@
                     itemsTable.appendChild(newRow);
 
                     let $select = $(newRow).find('.select2').select2({
-                        placeholder: "Pilih kategori",
-                        allowClear: true,
+                        // placeholder: "Pilih kategori",
+                        // allowClear: true,
+                        theme: 'bootstrap-5',
                         width: '100%'
                     });
 
@@ -878,7 +883,7 @@
                         totalgw += gw;
                         totalnw += nw;
 
-                        itemScan.push({
+                        itemScanBcd.push({
                             gw: gw,
                             nw: nw
                         });
@@ -959,43 +964,42 @@
 
                 totalgwall += totalgw;
                 totalgwallInput.value = totalgwall;
-                desc_item = descInput.value;
-                carat = caratInput.value;
-                itemScan.forEach(item => {
+                let = desc_item = descInput.value;
+                let carat = caratInput.value;
+                itemScanBcd.forEach(item => {
+                    console.log("Appending item:", item); // Debug
                     let newRow = document.createElement("tr");
                     newRow.innerHTML = `
-           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
-            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
-            <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01"></td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
-            <td class="text-center isEdit">
-                <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
-            </td>
+               <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
+                <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
+                <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01"></td>
+                <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
+                <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
+                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
+                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
+                <td class="text-center isEdit">
+                    <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
+                </td>
 
-                        `;
+                            `;
                     itemsTable.appendChild(newRow);
 
                     let $select = $(newRow).find('.select2').select2({
-                        placeholder: "Pilih kategori",
-                        allowClear: true,
+                        // placeholder: "Pilih kategori",
+                        // allowClear: true,
+                        theme: 'bootstrap-5',
                         width: '100%'
                     });
 
                     $select.val(desc_item).trigger("change");
                     loadSelect2();
                 });
-                itemScan = [];
+                itemScanBcd = [];
                 resetTableScan()
             });
 
-            let html5QrcodeScanner;
-            let cameraId;
 
 
         };
     </script>
-    <script src="{{ asset('scanner/html5-qrcode.min.js') }}"></script>
 @endsection

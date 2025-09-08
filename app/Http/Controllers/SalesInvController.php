@@ -53,7 +53,7 @@ class SalesInvController extends Controller
         if ($data) {
             return response()->json(['price' => $data->Price > 0 ?  $data->Price / 100  : 0, 'priceCust' => $data->PriceCust > 0 ? $data->PriceCust / 100 : 0]);
         } else {
-            return response()->json(['data' => 0]);
+            return response()->json(['price' => 0, 'priceCust' => 0]);
         }
     }
     public function getDataSubGros(Request $request)
@@ -394,7 +394,7 @@ class SalesInvController extends Controller
         ])->render();
 
         return $this->cetakNotaDirectPrinting($html, $data->noNota);
-       // return view('invoice.cetakNota', ['data' => $invoice]);
+        // return view('invoice.cetakNota', ['data' => $invoice]);
     }
     public function cetakBarcode($noNota)
     {

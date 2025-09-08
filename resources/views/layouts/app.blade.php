@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.common-new.css') }}">
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.light.compact.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
 
