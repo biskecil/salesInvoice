@@ -33,10 +33,10 @@
                                 Nota
                             </button>
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
-                                <i
-                                    class="fa-solid fa-print"></i> QR Code
+                                <i class="fa-solid fa-print"></i> QR Code
                             </button>
-
+                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial()">
+                                <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
                         </div>
                         <div>
                             <div class="d-flex gap-2 ">
@@ -184,6 +184,8 @@
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
+    <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
+
 
     <script>
         var printService = new WebSocketPrinter();
@@ -663,7 +665,12 @@
                     newRow.innerHTML = `
            <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${item.caratSW}" readonly></td>
-            <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01"></td>
+            <td>
+                     <div class="input-group input-group-sm mb-2">
+   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01">
+   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
+</div>
+                </td>
             <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"  value="${item.price}"></td>
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
             <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" value="${item.priceCust}" min="0"  readonly step="0.01"></td>
@@ -739,7 +746,12 @@
                 newRow.innerHTML = `
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
-            <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0" step="0.01"></td>
+            <td>
+              <div class="input-group input-group-sm mb-2">
+  <input type="number" name="wbruto[]" class="form-control wbruto" min="0" step="0.01">
+   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
+</div>
+                </td>
             <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0" readonly step="0.01"></td>
             <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
@@ -781,6 +793,24 @@
 
 
 
+            $('#itemsTable tbody').on('click', 'button.kalibrasi-btn', async function() {
+                let tr = $(this).closest('tr');
+                let selectedCat = $(this).val();
+                let brutoInput = tr.find('.wbruto');
+                try {
+                    const hasilTimbang = await kliktimbang();
+                    brutoInput.val(hasilTimbang); // continue as normal
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Periksa koneksi timbangan',
+                        confirmButtonText: 'OK'
+                    });
+                }
+
+
+            });
             $('#itemsTable tbody').on('change', 'select[name="category[]"]', function() {
 
                 let tr = $(this).closest('tr');
@@ -972,7 +1002,13 @@
                     newRow.innerHTML = `
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
-                <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01"></td>
+                <td>
+                    <div class="input-group input-group-sm mb-2">
+   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01">
+   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
+</div>
+                    
+                  </td>
                 <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
                 <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
                 <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
