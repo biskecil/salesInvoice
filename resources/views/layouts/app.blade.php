@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.common-new.css') }}">
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.light.compact.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('select2/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
 
     <style>
@@ -22,6 +22,14 @@
 
         .btn-primary {
             background-color: #913030 !important;
+        }
+
+        .btn-primary {
+            background-color: #913030 !important;
+        }
+
+        .text-active {
+            color: #913030 !important;
         }
 
         input[readonly],
@@ -53,20 +61,23 @@
             </span>
         </div>
 
+        <div id="datetime"></div>
     </div>
 
     {{-- Navbar menu --}}
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm py-1">
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
         <div class="container-fluid">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link text-secondary fw-semibold d-flex align-items-center" href="/">
+                    <a class="nav-link d-flex align-items-center  {{ request()->is('/') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                        href="/">
                         <i class="bi bi-receipt me-2"></i>
                         Nota Tagihan
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-secondary fw-semibold d-flex align-items-center" href="/sales/show">
+                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                        href="/sales/show">
                         <i class="bi bi-receipt me-2"></i>
                         Informasi
                     </a>
@@ -84,6 +95,24 @@
     <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
     <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            const formatted = now.toLocaleDateString('en-US', options);
+            document.getElementById('datetime').textContent = formatted;
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
 </body>
 
 </html>

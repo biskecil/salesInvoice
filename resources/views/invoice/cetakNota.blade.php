@@ -86,15 +86,21 @@
             height: 20mm;
             margin: 0 auto;
         }
+
+        .header-tab {
+            margin: 0px !important;
+            border: 0 !important;
+            border-spacing: 0;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <table style=" width: 100%;" border="0">
+        <table style=" width: 100%;" border="0" class="header-tab">
             <tr>
-                <td width="70%" style="font-size: 17px;" ><b><u>NOTA CT</u></b></td>
-                <td width="10%" style="text-align: right;" >Customer :</td>
+                <td width="70%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
+                <td width="10%" style="text-align: right;">Customer :</td>
                 <td> {{ $data->Customer }}</td>
             </tr>
             <tr>
@@ -146,7 +152,7 @@
             </tr>
         </table> --}}
 
-        <table class="items-list">
+        <table class="items-list" style="margin-top:2px">
             <thead>
                 <tr>
                     <th>Kadar</th>

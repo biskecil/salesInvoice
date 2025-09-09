@@ -13,7 +13,7 @@
         }
     </style>
     <div class="row justify-content-center">
-        <div class="col-md-11">
+        <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-1 pb-2">
                     <div class="d-flex gap-2 justify-content-between">
@@ -30,10 +30,11 @@
                                     class="fa-solid fa-list"></i> Lihat</button>
                             <button type="button" class="btn btn-info btn-sm" id="btnCetak"><i
                                     class="fa-solid fa-print"></i>
-                                Cetak
+                                Nota
                             </button>
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
-                                Cetak Barcode
+                                <i
+                                    class="fa-solid fa-print"></i> QR Code
                             </button>
 
                         </div>

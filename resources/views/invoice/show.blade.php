@@ -32,7 +32,6 @@
                 url: '/sales/getData/NotaAll',
                 type: 'GET',
                 success: function(data) {
-                    console.log(data)
                     let dataGrid = $("#invTable").dxDataGrid({
                         dataSource: data.data,
                         keyExpr: "IDM",
