@@ -151,14 +151,14 @@
                 <table class="table table-bordered mb-0">
                     <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                         <tr>
-                            <th style="width: 120px;">Kategori</th>
-                            <th style="width: 150px;">Kadar</th>
-                            <th style="width: 150px;">Brt Kotor</th>
-                            <th style="width: 150px;">Harga</th>
-                            <th style="width: 150px;">Berat Bersih</th>
+                            <th style="width: 120px;" class="text-center">Kategori</th>
+                            <th style="width: 150px;"  class="text-center">Kadar</th>
+                            <th style="width: 150px;"  class="text-center">Brt Kotor</th>
+                            <th style="width: 150px;"  class="text-center">Harga</th>
+                            <th style="width: 150px;"  class="text-center">Berat Bersih</th>
                             @if ($data->isHarga)
-                                <th style="width: 150px;">Harga Cust</th>
-                                <th style="width: 150px;">Brt Bersih Cust
+                                <th style="width: 150px;"  class="text-center">Harga Cust</th>
+                                <th style="width: 150px;"  class="text-center">Brt Bersih Cust
                             @endif
 
 
@@ -168,24 +168,24 @@
                         @foreach ($data->ItemList as $item)
                             <tr>
                                 <td><input type="text" name="category[]"
-                                        class="form-control form-control-sm" value="{{ $item->desc_item }}" readonly>
+                                        class="form-control form-control-sm text-center" value="{{ $item->desc_item }}" readonly>
                                 </td>
                                 <td><input type="text" name="cadar[]"
-                                        class="form-control form-control-sm cadar_item" value="{{ $item->caratSW }}"
+                                        class="form-control form-control-sm cadar_item text-center" value="{{ $item->caratSW }}"
                                         readonly></td>
-                                <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto"
+                                <td><input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end"
                                         min="0" value="{{ $item->gw }}" step="0.01"></td>
-                                <td><input type="number" name="price[]" class="form-control form-control-sm price"
+                                <td><input type="number" name="price[]" class="form-control form-control-sm price text-end"
                                         min="0" readonly step="0.01" value="{{ $item->price }}"></td>
-                                <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet"
+                                <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end"
                                         min="0" value="{{ $item->nw }}" readonly step="0.01"></td>
                                 @if ($data->isHarga)
                                     <td class="isPriceCust"><input type="number" name="pricecust[]"
-                                            class="form-control form-control-sm pricecust"
+                                            class="form-control form-control-sm pricecust text-end"
                                             value="{{ $item->priceCust }}" min="0" readonly step="0.01">
                                     </td>
                                     <td class="isPriceCust "><input type="number" name="wnetocust[]"
-                                            class="form-control form-control-sm wnetocust"
+                                            class="form-control form-control-sm wnetocust text-end"
                                             value="{{ $item->netCust }}" min="0" step="0.01"></td>
                                 @endif
                             </tr>

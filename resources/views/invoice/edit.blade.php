@@ -163,13 +163,13 @@
                 <table class="table table-bordered mb-0" id="itemsTable">
                     <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                         <tr>
-                            <th style="width: 120px;">Kategori</th>
-                            <th style="width: 150px;">Kadar</th>
-                            <th style="width: 150px;">Brt Kotor</th>
-                            <th style="width: 150px;">Harga</th>
-                            <th style="width: 150px;">Berat Bersih</th>
-                            <th style="width: 150px;" class="isPriceCust d-none">Harga Cust</th>
-                            <th style="width: 150px;" class="isPriceCust d-none">Brt Bersih Cust
+                            <th style="width: 120px;"  class="text-center">Kategori</th>
+                            <th style="width: 150px;"  class="text-center">Kadar</th>
+                            <th style="width: 150px;"  class="text-center">Brt Kotor</th>
+                            <th style="width: 150px;"  class="text-center">Harga</th>
+                            <th style="width: 150px;"  class="text-center">Berat Bersih</th>
+                            <th style="width: 150px;"  class="isPriceCust text-center d-none">Harga Cust</th>
+                            <th style="width: 150px;"  class="isPriceCust text-center d-none">Brt Bersih Cust
                             </th>
                             <th style="width: 50px;"></th>
                         </tr>

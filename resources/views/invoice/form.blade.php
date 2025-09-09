@@ -159,9 +159,9 @@
                                 <table class="table table-bordered" id="itemScantable">
                                     <thead>
                                         <tr>
-                                            <th>Item</th>
-                                            <th>GW</th>
-                                            <th>NW</th>
+                                            <th class="text-center">Item</th>
+                                            <th class="text-center">GW</th>
+                                            <th class="text-center">NW</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -664,17 +664,17 @@
                     let newRow = document.createElement("tr");
                     newRow.innerHTML = `
            <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
-            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${item.caratSW}" readonly></td>
+            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${item.caratSW}" readonly></td>
             <td>
                      <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01">
+   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${item.gw}" step="0.01">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"  value="${item.price}"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
-            <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" value="${item.priceCust}" min="0"  readonly step="0.01"></td>
-            <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" value="${item.netCust}" min="0" step="0.01"></td>
+            <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"  value="${item.price}"></td>
+            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0"  value="${item.nw}" readonly step="0.01"></td>
+            <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control text-end form-control-sm pricecust" value="${item.priceCust}" min="0"  readonly step="0.01"></td>
+            <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control text-end form-control-sm wnetocust" value="${item.netCust}" min="0" step="0.01"></td>
             <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
@@ -745,17 +745,17 @@
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
-            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
+            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
             <td>
               <div class="input-group input-group-sm mb-2">
-  <input type="number" name="wbruto[]" class="form-control wbruto" min="0" step="0.01">
+  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0" readonly step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
+            <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"></td>
+            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0" readonly step="0.01"></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
+            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01"></td>
             <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
@@ -927,9 +927,9 @@
 
 
                         row.innerHTML = `
-        <td>${code}</td>
-        <td>${gw} gram</td>
-        <td>${nw} gram</td>
+        <td class="text-center">${code}</td>
+        <td class="text-end">${gw} gram</td>
+        <td class="text-end">${nw} gram</td>
         <td class="text-center">
             <button type="button" class="btn btn-sm btn-danger removeRowScan">&times;</button>
         </td>
@@ -1001,18 +1001,18 @@
                     let newRow = document.createElement("tr");
                     newRow.innerHTML = `
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
-                <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item"  value="${carat}" readonly></td>
+                <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto" min="0"   value="${item.gw}" step="0.01">
+   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${item.gw}" step="0.01">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
-                <td><input type="number" name="price[]" class="form-control form-control-sm price" min="0" readonly step="0.01"></td>
-                <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
-                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
-                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control form-control-sm wnetocust" min="0" step="0.01"></td>
+                <td><input type="number" name="price[]" class="form-control text-end form-control-sm price" min="0" readonly step="0.01"></td>
+                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
+                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
+                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01"></td>
                 <td class="text-center isEdit">
                     <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
                 </td>
