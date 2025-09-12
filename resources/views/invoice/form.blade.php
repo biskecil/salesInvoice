@@ -748,7 +748,7 @@
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
             <td>
               <div class="input-group input-group-sm mb-2">
-  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01">
+  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" value="0.00">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
@@ -789,6 +789,8 @@
                 //     width: '100%'
                 // });
                 loadSelect2();
+                let $select = $(newRow).find(".select2");
+                $select.select2('open');
             });
 
 

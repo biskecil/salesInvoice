@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMS - ERP</title>
+    <title>LMS</title>
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.common-new.css') }}">
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.light.compact.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
@@ -45,6 +45,10 @@
             font-size: 1.75rem;
             letter-spacing: -0.5px;
             /* text-transform: lowercase; */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 </head>
