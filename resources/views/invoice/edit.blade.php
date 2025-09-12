@@ -7,7 +7,8 @@
             <div class="mb-2 row">
                 <label class="form-label col-sm-4 ">No Nota*</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="noNota" readonly value="{{ $data->invoice_number }}">
+                    <input type="text" class="form-control" name="noNota" readonly
+                        value="{{ $data->invoice_number }}">
                 </div>
             </div>
             <div class="mb-2 row">
@@ -92,20 +93,18 @@
                 <div class="col-sm-8">
                     <select class="form-control select2" name="tempat">
                         <option value="">Pilih Data</option>
-                        <option value="JCC" {{ $data->Venue == 'JCC' ? 'selected' : '' }}>JCC</option>
-                        <option value="Sultan" {{ $data->Venue == 'Sultan' ? 'selected' : '' }}>Sultan</option>
-                        <option value="Shangri-La" {{ $data->Venue == 'Shangri-La' ? 'selected' : '' }}>Shangri-La
-                        </option>
-                        <option value="Westin" {{ $data->Venue == 'Westin' ? 'selected' : '' }}>Westin</option>
-                        <option value="Bandung" {{ $data->Venue == 'Bandung' ? 'selected' : '' }}>Bandung</option>
+                        @foreach ($venue as $p)
+                            <option value="{{ $p->Description }}"
+                                {{ $data->Venue == $p->Description ? 'selected' : '' }}>{{ $p->Description }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label class="form-label col-sm-4">Total Berat</label>
                 <div class="col-sm-8">
-                    <input class="form-control" id="totalgwall" type="number" rows="2"
-                        placeholder="Total Berat" name="total_berat" readonly value="{{ $data->Weight }}">
+                    <input class="form-control" id="totalgwall" type="number" rows="2" placeholder="Total Berat"
+                        name="total_berat" readonly value="{{ $data->Weight }}">
                 </div>
             </div>
         </div>
@@ -163,13 +162,13 @@
                 <table class="table table-bordered mb-0" id="itemsTable">
                     <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                         <tr>
-                            <th style="width: 120px;"  class="text-center">Kategori</th>
-                            <th style="width: 150px;"  class="text-center">Kadar</th>
-                            <th style="width: 150px;"  class="text-center">Brt Kotor</th>
-                            <th style="width: 150px;"  class="text-center">Harga</th>
-                            <th style="width: 150px;"  class="text-center">Berat Bersih</th>
-                            <th style="width: 150px;"  class="isPriceCust text-center d-none">Harga Cust</th>
-                            <th style="width: 150px;"  class="isPriceCust text-center d-none">Brt Bersih Cust
+                            <th style="width: 120px;" class="text-center">Kategori</th>
+                            <th style="width: 150px;" class="text-center">Kadar</th>
+                            <th style="width: 150px;" class="text-center">Brt Kotor</th>
+                            <th style="width: 150px;" class="text-center">Harga</th>
+                            <th style="width: 150px;" class="text-center">Berat Bersih</th>
+                            <th style="width: 150px;" class="isPriceCust text-center d-none">Harga Cust</th>
+                            <th style="width: 150px;" class="isPriceCust text-center d-none">Brt Bersih Cust
                             </th>
                             <th style="width: 50px;"></th>
                         </tr>

@@ -180,9 +180,9 @@ class SalesInvController extends Controller
             $cust = DB::table('customer')->orderBy('Description')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
             $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
+            $venue = DB::table('venue')->orderBy('Description')->get();
 
-
-            $html = view('invoice.edit', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust])->render();
+            $html = view('invoice.edit', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust])->render();
 
             return response()->json([
                 'html' => $html,
@@ -385,7 +385,7 @@ class SalesInvController extends Controller
             $invoice->Phone = $data->Phone;
             $invoice->Remarks = $data->Remarks;
             $invoice->totalgw = number_format($data->totalgw, 2, '.', '');
-            $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');  
+            $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
             $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
@@ -462,7 +462,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-       //return $pdf->stream('filename.pdf');
+        //return $pdf->stream('filename.pdf');
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
@@ -503,10 +503,11 @@ class SalesInvController extends Controller
     }
     public function create()
     {
+        $venue = DB::table('venue')->orderBy('Description')->get();
         $cust = DB::table('customer')->orderBy('Description')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
-        return view('invoice.create', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
+        return view('invoice.create', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue]);
     }
     public function getDataNotaAll()
     {

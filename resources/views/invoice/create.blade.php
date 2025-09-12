@@ -87,11 +87,9 @@
                    <div class="col-sm-8">
                        <select class="form-control select2" name="tempat">
                            <option value="">Pilih Data</option>
-                           <option value="JCC">JCC</option>
-                           <option value="Sultan">Sultan</option>
-                           <option value="Shangri-La">Shangri-La</option>
-                           <option value="Westin">Westin</option>
-                           <option value="Bandung">Bandung</option>
+                           @foreach ($venue as $p)
+                               <option value="{{ $p->Description }}">{{ $p->Description }}</option>
+                           @endforeach
                        </select>
                    </div>
                </div>
