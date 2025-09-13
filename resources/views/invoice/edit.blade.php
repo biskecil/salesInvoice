@@ -166,7 +166,7 @@
                             <th style="width: 150px;" class="text-center">Kadar</th>
                             <th style="width: 150px;" class="text-center">Brt Kotor</th>
                             <th style="width: 150px;" class="text-center">Harga</th>
-                            <th style="width: 150px;" class="text-center">Berat Bersih</th>
+                            <th style="width: 150px;" class="text-center">Brt Bersih</th>
                             <th style="width: 150px;" class="isPriceCust text-center d-none">Harga Cust</th>
                             <th style="width: 150px;" class="isPriceCust text-center d-none">Brt Bersih Cust
                             </th>

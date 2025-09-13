@@ -797,16 +797,30 @@
 
             $('#itemsTable tbody').on('click', 'button.kalibrasi-btn', async function() {
                 let tr = $(this).closest('tr');
-                let selectedCat = $(this).val();
+                let priceInput = tr.find('.price');
+                let price = parseFloat(priceInput.val()) || 0;
                 let brutoInput = tr.find('.wbruto');
+                let netInput = tr.find('.wnet');
+                let total = 0;
+
                 try {
-                    const hasilTimbang = await kliktimbang();
-                    brutoInput.val(hasilTimbang); // continue as normal
+                     const hasilTimbang = await kliktimbang();
+                    brutoInput.val(hasilTimbang); 
+                    let net = hasilTimbang * price;
+                    netInput.val(net.toFixed(3));
+
+                    document.querySelectorAll(".wbruto").forEach(el => {
+                        total += parseFloat(el.value) || 0;
+                    });
+
+                    totalgwallInput.value = total.toFixed(2);
+
+
                 } catch (error) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: 'Periksa koneksi timbangan',
+                        text: error,
                         confirmButtonText: 'OK'
                     });
                 }

@@ -155,7 +155,7 @@
                             <th style="width: 150px;"  class="text-center">Kadar</th>
                             <th style="width: 150px;"  class="text-center">Brt Kotor</th>
                             <th style="width: 150px;"  class="text-center">Harga</th>
-                            <th style="width: 150px;"  class="text-center">Berat Bersih</th>
+                            <th style="width: 150px;"  class="text-center">Brt Bersih</th>
                             @if ($data->isHarga)
                                 <th style="width: 150px;"  class="text-center">Harga Cust</th>
                                 <th style="width: 150px;"  class="text-center">Brt Bersih Cust
