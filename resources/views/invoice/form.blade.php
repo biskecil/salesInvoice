@@ -570,6 +570,7 @@
                         let priceInput = row.querySelector(".price");
                         let brutoInput = row.querySelector(".wbruto");
                         let netInput = row.querySelector(".wnet");
+                        let netInputCust = row.querySelector('.wnetocust');
                         let priceCustInput = row.querySelector(".pricecust");
 
                         if (!categorySelect) return;
@@ -580,6 +581,13 @@
                         fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                             if (priceInput) priceInput.value = hasil.price;
                             if (priceCustInput) priceCustInput.value = hasil.priceCust;
+
+                            if (brutoInput && priceCustInput) {
+                                let bruto = parseFloat(brutoInput.value) || 0;
+                                let priceCust = parseFloat(priceCustInput.value) || 0;
+                                let netCust = bruto * priceCust;
+                                netInputCust.value = netCust.toFixed(3);
+                            }
 
                             if (brutoInput && priceInput && netInput) {
                                 let bruto = parseFloat(brutoInput.value) || 0;
@@ -609,6 +617,8 @@
                     let priceCustInput = row.querySelector(".pricecust");
                     let brutoInput = row.querySelector(".wbruto");
                     let netInput = row.querySelector(".wnet");
+                    let netInputCust = row.querySelector('.wnetocust');
+
 
                     if (!categorySelect) return;
 
@@ -618,6 +628,13 @@
                     fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                         if (priceInput) priceInput.value = hasil.price;
                         if (priceCustInput) priceCustInput.value = hasil.priceCust;
+
+                        if (brutoInput && priceCustInput) {
+                            let bruto = parseFloat(brutoInput.value) || 0;
+                            let priceCust = parseFloat(priceCustInput.value) || 0;
+                            let netCust = bruto * priceCust;
+                            netInputCust.value = netCust.toFixed(3);
+                        }
 
                         if (brutoInput && priceInput && netInput) {
                             let bruto = parseFloat(brutoInput.value) || 0;
@@ -730,17 +747,17 @@
 
 
             addRowBtn.addEventListener("click", function() {
-                if (setGrosir == '' || carat == '') {
+                // if (setGrosir == '' || carat == '') {
 
-                    Swal.fire({
-                        title: "Info",
-                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
+                //     Swal.fire({
+                //         title: "Info",
+                //         text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                //         icon: "warning",
+                //         confirmButtonText: "OK"
+                //     });
 
-                    return false;
-                }
+                //     return false;
+                // }
 
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
@@ -748,14 +765,14 @@
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
             <td>
               <div class="input-group input-group-sm mb-2">
-  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" value="0.00">
+  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" placeholder="0.00">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
             <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"></td>
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0" readonly step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  readonly step="0.01"></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01"></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"   step="0.01"></td>
+            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
             <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
@@ -768,10 +785,18 @@
                         let priceInput = row.querySelector(".price");
                         let brutoInput = row.querySelector(".wbruto");
                         let netInput = row.querySelector(".wnet");
+                        let netInputCust = row.querySelector(".wnetocust");
                         let priceCustInput = row.querySelector(".pricecust");
 
                         if (priceInput) priceInput.value = hasil.price;
                         if (priceCustInput) priceCustInput.value = hasil.priceCust;
+
+                        if (brutoInput && priceCustInput && netInputCust) {
+                            let bruto = parseFloat(brutoInput.value) || 0;
+                            let priceCust = parseFloat(priceCustInput.value) || 0;
+                            let netCust = bruto * priceCust;
+                            netInputCust.value = netCust.toFixed(3);
+                        }
 
                         if (brutoInput && priceInput && netInput) {
                             let bruto = parseFloat(brutoInput.value) || 0;
@@ -789,8 +814,8 @@
                 //     width: '100%'
                 // });
                 loadSelect2();
-                let $select = $(newRow).find(".select2");
-                $select.select2('open');
+                // let $select = $(newRow).find(".select2");
+                // $select.select2('open');
             });
 
 
@@ -798,16 +823,21 @@
             $('#itemsTable tbody').on('click', 'button.kalibrasi-btn', async function() {
                 let tr = $(this).closest('tr');
                 let priceInput = tr.find('.price');
+                let priceInputCust = tr.find('.pricecust');
                 let price = parseFloat(priceInput.val()) || 0;
+                let priceCust = parseFloat(priceInputCust.val()) || 0;
                 let brutoInput = tr.find('.wbruto');
                 let netInput = tr.find('.wnet');
+                let netInputCust = tr.find('.wnetocust');
                 let total = 0;
 
                 try {
-                     const hasilTimbang = await kliktimbang();
-                    brutoInput.val(hasilTimbang); 
+                    const hasilTimbang = await kliktimbang();
+                    brutoInput.val(hasilTimbang);
                     let net = hasilTimbang * price;
+                    let netCust = hasilTimbang * priceCust;
                     netInput.val(net.toFixed(3));
+                    netInputCust.val(netCust.toFixed(3));
 
                     document.querySelectorAll(".wbruto").forEach(el => {
                         total += parseFloat(el.value) || 0;
@@ -837,12 +867,19 @@
                 let priceInput = tr.find('.price');
                 let priceCustInput = tr.find(".pricecust");
                 let netInput = tr.find('.wnet');
+                let netInputCust = tr.find('.wnetocust');
 
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
                     if (priceInput.length) priceInput.val(hasil.price);
                     if (priceCustInput.length) priceCustInput.val(hasil.priceCust);
 
+                    if (brutoInput.length && priceCustInput.length) {
+                        let bruto = parseFloat(brutoInput.val()) || 0;
+                        let priceCust = parseFloat(priceCustInput.val()) || 0;
+                        let netCust = bruto * priceCust;
+                        netInputCust.val(netCust.toFixed(3));
+                    }
                     if (brutoInput.length && priceInput.length && netInput.length) {
                         let bruto = parseFloat(brutoInput.val()) || 0;
                         let price = parseFloat(priceInput.val()) || 0;
@@ -854,13 +891,19 @@
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
+                let priceInputCust = tr.querySelector('.pricecust');
                 let priceInput = tr.querySelector('.price');
                 let brutoInput = tr.querySelector('.wbruto');
                 let netInput = tr.querySelector('.wnet');
+                let netInputCust = tr.querySelector('.wnetocust');
                 let bruto = parseFloat(brutoInput.value) || 0;
                 let price = parseFloat(priceInput.value) || 0;
+                let priceCust = parseFloat(priceInputCust.value) || 0;
                 let net = bruto * price;
                 netInput.value = net.toFixed(3);
+                let netCust = bruto * priceCust;
+                netInputCust.value = netCust.toFixed(3);
+
                 let total = 0;
 
                 document.querySelectorAll(".wbruto").forEach(el => {

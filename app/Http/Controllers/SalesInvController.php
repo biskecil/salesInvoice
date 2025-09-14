@@ -695,7 +695,7 @@ class SalesInvController extends Controller
                 DB::table('invoice')->where('ID', $getLastInvID)->update(["Weight" => $total_weight]);
             }
 
-            DB::commit();
+           DB::commit();
             $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
