@@ -120,6 +120,24 @@ class SalesInvController extends Controller
             ->first();
 
         if ($data) {
+            $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+
+            $invoice_list->transform(function ($row) {
+
+                $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+                $transDate = Carbon::parse($row->TransDate);
+                $monthMM   = $transDate->format('m');
+                $yearYY    = $transDate->format('y');
+
+                $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+
+                $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+
+                return $row;
+            });
+
+
             $getGrosirID = DB::select("SELECT ID FROM customer WHERE SW = ?", [$data->Grosir]);
             $data_item = DB::table('invoiceitem')
                 ->select(
@@ -182,12 +200,12 @@ class SalesInvController extends Controller
             $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
             $venue = DB::table('venue')->orderBy('Description')->get();
 
-            $html = view('invoice.edit', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust])->render();
+            return view('invoice.edit_form', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust,'invoice_list' => $invoice_list]);
 
-            return response()->json([
-                'html' => $html,
-                'data' => $invoice
-            ]);
+            // return response()->json([
+            //     'html' => $html,
+            //     'data' => $invoice
+            // ]);
         } else {
             return response()->json(['status' => 'Data kosong'], 500);
         }
@@ -213,6 +231,25 @@ class SalesInvController extends Controller
             ->first();
 
         if ($data) {
+            $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+
+            $invoice_list->transform(function ($row) {
+
+                $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+                $transDate = Carbon::parse($row->TransDate);
+                $monthMM   = $transDate->format('m');
+                $yearYY    = $transDate->format('y');
+
+                $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+
+                $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+
+                return $row;
+            });
+
+
+
             $getGrosirID = DB::select("SELECT ID,SW FROM customer WHERE SW = ?", [$data->Grosir]);
             $data_item = DB::table('invoiceitem')
                 ->select(
@@ -275,12 +312,7 @@ class SalesInvController extends Controller
             $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
 
 
-            $html = view('invoice.detail', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust])->render();
-
-            return response()->json([
-                'html' => $html,
-                'data' => $invoice
-            ]);
+            return view('invoice.detail_form', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'invoice_list' => $invoice_list, 'cust' => $cust]);
         } else {
             return response()->json(['status' => 'Data kosong'], 500);
         }
@@ -503,11 +535,28 @@ class SalesInvController extends Controller
     }
     public function create()
     {
+        $invoice =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+
+        $invoice->transform(function ($row) {
+
+            $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+            $transDate = Carbon::parse($row->TransDate);
+            $monthMM   = $transDate->format('m');
+            $yearYY    = $transDate->format('y');
+
+            $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+
+            $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+
+            return $row;
+        });
+
         $venue = DB::table('venue')->orderBy('Description')->get();
         $cust = DB::table('customer')->orderBy('Description')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
-        return view('invoice.create', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue]);
+        return view('invoice.create_form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue, 'data' => $invoice]);
     }
     public function getDataNotaAll()
     {
@@ -612,7 +661,8 @@ class SalesInvController extends Controller
             }
 
             DB::commit();
-            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+          
+              $data = $this->SetReturn(true, 'Berhasil Disimpan', $request->noNota, null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;
@@ -624,6 +674,7 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
+       
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',
@@ -695,8 +746,8 @@ class SalesInvController extends Controller
                 DB::table('invoice')->where('ID', $getLastInvID)->update(["Weight" => $total_weight]);
             }
 
-           DB::commit();
-            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan',  $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->TransDate,$getLastNotaID ? $getLastNotaID + 1 : 1), null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;

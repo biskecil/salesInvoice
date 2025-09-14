@@ -1,6 +1,4 @@
-<form action="/sales/update/{{ $data->ID }}" method="post" id="salesForm" class="mt-4">
-    @method('PUT')
-    @csrf
+<form  method="post" class="mt-4">
     <div class="row">
         <!-- LEFT -->
         <div class="col-md-4">

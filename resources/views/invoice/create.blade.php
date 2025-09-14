@@ -94,7 +94,7 @@
                    </div>
                </div>
                <div class="mb-3 row">
-                   <label class="form-label col-sm-4">Total Berat</label>
+                   <label class="form-label col-sm-4">Total Berat Kotor</label>
                    <div class="col-sm-8">
                        <input class="form-control" id="totalgwall" type="number" value="0.00" rows="2"
                            placeholder="Total Berat" name="total_berat" readonly>
