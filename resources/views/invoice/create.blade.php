@@ -110,7 +110,7 @@
                        <select class="form-control select2 " id="carat">
                            <option value="">Pilih Data</option>
                            @foreach ($kadar as $d)
-                               <option value="{{ $d->SW }}">{{ $d->SW }}</option>
+                               <option value="{{ $d->SW }}">{{ $d->SW }} </option>
                            @endforeach
                        </select>
 
