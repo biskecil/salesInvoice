@@ -144,7 +144,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat</label>
+                                    <label class="form-label col-sm-4">Total Berat Kotor</label>
                                     <div class="col-sm-8">
                                         <input class="form-control" id="totalgwall" type="number" rows="2"
                                             placeholder="Total Berat" name="total_berat" readonly
@@ -392,9 +392,12 @@
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
+    <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
     <script>
+        var printService = new WebSocketPrinter();
         $(document).ready(function() {
+            let noNota = $('input[name="noNota"]').val();
             $('.select2').prop('disabled', true);
             let dataNota = "";
 
@@ -406,8 +409,8 @@
             $('.buttonForm').prop('disabled', true);
 
             $('#btnEdit').on('click', function() {
-                let noNota = $('input[name="noNota"]').val();
-       
+               
+
                 $.ajax({
                     url: '/sales/edit/' + noNota,
                     method: 'GET',
@@ -435,6 +438,46 @@
                 // window.open('/sales/cetakBarcode/' + noNota, '_blank');
                 printDirectBarcode(noNota)
             });
+
+            function printDirectBarcode(data) {
+                if (!printService.isConnected()) {
+                    console.error("Printer WebSocket tidak aktif");
+                    return;
+                }
+                try {
+                    fetch('/sales/cetakBarcode/' + data)
+                        .then(res => res.json())
+                        .then(res => {
+                            printService.submit({
+                                type: 'Barcode',
+                                url: res.url
+                            });
+                        });
+                    console.log("Berhasil");
+                } catch (err) {
+                    console.error("Gagal Cetak :", err);
+                }
+            }
+
+            function printDirectNota(data) {
+                if (!printService.isConnected()) {
+                    console.error("Printer WebSocket tidak aktif");
+                    return;
+                }
+                try {
+                    fetch('/sales/cetakNota/' + data)
+                        .then(res => res.json())
+                        .then(res => {
+                            printService.submit({
+                                type: 'Nota',
+                                url: res.url
+                            });
+                        });
+                    console.log("Berhasil");
+                } catch (err) {
+                    console.error("Gagal Cetak :", err);
+                }
+            }
 
             $('#btnCari').on('click', function() {
                 dataNota = $('#cariDataNota').val();

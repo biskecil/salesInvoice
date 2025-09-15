@@ -379,7 +379,7 @@
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
     <script>
         $(document).ready(function() {
-           
+
             hotkeys();
 
             loadSelect2();
@@ -431,7 +431,7 @@
             });
         });
 
-  
+
 
         function hotkeys() {
             document.addEventListener("keydown", function(e) {
@@ -595,6 +595,7 @@
             let itemScanBcd = [];
             let scanIndex = 0;
             let options_cat = `
+              <option value="">Pilih Data</option>
 @foreach ($desc as $d)
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
@@ -822,33 +823,41 @@
                 itemsTable.appendChild(newRow);
 
 
-                fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
-                    document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                        let priceInput = row.querySelector(".price");
-                        let brutoInput = row.querySelector(".wbruto");
-                        let netInput = row.querySelector(".wnet");
-                        let netInputCust = row.querySelector(".wnetocust");
-                        let priceCustInput = row.querySelector(".pricecust");
+                // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
+                //     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+                //         let priceInput = row.querySelector(".price");
+                //         let brutoInput = row.querySelector(".wbruto");
+                //         let netInput = row.querySelector(".wnet");
+                //         let netInputCust = row.querySelector(".wnetocust");
+                //         let priceCustInput = row.querySelector(".pricecust");
 
-                        if (priceInput) priceInput.value = hasil.price;
-                        if (priceCustInput) priceCustInput.value = hasil.priceCust;
+                //         if (priceInput) priceInput.value = hasil.price;
 
-                        if (brutoInput && priceCustInput && netInputCust) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let priceCust = parseFloat(priceCustInput.value) || 0;
-                            let netCust = bruto * priceCust;
-                            netInputCust.value = netCust.toFixed(3);
-                        }
 
-                        if (brutoInput && priceInput && netInput) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let price = parseFloat(priceInput.value) || 0;
-                            let net = bruto * price;
+                //         if (priceCustInput) {
+                //             let newVal = parseFloat(hasil.priceCust) || 0;
+                //             if (newVal !== 0) {
+                //                 priceCustInput.value = newVal.toFixed(
+                //                     2);
+                //             }
+                //         }
 
-                            netInput.value = net.toFixed(3);
-                        }
-                    });
-                });
+                //         if (brutoInput && priceCustInput && netInputCust) {
+                //             let bruto = parseFloat(brutoInput.value) || 0;
+                //             let priceCust = parseFloat(priceCustInput.value) || 0;
+                //             let netCust = bruto * priceCust;
+                //             netInputCust.value = netCust.toFixed(3);
+                //         }
+
+                //         if (brutoInput && priceInput && netInput) {
+                //             let bruto = parseFloat(brutoInput.value) || 0;
+                //             let price = parseFloat(priceInput.value) || 0;
+                //             let net = bruto * price;
+
+                //             netInput.value = net.toFixed(3);
+                //         }
+                //     });
+                // });
 
                 // $(newRow).find('.select2').select2({
                 //     placeholder: "Pilih kategori",
@@ -856,6 +865,20 @@
                 //     width: '100%'
                 // });
                 loadSelect2();
+
+                newRow.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+
+                newRow.querySelectorAll("td").forEach(td => {
+                    td.style.backgroundColor = "#ffff99";
+                });
+                setTimeout(() => {
+                    newRow.querySelectorAll("td").forEach(td => {
+                        td.style.backgroundColor = "";
+                    });
+                }, 1500);
                 // let $select = $(newRow).find(".select2");
                 // $select.select2('open');
             });
@@ -914,7 +937,12 @@
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
                     if (priceInput.length) priceInput.val(hasil.price);
-                    if (priceCustInput.length) priceCustInput.val(hasil.priceCust);
+                    if (priceCustInput) {
+                        let newVal = parseFloat(hasil.priceCust) || 0;
+                        if (newVal !== 0) {
+                            priceCustInput.val(newVal.toFixed(2));
+                        }
+                    }
 
                     if (brutoInput.length && priceCustInput.length) {
                         let bruto = parseFloat(brutoInput.val()) || 0;
@@ -1103,10 +1131,10 @@
                 }
 
                 let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
-                let gwBaru = parseFloat(totalgw) || 0; 
+                let gwBaru = parseFloat(totalgw) || 0;
 
                 totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
-                
+
                 let = desc_item = descInput.value;
                 let carat = caratInput.value;
                 itemScanBcd.forEach(item => {

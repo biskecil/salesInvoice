@@ -151,7 +151,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat</label>
+                                    <label class="form-label col-sm-4">Total Berat Kotor</label>
                                     <div class="col-sm-8">
                                         <input class="form-control" id="totalgwall" type="number" value="0.00"
                                             rows="2" placeholder="Total Berat" name="total_berat" readonly>
@@ -590,6 +590,7 @@
             let itemScanBcd = [];
             let scanIndex = 0;
             let options_cat = `
+            <option value="">Pilih Data</option>
 @foreach ($desc as $d)
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
@@ -618,7 +619,13 @@
 
                         fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                             if (priceInput) priceInput.value = hasil.price;
-                            if (priceCustInput) priceCustInput.value = hasil.priceCust;
+                            if (priceCustInput) {
+                                let newVal = parseFloat(hasil.priceCust) || 0;
+                                if (newVal !== 0) {
+                                    priceCustInput.value = newVal.toFixed(
+                                        2);
+                                }
+                            }
 
                             if (brutoInput && priceCustInput) {
                                 let bruto = parseFloat(brutoInput.value) || 0;
@@ -665,7 +672,12 @@
 
                     fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                         if (priceInput) priceInput.value = hasil.price;
-                        if (priceCustInput) priceCustInput.value = hasil.priceCust;
+                        if (priceCustInput) {
+                            let newVal = parseFloat(hasil.priceCust) || 0;
+                            if (newVal !== 0) {
+                                priceCustInput.value = newVal.toFixed(2);
+                            }
+                        }
 
                         if (brutoInput && priceCustInput) {
                             let bruto = parseFloat(brutoInput.value) || 0;
@@ -798,13 +810,13 @@
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
             <td>
               <div class="input-group input-group-sm mb-2">
-  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" placeholder="0.00">
+  <input type="number" value="0.00" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" placeholder="0.00">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
             <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"></td>
             <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0" readonly step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"   step="0.01"></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"    step="0.01"></td>
             <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
             <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
@@ -813,33 +825,38 @@
                 itemsTable.appendChild(newRow);
 
 
-                fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
-                    document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                        let priceInput = row.querySelector(".price");
-                        let brutoInput = row.querySelector(".wbruto");
-                        let netInput = row.querySelector(".wnet");
-                        let netInputCust = row.querySelector(".wnetocust");
-                        let priceCustInput = row.querySelector(".pricecust");
+                // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
+                //     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+                //         let priceInput = row.querySelector(".price");
+                //         let brutoInput = row.querySelector(".wbruto");
+                //         let netInput = row.querySelector(".wnet");
+                //         let netInputCust = row.querySelector(".wnetocust");
+                //         let priceCustInput = row.querySelector(".pricecust");
 
-                        if (priceInput) priceInput.value = hasil.price;
-                        if (priceCustInput) priceCustInput.value = hasil.priceCust;
+                //         if (priceInput) priceInput.value = hasil.price;
+                //         if (priceCustInput) {
+                //             let newVal = parseFloat(hasil.priceCust) || 0;
+                //             if (newVal !== 0) {
+                //                 priceCustInput.value = newVal.toFixed(2);
+                //             }
+                //         }
 
-                        if (brutoInput && priceCustInput && netInputCust) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let priceCust = parseFloat(priceCustInput.value) || 0;
-                            let netCust = bruto * priceCust;
-                            netInputCust.value = netCust.toFixed(3);
-                        }
+                //         if (brutoInput && priceCustInput && netInputCust) {
+                //             let bruto = parseFloat(brutoInput.value) || 0;
+                //             let priceCust = parseFloat(priceCustInput.value) || 0;
+                //             let netCust = bruto * priceCust;
+                //             netInputCust.value = netCust.toFixed(3);
+                //         }
 
-                        if (brutoInput && priceInput && netInput) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let price = parseFloat(priceInput.value) || 0;
-                            let net = bruto * price;
+                //         if (brutoInput && priceInput && netInput) {
+                //             let bruto = parseFloat(brutoInput.value) || 0;
+                //             let price = parseFloat(priceInput.value) || 0;
+                //             let net = bruto * price;
 
-                            netInput.value = net.toFixed(3);
-                        }
-                    });
-                });
+                //             netInput.value = net.toFixed(3);
+                //         }
+                //     });
+                // });
 
                 // $(newRow).find('.select2').select2({
                 //     placeholder: "Pilih kategori",
@@ -847,6 +864,23 @@
                 //     width: '100%'
                 // });
                 loadSelect2();
+                newRow.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+
+                newRow.querySelectorAll("td").forEach(td => {
+                    td.style.backgroundColor = "#ffff99";
+                });
+                setTimeout(() => {
+                    newRow.querySelectorAll("td").forEach(td => {
+                        td.style.backgroundColor = "";
+                    });
+                }, 1500);
+                // let selectEl = newRow.querySelector("select");
+                // if (selectEl) {
+                //     selectEl.focus();
+                // }
                 // let $select = $(newRow).find(".select2");
                 // $select.select2('open');
             });
@@ -905,7 +939,13 @@
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
                     if (priceInput.length) priceInput.val(hasil.price);
-                    if (priceCustInput.length) priceCustInput.val(hasil.priceCust);
+
+                    if (priceCustInput) {
+                        let newVal = parseFloat(hasil.priceCust) || 0;
+                        if (newVal !== 0) {
+                            priceCustInput.val(newVal.toFixed(2));
+                        }
+                    }
 
                     if (brutoInput.length && priceCustInput.length) {
                         let bruto = parseFloat(brutoInput.val()) || 0;
@@ -921,6 +961,58 @@
                     }
                 });
             });
+
+            itemsTable.addEventListener("focus", function(e) {
+                if (e.target.classList.contains("wbruto")) {
+                    if (e.target.value === "0.00") {
+                        e.target.value = "";
+                    }
+
+
+                    setTimeout(() => {
+                        e.target.select();
+                    }, 0);
+                }
+            }, true);
+
+
+            itemsTable.addEventListener("blur", function(e) {
+                if (e.target.classList.contains("wbruto")) {
+                    let val = e.target.value;
+
+                    if (val === "" || isNaN(val)) {
+                        e.target.value = "0.00";
+                    } else {
+                        e.target.value = parseFloat(val).toFixed(2);
+                    }
+                }
+            }, true);
+
+            itemsTable.addEventListener("focus", function(e) {
+                if (e.target.classList.contains("pricecust")) {
+                    if (e.target.value === "0.00") {
+                        e.target.value = "";
+                    }
+
+
+                    setTimeout(() => {
+                        e.target.select();
+                    }, 0);
+                }
+            }, true);
+
+
+            itemsTable.addEventListener("blur", function(e) {
+                if (e.target.classList.contains("pricecust")) {
+                    let val = e.target.value;
+
+                    if (val === "" || isNaN(val)) {
+                        e.target.value = "0.00";
+                    } else {
+                        e.target.value = parseFloat(val).toFixed(2);
+                    }
+                }
+            }, true);
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
@@ -1094,7 +1186,7 @@
                 }
 
                 let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
-                let gwBaru = parseFloat(totalgw) || 0; 
+                let gwBaru = parseFloat(totalgw) || 0;
 
                 totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
 

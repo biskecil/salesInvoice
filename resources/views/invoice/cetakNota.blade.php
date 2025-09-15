@@ -117,8 +117,8 @@
             @if ($data->Grosir != '')
                 <tr>
                     <td></td>
-                    <td style="text-align: right;"><b>Grosir:</b></td>
-                    <td> {{ $data->Grosir }}</td>
+                    <td style="text-align: right;vertical-align:top"><b>Grosir:</b></td>
+                    <td>  {{ $data->SubGrosir }}  - {{ $data->Grosir }}</td>
                 </tr>
             @endif
 

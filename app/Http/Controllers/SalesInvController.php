@@ -413,6 +413,7 @@ class SalesInvController extends Controller
             $invoice->Grosir = $getGrosirID[0]->Description;
             $invoice->Person = $data->Person;
             $invoice->Address = $data->Address;
+            $invoice->SubGrosir = $data->SubGrosir;
             $invoice->Venue = $data->Venue;
             $invoice->Phone = $data->Phone;
             $invoice->Remarks = $data->Remarks;
