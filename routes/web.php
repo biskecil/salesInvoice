@@ -30,6 +30,6 @@ Route::prefix('sales')->group(function () {
     Route::get('/edit/{Nota}', [SalesInvController::class, 'edit']);
     Route::get('/detail/{Nota}', [SalesInvController::class, 'detail']);
     Route::put('/update/{ID}', [SalesInvController::class, 'update']);
-    Route::get('/cetakNota/{ID}', [SalesInvController::class, 'cetakNota']);
+    Route::get('/cetakNota/{style}/{ID}', [SalesInvController::class, 'cetakNota']);
     Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
 });

@@ -200,7 +200,7 @@ class SalesInvController extends Controller
             $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
             $venue = DB::table('venue')->orderBy('Description')->get();
 
-            return view('invoice.edit_form', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust,'invoice_list' => $invoice_list]);
+            return view('invoice.edit_form', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust, 'invoice_list' => $invoice_list]);
 
             // return response()->json([
             //     'html' => $html,
@@ -348,7 +348,7 @@ class SalesInvController extends Controller
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'data' => $invoice]);
     }
-    public function cetakNota($noNota)
+    public function cetakNota($jenis, $noNota)
     {
         $data = DB::table('invoice')
             ->select(
@@ -404,15 +404,47 @@ class SalesInvController extends Controller
                 ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
                 ->where('invoiceitem.IDM', $data->ID);
 
-            $data_list = $data_item->get()->map(function ($item) {
-                $item->custom_field = $item->IDM;
-                $item->gw = number_format($item->Weight, 2, '.', '');
-                $item->nw =  number_format($item->Netto, 3, '.', '');
-                $item->price =  number_format($item->Price * 100, 1, '.', '');
-                return $item;
-            });
+
 
             $invoice = new stdClass();
+
+
+            if ($jenis == 'kosong') {
+                $data_list = $data_item->get()->map(function ($item) {
+                    $item->custom_field = $item->IDM;
+                    $item->gw = number_format($item->Weight, 2, '.', '');
+                    $item->nw = '';
+                    $item->price = '';
+                    return $item;
+                });
+                $invoice->totalnw = '';
+                $invoice->isCustomer = false;
+            } else if ($jenis == 'hargacust') {
+                $data_list = $data_item->get()->map(function ($item) {
+                    $item->custom_field = $item->IDM;
+                    $item->gw = number_format($item->Weight, 2, '.', '');
+                    $item->nw =  number_format($item->NettoCust, 3, '.', '');
+                    $item->price =  number_format($item->PriceCust * 100, 1, '.', '');
+                    return $item;
+                });
+                $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');
+                $invoice->isCustomer = true;
+            } else {
+                $data_list = $data_item->get()->map(function ($item) {
+                    $item->custom_field = $item->IDM;
+                    $item->gw = number_format($item->Weight, 2, '.', '');
+                    $item->nw =  number_format($item->Netto, 3, '.', '');
+                    $item->price =  number_format($item->Price * 100, 1, '.', '');
+                    return $item;
+                });
+                $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');
+                $invoice->isCustomer = false;
+            }
+
+
+
+
+
             $invoice->ID = $data->ID;
             $invoice->SW = $data->noNota;
             $invoice->TransDate = Carbon::parse($data->TransDate)->format('d/m/Y');
@@ -425,7 +457,7 @@ class SalesInvController extends Controller
             $invoice->Phone = $data->Phone;
             $invoice->Remarks = $data->Remarks;
             $invoice->totalgw = number_format($data->totalgw, 2, '.', '');
-            $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');
+
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
             $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
@@ -497,12 +529,13 @@ class SalesInvController extends Controller
 
     public function cetakNotaDirectPrinting($returnHTML, $nota)
     {
+
         $width = 130 / 25.4 * 72;
         $height = 210 / 25.4 * 72;
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-        //return $pdf->stream('filename.pdf');
+        return $pdf->stream('filename.pdf');
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
@@ -669,8 +702,8 @@ class SalesInvController extends Controller
             }
 
             DB::commit();
-          
-              $data = $this->SetReturn(true, 'Berhasil Disimpan', $request->noNota, null);
+
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', $request->noNota, null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;
@@ -682,7 +715,7 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
-       
+
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',
@@ -755,7 +788,7 @@ class SalesInvController extends Controller
             }
 
             DB::commit();
-            $data = $this->SetReturn(true, 'Berhasil Disimpan',  $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->TransDate,$getLastNotaID ? $getLastNotaID + 1 : 1), null);
+            $data = $this->SetReturn(true, 'Berhasil Disimpan',  $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->TransDate, $getLastNotaID ? $getLastNotaID + 1 : 1), null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;

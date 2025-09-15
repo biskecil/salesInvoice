@@ -28,10 +28,22 @@
                                     class="fa-regular fa-pen-to-square"></i> Ubah</button>
                             <button type="button" class="btn btn-primary btn-sm" id="btnCari"><i
                                     class="fa-solid fa-list"></i> Lihat</button>
-                            <button type="button" class="btn btn-info btn-sm" id="btnCetak"><i
+                            {{-- <button type="button" class="btn btn-info btn-sm" id="btnCetak"><i
                                     class="fa-solid fa-print"></i>
                                 Nota
-                            </button>
+                            </button> --}}
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-info dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i
+                                    class="fa-solid fa-print"></i> Nota
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                   <li><button class="dropdown-item"  id="btnCetak">Cetak dgn harga</button></li>
+                                    <li><a class="dropdown-item" id="btnCetakCust" >Cetak dgn harga customer</a></li>
+                                    <li><a class="dropdown-item" id="btnCetakKosong" >Cetak tanpa harga</a></li>
+                                </ul>
+                            </div>
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
                                 <i class="fa-solid fa-print"></i> QR Code
                             </button>
@@ -184,7 +196,7 @@
                         <div class="card mt-4 shadow-sm">
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0 fw-bold">Daftar Item</h6>
-                            
+
                             </div>
                             <div class="px-3 py-2 border-bottom bg-light">
                                 <div class="row g-2 align-items-center">
@@ -193,14 +205,16 @@
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end" id="totalgwall"
-                                            type="number" value="{{ $data->Weight }}" name="total_berat_kotor" readonly>
+                                            type="number" value="{{ $data->Weight }}" name="total_berat_kotor"
+                                            readonly>
                                     </div>
                                     <div class="col-auto">
                                         <label for="totalnwall" class="form-label small mb-0">Total Berat Bersih</label>
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end" id="totalnwall"
-                                            type="number" value="{{ $data->NetWeight }}"  name="total_berat_bersih" readonly>
+                                            type="number" value="{{ $data->NetWeight }}" name="total_berat_bersih"
+                                            readonly>
                                     </div>
                                 </div>
                             </div>
@@ -435,8 +449,16 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-                // window.open('/sales/cetakNota/' + noNota, '_blank');
-                printDirectNota(noNota);
+                 window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+               // printDirectNota(noNota);
+            });
+            $('#btnCetakCust').on('click', function() {
+                 window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
+               // printDirectNota(noNota);
+            });
+            $('#btnCetakKosong').on('click', function() {
+                 window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
+               // printDirectNota(noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
                 // window.open('/sales/cetakBarcode/' + noNota, '_blank');

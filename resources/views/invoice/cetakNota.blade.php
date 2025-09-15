@@ -118,7 +118,7 @@
                 <tr>
                     <td></td>
                     <td style="text-align: right;vertical-align:top"><b>Grosir:</b></td>
-                    <td>  {{ $data->SubGrosir }}  - {{ $data->Grosir }}</td>
+                    <td> {{ $data->SubGrosir }} - {{ $data->Grosir }}</td>
                 </tr>
             @endif
 
@@ -207,6 +207,12 @@
                         Keterangan : {{ $data->Remarks }}
                     </div> --}}
                     Keterangan : {{ $data->Venue }}
+
+                    @if ($data->isCustomer)
+                        <div style="position: absolute; bottom: 12; right: 150;">
+                            CUSTOMER
+                        </div>
+                    @endif
                 </td>
             </tr>
             <tr>

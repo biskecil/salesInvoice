@@ -203,17 +203,19 @@
                             <div class="px-3 py-2 border-bottom bg-light">
                                 <div class="row g-2 align-items-center">
                                     <div class="col-auto">
-                                        <label for="totalgwall" class="form-label small mb-0">Total Berat Kotor</label>
+                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat
+                                            Kotor</label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end" id="totalgwall"
+                                        <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
                                             type="number" value="0.00" name="total_berat_kotor" readonly>
                                     </div>
                                     <div class="col-auto">
-                                        <label for="totalnwall" class="form-label small mb-0">Total Berat Bersih</label>
+                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat
+                                            Bersih</label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end" id="totalnwall"
+                                        <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
                                             type="number" value="0.00" name="total_berat_bersih" readonly>
                                     </div>
                                 </div>
@@ -336,12 +338,12 @@
                                         <span id="total_item" class="fw-bold">0</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
-                                        <span>Total GW :</span>
-                                        <span id="total_gw" class="fw-bold">0</span>
+                                        <span class="text-primary">Total GW :</span>
+                                        <span id="total_gw" class="fw-bold text-primary">0</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
-                                        <span>Total NW :</span>
-                                        <span id="total_nw" class="fw-bold">0</span>
+                                        <span class="text-danger">Total NW :</span>
+                                        <span id="total_nw" class="fw-bold text-danger">0</span>
                                     </div>
                                 </div>
                             </div>
@@ -1217,20 +1219,25 @@
 
                 let = desc_item = descInput.value;
                 let carat = caratInput.value;
+                let itemScangw = 0;
+                let itemScannw = 0;
                 itemScanBcd.forEach(item => {
-                    let newRow = document.createElement("tr");
-                    newRow.innerHTML = `
+                    itemScangw += item.gw;
+                    itemScannw += item.nw;
+                });
+                let newRow = document.createElement("tr");
+                newRow.innerHTML = `
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${item.gw}" step="0.01">
+   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${itemScangw}" step="0.01">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
                 <td><input type="number" name="price[]" class="form-control text-end form-control-sm price" min="0" readonly step="0.01"></td>
-                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
+                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${itemScannw}" readonly step="0.01"></td>
                 <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  placeholder="0.00"  step="0.01"></td>
                 <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
                 <td class="text-center isEdit">
@@ -1238,18 +1245,18 @@
                 </td>
 
                             `;
-                    itemsTable.appendChild(newRow);
+                itemsTable.appendChild(newRow);
 
-                    let $select = $(newRow).find('.select2').select2({
-                        // placeholder: "Pilih kategori",
-                        // allowClear: true,
-                        theme: 'bootstrap-5',
-                        width: '100%'
-                    });
-
-                    $select.val(desc_item).trigger("change");
-                    loadSelect2();
+                let $select = $(newRow).find('.select2').select2({
+                    // placeholder: "Pilih kategori",
+                    // allowClear: true,
+                    theme: 'bootstrap-5',
+                    width: '100%'
                 });
+
+                $select.val(desc_item).trigger("change");
+                loadSelect2();
+
 
 
 
