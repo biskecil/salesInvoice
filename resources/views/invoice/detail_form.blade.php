@@ -201,18 +201,18 @@
                             <div class="px-3 py-2 border-bottom bg-light">
                                 <div class="row g-2 align-items-center">
                                     <div class="col-auto">
-                                        <label for="totalgwall" class="form-label small mb-0">Total Berat Kotor</label>
+                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat Kotor</label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end" id="totalgwall"
+                                        <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
                                             type="number" value="{{ $data->Weight }}" name="total_berat_kotor"
                                             readonly>
                                     </div>
                                     <div class="col-auto">
-                                        <label for="totalnwall" class="form-label small mb-0">Total Berat Bersih</label>
+                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat Bersih</label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end" id="totalnwall"
+                                        <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
                                             type="number" value="{{ $data->NetWeight }}" name="total_berat_bersih"
                                             readonly>
                                     </div>
@@ -248,7 +248,7 @@
                                                             value="{{ $item->caratSW }}" readonly></td>
                                                     <td><input type="number" name="wbruto[]"
                                                             class="form-control form-control-sm wbruto text-end"
-                                                            min="0" value="{{ $item->gw }}" step="0.01">
+                                                            min="0" value="{{ $item->gw }}" step="0.01" readonly>
                                                     </td>
                                                     <td><input type="number" name="price[]"
                                                             class="form-control form-control-sm price text-end"
@@ -266,7 +266,7 @@
                                                         </td>
                                                         <td class="isPriceCust "><input type="number" name="wnetocust[]"
                                                                 class="form-control form-control-sm wnetocust text-end"
-                                                                value="{{ $item->netCust }}" min="0"
+                                                                value="{{ $item->netCust }}" min="0" readonly
                                                                 step="0.01"></td>
                                                     @endif
                                                 </tr>

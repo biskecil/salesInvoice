@@ -159,14 +159,6 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat Kotor</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" id="totalgwall" type="number" rows="2"
-                                            placeholder="Total Berat" name="total_berat" readonly
-                                            value="{{ $data->Weight }}">
-                                    </div>
-                                </div>
                             </div>
 
                             <!-- RIGHT -->
@@ -178,7 +170,8 @@
                                             <option value="">Pilih Data</option>
                                             @foreach ($kadar as $d)
                                                 <option value="{{ $d->SW }}"
-                                                    {{ $data->Carat == $d->SW ? 'selected' : '' }}>
+                                                    {{ $data->Carat == $d->SW ? 'selected' : '' }}
+                                                    data-color="{{ $d->color }}">
                                                     {{ $d->SW }}</option>
                                             @endforeach
                                         </select>
@@ -216,6 +209,28 @@
                                     <button type="button" class="btn btn-sm btn-success" id="addRow">
                                         + Item
                                     </button>
+                                </div>
+                            </div>
+                            <div class="px-3 py-2 border-bottom bg-light">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-auto">
+                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat
+                                            Kotor</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
+                                            type="number" value="{{ $data->Weight }}" name="total_berat_kotor"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat
+                                            Bersih</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
+                                            type="number" value="{{ $data->NetWeight }}" name="total_berat_bersih"
+                                            readonly>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -315,7 +330,8 @@
 
 
                     <h6 class="mt-3">Pilih Kategori</h6>
-                    <select class="form-control" id="descItem">
+                    <select class="form-control select2Scan" id="descItem">
+                        <option value="">Pilih Data</option>
                         @foreach ($desc as $d)
                             <option value="{{ $d->Description }}">{{ $d->Description }}</option>
                         @endforeach
@@ -475,6 +491,30 @@
             });
         }
 
+        function loadSelect2Scan() {
+            $('.select2Scan').val('').trigger('change');
+            $(document).on('mousedown', '.select2-selection.select2-selection--single', function(e) {
+                let $select = $(this).closest('.select2-container').siblings('select:enabled');
+                if (!$select.data('select2').isOpen()) {
+                    $select.select2('open');
+                }
+                e.preventDefault();
+            });
+
+            $(document).on('select2:open', () => {
+                setTimeout(() => {
+                    document.querySelector('.select2-container--open .select2-search__field').focus();
+                }, 0);
+            });
+
+
+            $('.select2Scan').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#scanModal'),
+                width: '100%',
+            });
+        }
+
         function loadSelect2() {
             $(document).on('focus', '.select2-selection.select2-selection--single', function() {
                 let $select = $(this).closest('.select2-container').siblings('select:enabled');
@@ -489,12 +529,54 @@
             });
 
             $('.select2').select2({
-                // placeholder: "Pilih kategori",
-                // allowClear: true,
                 theme: 'bootstrap-5',
-                width: '100%'
+                width: '100%',
+                templateResult: function(data) {
+                    if (!data.id) return data.text;
+
+                    var color = $(data.element).data('color');
+                    var $result = $('<span></span>').text(data.text);
+
+                    if (color) {
+                        var textColor = getContrastYIQ(color);
+                        $result.css({
+                            'background-color': color,
+                            'color': textColor,
+                            'padding': '2px 6px',
+                            'border-radius': '4px'
+                        });
+                    }
+                    return $result;
+                },
+                templateSelection: function(data) {
+                    if (!data.id) return data.text;
+
+                    var color = $(data.element).data('color');
+                    var $result = $('<span></span>').text(data.text);
+
+                    if (color) {
+                        var textColor = getContrastYIQ(color);
+                        $result.css({
+                            'background-color': color,
+                            'color': textColor,
+                            'padding': '2px 6px',
+                            'border-radius': '4px'
+                        });
+                    }
+                    return $result;
+                }
             });
         }
+
+        function getContrastYIQ(hexcolor) {
+            hexcolor = hexcolor.replace('#', '');
+            var r = parseInt(hexcolor.substr(0, 2), 16);
+            var g = parseInt(hexcolor.substr(2, 2), 16);
+            var b = parseInt(hexcolor.substr(4, 2), 16);
+            var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            return (yiq >= 128) ? '#000' : '#fff';
+        }
+
 
         $(document).ready(function() {
             loadSelect2();
@@ -574,6 +656,7 @@
             const qrInput = document.getElementById("qrcode");
             const isHargaCheck = document.getElementById("is_harga_cust");
             const totalgwallInput = document.getElementById("totalgwall");
+            const totalnwallInput = document.getElementById("totalnwall");
             const descInput = document.getElementById("descItem");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");
@@ -587,6 +670,7 @@
             let setGrosir = '';
             let totalgw = 0;
             let totalgwall = @json($data->Weight);
+            let totalnwall = @json($data->NetWeight);
             let totalnw = 0;
             let carat = '';
             let desc_item = '';
@@ -603,7 +687,7 @@
 
 
 
-            // transDateinput.value = `${yyyy}-${mm}-${dd}`;
+
 
             $('#grosir').on('change', function() {
                 let id = this.value;
@@ -624,7 +708,13 @@
 
                         fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                             if (priceInput) priceInput.value = hasil.price;
-                            if (priceCustInput) priceCustInput.value = hasil.priceCust;
+                            if (priceCustInput) {
+                                let newVal = parseFloat(hasil.priceCust) || 0;
+                                if (newVal !== 0) {
+                                    priceCustInput.value = newVal.toFixed(
+                                        2);
+                                }
+                            }
 
                             if (brutoInput && priceCustInput) {
                                 let bruto = parseFloat(brutoInput.value) || 0;
@@ -639,6 +729,12 @@
                                 let net = bruto * price;
                                 netInput.value = net.toFixed(3);
                             }
+                            let totalnwall = 0;
+                            document.querySelectorAll(".wnet").forEach(el => {
+                                totalnwall += parseFloat(el.value) || 0;
+                            });
+
+                            totalnwallInput.value = totalnwall.toFixed(3);
                         });
                     });
 
@@ -671,7 +767,12 @@
 
                     fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                         if (priceInput) priceInput.value = hasil.price;
-                        if (priceCustInput) priceCustInput.value = hasil.priceCust;
+                        if (priceCustInput) {
+                            let newVal = parseFloat(hasil.priceCust) || 0;
+                            if (newVal !== 0) {
+                                priceCustInput.value = newVal.toFixed(2);
+                            }
+                        }
 
                         if (brutoInput && priceCustInput) {
                             let bruto = parseFloat(brutoInput.value) || 0;
@@ -686,6 +787,12 @@
                             let net = bruto * price;
                             netInput.value = net.toFixed(3);
                         }
+                        let totalnwall = 0;
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            totalnwall += parseFloat(el.value) || 0;
+                        });
+
+                        totalnwallInput.value = totalnwall.toFixed(3);
                     });
                 });
             });
@@ -743,8 +850,6 @@
                     itemsTable.appendChild(newRow);
 
                     let $select = $(newRow).find('.select2').select2({
-                        // placeholder: "Pilih kategori",
-                        // allowClear: true,
                         theme: 'bootstrap-5',
                         width: '100%'
                     });
@@ -786,6 +891,14 @@
 
                 let myModal = new bootstrap.Modal(document.getElementById("scanModal"));
                 myModal.show();
+
+                document.getElementById("scanModal").addEventListener("shown.bs.modal", function() {
+                    document.getElementById("barcodeInput").focus();
+                }, {
+                    once: true
+                });
+
+                loadSelect2Scan();
             });
 
 
@@ -895,6 +1008,7 @@
                 let netInput = tr.find('.wnet');
                 let netInputCust = tr.find('.wnetocust');
                 let total = 0;
+                let totalnw = 0;
 
                 try {
                     const hasilTimbang = await kliktimbang();
@@ -907,8 +1021,12 @@
                     document.querySelectorAll(".wbruto").forEach(el => {
                         total += parseFloat(el.value) || 0;
                     });
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        totalnw += parseFloat(el.value) || 0;
+                    });
 
                     totalgwallInput.value = total.toFixed(2);
+                    totalnwallInput.value = totalnw.toFixed(3);
 
 
                 } catch (error) {
@@ -937,6 +1055,7 @@
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
                     if (priceInput.length) priceInput.val(hasil.price);
+
                     if (priceCustInput) {
                         let newVal = parseFloat(hasil.priceCust) || 0;
                         if (newVal !== 0) {
@@ -956,8 +1075,66 @@
                         let net = bruto * price;
                         netInput.val(net.toFixed(3));
                     }
+                    let totalnwall = 0;
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        totalnwall += parseFloat(el.value) || 0;
+                    });
+
+                    totalnwallInput.value = totalnwall.toFixed(3);
                 });
             });
+
+            itemsTable.addEventListener("focus", function(e) {
+                if (e.target.classList.contains("wbruto")) {
+                    if (e.target.value === "0.00") {
+                        e.target.value = "";
+                    }
+
+
+                    setTimeout(() => {
+                        e.target.select();
+                    }, 0);
+                }
+            }, true);
+
+
+            itemsTable.addEventListener("blur", function(e) {
+                if (e.target.classList.contains("wbruto")) {
+                    let val = e.target.value;
+
+                    if (val === "" || isNaN(val)) {
+                        e.target.value = "0.00";
+                    } else {
+                        e.target.value = parseFloat(val).toFixed(2);
+                    }
+                }
+            }, true);
+
+            itemsTable.addEventListener("focus", function(e) {
+                if (e.target.classList.contains("pricecust")) {
+                    if (e.target.value === "0.00") {
+                        e.target.value = "";
+                    }
+
+
+                    setTimeout(() => {
+                        e.target.select();
+                    }, 0);
+                }
+            }, true);
+
+
+            itemsTable.addEventListener("blur", function(e) {
+                if (e.target.classList.contains("pricecust")) {
+                    let val = e.target.value;
+
+                    if (val === "" || isNaN(val)) {
+                        e.target.value = "0.00";
+                    } else {
+                        e.target.value = parseFloat(val).toFixed(2);
+                    }
+                }
+            }, true);
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
@@ -975,30 +1152,43 @@
                 netInputCust.value = netCust.toFixed(3);
 
                 let total = 0;
+                let totalnw = 0;
 
                 document.querySelectorAll(".wbruto").forEach(el => {
                     total += parseFloat(el.value) || 0;
                 });
+                document.querySelectorAll(".wnet").forEach(el => {
+                    totalnw += parseFloat(el.value) || 0;
+                });
 
                 totalgwallInput.value = total.toFixed(2);
+                totalnwallInput.value = totalnw.toFixed(3);
             });
             itemsTable.addEventListener("click", function(e) {
                 if (e.target.classList.contains("removeRow")) {
                     const row = e.target.closest("tr");
 
                     const gwall = row.cells[2].querySelector("input").value;
+                    const nwall = row.cells[4].querySelector("input").value;
                     totalgwall -= gwall;
+                    totalnwall -= nwall;
                     totalgwallInput.value = totalgwall;
+                    totalnwallInput.value = totalnwall;
 
 
                     e.target.closest("tr").remove();
 
                     let total = 0;
+                    let totalnw = 0;
                     document.querySelectorAll(".wbruto").forEach(el => {
                         total += parseFloat(el.value) || 0;
                     });
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        totalnw += parseFloat(el.value) || 0;
+                    });
 
                     totalgwallInput.value = total.toFixed(2);
+                    totalnwallInput.value = totalnw.toFixed(3);
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -1033,7 +1223,6 @@
 
 
 
-            // ketika user tekan Enter
             barcodeInput.addEventListener("keypress", function(e) {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -1119,6 +1308,7 @@
                 // modal.hide();
 
             });
+
             document.getElementById("btnTambahkan").addEventListener("click", function() {
                 if (totalItem.innerText <= 0) {
                     Swal.fire({
@@ -1130,27 +1320,45 @@
                     return false;
                 }
 
+                if (descInput.value == '') {
+                    Swal.fire({
+                        title: "Info",
+                        text: "Kategori Kosong",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
+
                 let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
+                let subtotalnwall = parseFloat(totalnwallInput.value) || 0;
                 let gwBaru = parseFloat(totalgw) || 0;
+                let nwBaru = parseFloat(totalnw) || 0;
 
                 totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
+                totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
 
-                let = desc_item = descInput.value;
+                let desc_item = descInput.value;
                 let carat = caratInput.value;
+                let itemScangw = 0;
+                let itemScannw = 0;
                 itemScanBcd.forEach(item => {
-                    let newRow = document.createElement("tr");
-                    newRow.innerHTML = `
+                    itemScangw += item.gw;
+                    itemScannw += item.nw;
+                });
+                let newRow = document.createElement("tr");
+                newRow.innerHTML = `
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${item.gw}" step="0.01">
+   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${itemScangw}" step="0.01">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
                 <td><input type="number" name="price[]" class="form-control text-end form-control-sm price" min="0" readonly step="0.01"></td>
-                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${item.nw}" readonly step="0.01"></td>
+                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${itemScannw}" readonly step="0.01"></td>
                 <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  placeholder="0.00"  step="0.01"></td>
                 <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
                 <td class="text-center isEdit">
@@ -1158,20 +1366,32 @@
                 </td>
 
                             `;
-                    itemsTable.appendChild(newRow);
+                itemsTable.appendChild(newRow);
 
-                    let $select = $(newRow).find('.select2').select2({
-                        // placeholder: "Pilih kategori",
-                        // allowClear: true,
-                        theme: 'bootstrap-5',
-                        width: '100%'
-                    });
-
-                    $select.val(desc_item).trigger("change");
-                    loadSelect2();
+                let $select = $(newRow).find('.select2').select2({
+                    // placeholder: "Pilih kategori",
+                    // allowClear: true,
+                    theme: 'bootstrap-5',
+                    width: '100%'
                 });
+
+                $select.val(desc_item).trigger("change");
+                loadSelect2();
+
+
+
+
                 itemScanBcd = [];
                 resetTableScan()
+
+
+                let modalEl = document.getElementById("scanModal");
+                let modal = bootstrap.Modal.getInstance(modalEl);
+                if (!modal) {
+                    modal = new bootstrap.Modal(modalEl);
+                }
+                modal.hide();
+
             });
 
 

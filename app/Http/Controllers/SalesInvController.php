@@ -111,6 +111,12 @@ class SalesInvController extends Controller
             LPAD(SW, 4, '0')
         ) as noNota")
             )
+            ->addSelect([
+                'netweight' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Netto)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.ID')
+                    ->limit(1),
+            ])
             ->whereRaw("CONCAT(
         CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
         Grosir,
@@ -187,6 +193,7 @@ class SalesInvController extends Controller
             $invoice->Grosir = $getGrosirID[0]->ID;
             $invoice->Venue = $data->Venue;
             $invoice->Weight = $data->Weight;
+            $invoice->NetWeight = number_format($data->netweight, 3, '.', '');
             $invoice->Remarks = $data->Remarks;
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
@@ -197,7 +204,23 @@ class SalesInvController extends Controller
 
             $cust = DB::table('customer')->orderBy('Description')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
-            $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
+            $kadar = DB::table('carat')->select(
+                'ID',
+                'SW',
+                DB::raw("CASE
+            WHEN SW = '6K' THEN '#0000FF'
+            WHEN SW = '8K' THEN '#00FF00'
+            WHEN SW = '8KP' THEN '#CFB370'
+            WHEN SW = '10K' THEN '#FFFF00'
+            WHEN SW = '16K' THEN '#FF0000'
+            WHEN SW = '17K' THEN '#FF6E01'
+            WHEN SW = '17KP' THEN '#FF00FF'
+            WHEN SW = '19K' THEN '#5F2987'
+            WHEN SW = '20K' THEN '#FFC0CB'
+            ELSE '#808080'
+        END as color")
+            )
+                ->orderBy('SW')->get();
             $venue = DB::table('venue')->orderBy('Description')->get();
 
             return view('invoice.edit_form', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust, 'invoice_list' => $invoice_list]);

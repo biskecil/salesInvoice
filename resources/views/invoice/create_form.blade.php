@@ -1282,6 +1282,15 @@
                     return false;
                 }
 
+                if (descInput.value == '') {
+                    Swal.fire({
+                        title: "Info",
+                        text: "Kategori Kosong",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
 
 
                 let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
@@ -1292,7 +1301,7 @@
                 totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
                 totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
 
-                let = desc_item = descInput.value;
+                let desc_item = descInput.value;
                 let carat = caratInput.value;
                 let itemScangw = 0;
                 let itemScannw = 0;
@@ -1340,9 +1349,9 @@
 
 
                 let modalEl = document.getElementById("scanModal");
-                let modal = bootstrap.Modal.getInstance(modalEl); 
+                let modal = bootstrap.Modal.getInstance(modalEl);
                 if (!modal) {
-                    modal = new bootstrap.Modal(modalEl); 
+                    modal = new bootstrap.Modal(modalEl);
                 }
                 modal.hide();
 
