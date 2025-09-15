@@ -222,6 +222,12 @@ class SalesInvController extends Controller
                 LPAD(SW, 4, '0')
             ) as noNota")
             )
+            ->addSelect([
+                'netweight' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Netto)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.ID')
+                    ->limit(1),
+            ])
             ->whereRaw("CONCAT(
             CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
             Grosir,
@@ -298,7 +304,8 @@ class SalesInvController extends Controller
             $invoice->Event = $data->Event;
             $invoice->Grosir = $getGrosirID[0]->SW;
             $invoice->Venue = $data->Venue;
-            $invoice->Weight = $data->Weight;
+            $invoice->Weight = number_format($data->Weight, 2, '.', '');
+            $invoice->NetWeight = number_format($data->netweight, 3, '.', '');
             $invoice->Remarks = $data->Remarks;
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;

@@ -143,14 +143,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat Kotor</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" id="totalgwall" type="number" rows="2"
-                                            placeholder="Total Berat" name="total_berat" readonly
-                                            value="{{ $data->Weight }}">
-                                    </div>
-                                </div>
+
                             </div>
 
                             <!-- RIGHT -->
@@ -191,13 +184,24 @@
                         <div class="card mt-4 shadow-sm">
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0 fw-bold">Daftar Item</h6>
-                                <div>
-                                    <button type="button" class="btn btn-sm btn-success d-none">
-                                        Scan Item
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-success d-none">
-                                        + Item
-                                    </button>
+                            
+                            </div>
+                            <div class="px-3 py-2 border-bottom bg-light">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-auto">
+                                        <label for="totalgwall" class="form-label small mb-0">Total Berat Kotor</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control form-control-sm text-end" id="totalgwall"
+                                            type="number" value="{{ $data->Weight }}" name="total_berat_kotor" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="totalnwall" class="form-label small mb-0">Total Berat Bersih</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control form-control-sm text-end" id="totalnwall"
+                                            type="number" value="{{ $data->NetWeight }}"  name="total_berat_bersih" readonly>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -409,7 +413,7 @@
             $('.buttonForm').prop('disabled', true);
 
             $('#btnEdit').on('click', function() {
-               
+
 
                 $.ajax({
                     url: '/sales/edit/' + noNota,

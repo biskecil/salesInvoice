@@ -150,13 +150,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat Kotor</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" id="totalgwall" type="number" value="0.00"
-                                            rows="2" placeholder="Total Berat" name="total_berat" readonly>
-                                    </div>
-                                </div>
+
                             </div>
 
                             <!-- RIGHT -->
@@ -204,6 +198,24 @@
                                     <button type="button" class="btn btn-sm btn-success" id="addRow">
                                         + Item
                                     </button>
+                                </div>
+                            </div>
+                            <div class="px-3 py-2 border-bottom bg-light">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-auto">
+                                        <label for="totalgwall" class="form-label small mb-0">Total Berat Kotor</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control form-control-sm text-end" id="totalgwall"
+                                            type="number" value="0.00" name="total_berat_kotor" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="totalnwall" class="form-label small mb-0">Total Berat Bersih</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control form-control-sm text-end" id="totalnwall"
+                                            type="number" value="0.00" name="total_berat_bersih" readonly>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -452,19 +464,28 @@
 
                         // ambil nilai gwall (kolom ke-3)
                         const gwall = lastRow.cells[2].querySelector("input").value;
+                        const nwall = row.cells[4].querySelector("input").value;
                         totalgwall -= gwall;
+                        totalnwall -= nwall;
                         totalgwallInput.value = totalgwall;
+                        totalnwallInput.value = totalnwall;
+
 
                         // hapus baris
                         lastRow.remove();
 
                         // hitung ulang total
                         let total = 0;
+                        let totalnw = 0;
                         document.querySelectorAll(".wbruto").forEach(el => {
                             total += parseFloat(el.value) || 0;
                         });
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            totalnw += parseFloat(el.value) || 0;
+                        });
 
                         totalgwallInput.value = total.toFixed(2);
+                        totalnwallInput.value = totalnw.toFixed(3);
                     }
                 }
             });
@@ -569,6 +590,7 @@
             const qrInput = document.getElementById("qrcode");
             const isHargaCheck = document.getElementById("is_harga_cust");
             const totalgwallInput = document.getElementById("totalgwall");
+            const totalnwallInput = document.getElementById("totalnwall");
             const descInput = document.getElementById("descItem");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");
@@ -582,6 +604,7 @@
             let setGrosir = '';
             let totalgw = 0;
             let totalgwall = 0;
+            let totalnwall = 0;
             let totalnw = 0;
             let carat = '';
             let desc_item = '';
@@ -640,6 +663,12 @@
                                 let net = bruto * price;
                                 netInput.value = net.toFixed(3);
                             }
+                            let totalnwall = 0;
+                            document.querySelectorAll(".wnet").forEach(el => {
+                                totalnwall += parseFloat(el.value) || 0;
+                            });
+
+                            totalnwallInput.value = totalnwall.toFixed(3);
                         });
                     });
 
@@ -692,6 +721,12 @@
                             let net = bruto * price;
                             netInput.value = net.toFixed(3);
                         }
+                        let totalnwall = 0;
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            totalnwall += parseFloat(el.value) || 0;
+                        });
+
+                        totalnwallInput.value = totalnwall.toFixed(3);
                     });
                 });
             });
@@ -714,47 +749,7 @@
 
 
 
-            function addRowItemsTable(item, options_cat) {
 
-                if (item[0].isHargaCheck) {
-                    document.querySelectorAll(".isPriceCust").forEach(el => {
-                        el.classList.remove("d-none");
-                    });
-                }
-
-                itemScan.forEach(item => {
-                    let newRow = document.createElement("tr");
-                    newRow.innerHTML = `
-           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
-            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${item.caratSW}" readonly></td>
-            <td>
-                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${item.gw}" step="0.01">
-   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
-</div>
-                </td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"  value="${item.price}"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0"  value="${item.nw}" readonly step="0.01"></td>
-            <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control text-end form-control-sm pricecust" value="${item.priceCust}" min="0"  readonly step="0.01"></td>
-            <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control text-end form-control-sm wnetocust" value="${item.netCust}" min="0" step="0.01"></td>
-            <td class="text-center isEdit">
-                <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
-            </td>
-
-                        `;
-                    itemsTable.appendChild(newRow);
-
-                    let $select = $(newRow).find('.select2').select2({
-                        // placeholder: "Pilih kategori",
-                        // allowClear: true,
-                        theme: 'bootstrap-5',
-                        width: '100%'
-                    });
-
-                    $select.val(item.desc_item).trigger("change");
-
-                });
-            }
 
 
 
@@ -877,6 +872,7 @@
                         td.style.backgroundColor = "";
                     });
                 }, 1500);
+
                 // let selectEl = newRow.querySelector("select");
                 // if (selectEl) {
                 //     selectEl.focus();
@@ -897,6 +893,7 @@
                 let netInput = tr.find('.wnet');
                 let netInputCust = tr.find('.wnetocust');
                 let total = 0;
+                let totalnw = 0;
 
                 try {
                     const hasilTimbang = await kliktimbang();
@@ -909,8 +906,12 @@
                     document.querySelectorAll(".wbruto").forEach(el => {
                         total += parseFloat(el.value) || 0;
                     });
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        totalnw += parseFloat(el.value) || 0;
+                    });
 
                     totalgwallInput.value = total.toFixed(2);
+                    totalnwallInput.value = totalnw.toFixed(3);
 
 
                 } catch (error) {
@@ -959,6 +960,12 @@
                         let net = bruto * price;
                         netInput.val(net.toFixed(3));
                     }
+                    let totalnwall = 0;
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        totalnwall += parseFloat(el.value) || 0;
+                    });
+
+                    totalnwallInput.value = totalnwall.toFixed(3);
                 });
             });
 
@@ -1030,30 +1037,43 @@
                 netInputCust.value = netCust.toFixed(3);
 
                 let total = 0;
+                let totalnw = 0;
 
                 document.querySelectorAll(".wbruto").forEach(el => {
                     total += parseFloat(el.value) || 0;
                 });
+                document.querySelectorAll(".wnet").forEach(el => {
+                    totalnw += parseFloat(el.value) || 0;
+                });
 
                 totalgwallInput.value = total.toFixed(2);
+                totalnwallInput.value = totalnw.toFixed(3);
             });
             itemsTable.addEventListener("click", function(e) {
                 if (e.target.classList.contains("removeRow")) {
                     const row = e.target.closest("tr");
 
                     const gwall = row.cells[2].querySelector("input").value;
+                    const nwall = row.cells[4].querySelector("input").value;
                     totalgwall -= gwall;
+                    totalnwall -= nwall;
                     totalgwallInput.value = totalgwall;
+                    totalnwallInput.value = totalnwall;
 
 
                     e.target.closest("tr").remove();
 
                     let total = 0;
+                    let totalnw = 0;
                     document.querySelectorAll(".wbruto").forEach(el => {
                         total += parseFloat(el.value) || 0;
                     });
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        totalnw += parseFloat(el.value) || 0;
+                    });
 
                     totalgwallInput.value = total.toFixed(2);
+                    totalnwallInput.value = totalnw.toFixed(3);
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -1185,10 +1205,15 @@
                     return false;
                 }
 
+
+
                 let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
+                let subtotalnwall = parseFloat(totalnwallInput.value) || 0;
                 let gwBaru = parseFloat(totalgw) || 0;
+                let nwBaru = parseFloat(totalnw) || 0;
 
                 totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
+                totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
 
                 let = desc_item = descInput.value;
                 let carat = caratInput.value;
@@ -1225,6 +1250,9 @@
                     $select.val(desc_item).trigger("change");
                     loadSelect2();
                 });
+
+
+
                 itemScanBcd = [];
                 resetTableScan()
             });
