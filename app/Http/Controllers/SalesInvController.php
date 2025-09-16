@@ -172,11 +172,11 @@ class SalesInvController extends Controller
 
             $data_list = $data_item->get()->map(function ($item) {
                 $item->custom_field = $item->IDM;
-                $item->gw = number_format($item->Weight, 2, '.', '');
-                $item->nw =  number_format($item->Netto, 3, '.', '');
-                $item->price =  number_format($item->Price, 3, '.', '');
-                $item->priceCust =  number_format($item->PriceCust, 3, '.', '');
-                $item->netCust =  number_format($item->NettoCust, 3, '.', '');
+                $item->gw = number_format($item->Weight, 2, '.', ',');
+                $item->nw =  number_format($item->Netto, 3, '.', ',');
+                $item->price =  number_format($item->Price, 3, '.', ',');
+                $item->priceCust =  number_format($item->PriceCust, 3, '.', ',');
+                $item->netCust =  number_format($item->NettoCust, 3, '.', ',');
                 $item->isHargaCheck = $item->custprice + $item->nettcust  > 0 ? true : false;
                 return $item;
             });
@@ -197,7 +197,7 @@ class SalesInvController extends Controller
             $invoice->Grosir = $getGrosirID[0]->ID;
             $invoice->Venue = $data->Venue;
             $invoice->Weight = $data->Weight;
-            $invoice->NetWeight = number_format($data->netweight, 3, '.', '');
+            $invoice->NetWeight = number_format($data->netweight, 3, '.', ',');
             $invoice->Remarks = $data->Remarks;
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
@@ -732,7 +732,7 @@ class SalesInvController extends Controller
                 $cekOpnameItem->delete();
                 $total_weight = 0;
                 for ($i = 0; $i < count($request->cadar); $i++) {
-                    $total_weight +=  $request->wbruto[$i];
+                    $total_weight +=  $this->parseNumeric($request->wbruto[$i]);
                     $descCat = $request->category[$i];
                     $descCarat = $request->cadar[$i];
                     $getProductSW = DB::select("SELECT ID FROM product WHERE Description = ?", [$descCat]);
@@ -743,11 +743,11 @@ class SalesInvController extends Controller
                         'Ordinal' => $i + 1,
                         'Product' =>  $getProductSW[0]->ID,
                         'Carat' =>  $getCarat[0]->ID,
-                        'Weight' => $request->wbruto[$i],
-                        'Price' => $request->price[$i],
-                        'Netto' => $request->wnet[$i],
-                        'PriceCust' => isset($request->harga) ? $request->pricecust[$i] : 0,
-                        'NettoCust' => isset($request->harga) ? $request->wnetocust[$i] : 0,
+                        'Weight' => $this->parseNumeric($request->wbruto[$i]),
+                        'Price' => $this->parseNumeric($request->price[$i]),
+                        'Netto' => $this->parseNumeric($request->wnet[$i]),
+                        'PriceCust' => isset($request->harga) ? $this->parseNumeric($request->pricecust[$i]) : 0,
+                        'NettoCust' => isset($request->harga) ? $this->parseNumeric($request->wnetocust[$i]) : 0,
                     ]);
                 }
                 DB::table('invoice')->where('ID', $id)->update(["Weight" => $total_weight]);

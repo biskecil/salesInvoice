@@ -219,7 +219,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
-                                            type="number" value="{{ $data->Weight }}" name="total_berat_kotor"
+                                            type="text" value="{{ $data->Weight }}" name="total_berat_kotor"
                                             readonly>
                                     </div>
                                     <div class="col-auto">
@@ -228,7 +228,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
-                                            type="number" value="{{ $data->NetWeight }}" name="total_berat_bersih"
+                                            type="text" value="{{ $data->NetWeight }}" name="total_berat_bersih"
                                             readonly>
                                     </div>
                                 </div>
@@ -472,22 +472,21 @@
                     const rows = itemsTable.querySelectorAll("tr");
                     if (rows.length > 1) { // misal biar header ga kehapus
                         const lastRow = rows[rows.length - 1];
-
-                        // ambil nilai gwall (kolom ke-3)
-                        const gwall = lastRow.cells[2].querySelector("input").value;
-                        totalgwall -= gwall;
-                        totalgwallInput.value = totalgwall;
-
                         // hapus baris
                         lastRow.remove();
 
-                        // hitung ulang total
                         let total = 0;
+                        let totalnw = 0;
                         document.querySelectorAll(".wbruto").forEach(el => {
-                            total += parseFloat(el.value) || 0;
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            total += an ? an.getNumber() : 0;
                         });
-
-                        totalgwallInput.value = total.toFixed(2);
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnw += an ? an.getNumber() : 0;
+                        });
+                        antotalgwallInput.set(total);
+                        antotalnwallInput.set(totalnw);
                     }
                 }
             });
@@ -647,9 +646,27 @@
                 });
             });
 
+            const optionsDec2 = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 2,
+                minimumValue: "0",
+                roundingMethod: 'S',
 
+                emptyInputBehavior: "zero"
+            };
+            const optionsDec3 = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 3,
+                minimumValue: "0",
+                roundingMethod: 'S',
 
+                emptyInputBehavior: "zero"
+            };
 
+            AutoNumeric.multiple('.autonumDec2', optionsDec2);
+            AutoNumeric.multiple('.autonumDec3', optionsDec3);
             const addRowBtn = document.getElementById("addRow");
             const itemsTable = document.getElementById("itemsTable").getElementsByTagName("tbody")[0];
             const itemScanTable = document.getElementById("itemScantable").getElementsByTagName("tbody")[0];
@@ -659,6 +676,8 @@
             const isHargaCheck = document.getElementById("is_harga_cust");
             const totalgwallInput = document.getElementById("totalgwall");
             const totalnwallInput = document.getElementById("totalnwall");
+            const antotalgwallInput = new AutoNumeric('#totalgwall', optionsDec2);
+            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3);
             const descInput = document.getElementById("descItem");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");
@@ -681,14 +700,62 @@
             let itemScanBcd = [];
             let scanIndex = 0;
             let options_cat = `
-              <option value="">Pilih Data</option>
+            <option value="">Pilih Data</option>
 @foreach ($desc as $d)
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
 `;
 
+            setGrosir = '{{ $data->Grosir }}';
+            carat = '{{ $data->Carat }}';
+            itemScan = @json($data->ItemList);
+            addRowItemsTable(itemScan, options_cat);
 
+            function addRowItemsTable(item, options_cat) {
 
+                if (item[0].isHargaCheck) {
+                    document.querySelectorAll(".isPriceCust").forEach(el => {
+                        el.classList.remove("d-none");
+                    });
+                }
+
+                itemScan.forEach(item => {
+                    let newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
+            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${item.caratSW}" readonly></td>
+            <td>
+                     <div class="input-group input-group-sm mb-2">
+   <input type="text" name="wbruto[]" class="autonumDec2 form-control form-control-sm wbruto text-end"   value="${item.gw}" >
+   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
+</div>
+                </td>
+            <td><input type="text" name="price[]" class="autonumDec3 form-control form-control-sm price text-end" readonly   value="${item.price}"></td>
+            <td><input type="text" name="wnet[]" class="autonumDec3 form-control form-control-sm wnet text-end"  value="${item.nw}" readonly ></td>
+            <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 form-control text-end form-control-sm pricecust" value="${item.priceCust}"   ></td>
+            <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 form-control text-end form-control-sm wnetocust" value="${item.netCust}"  readonly></td>
+            <td class="text-center isEdit">
+                <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
+            </td>
+
+                        `;
+                    itemsTable.appendChild(newRow);
+
+                    newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                        new AutoNumeric(el, optionsDec2);
+                    });
+                    newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                        new AutoNumeric(el, optionsDec3);
+                    });
+                    let $select = $(newRow).find('.select2').select2({
+                        theme: 'bootstrap-5',
+                        width: '100%'
+                    });
+
+                    $select.val(item.desc_item).trigger("change");
+
+                });
+            }
 
 
             $('#grosir').on('change', function() {
@@ -703,40 +770,46 @@
                         let netInputCust = row.querySelector('.wnetocust');
                         let priceCustInput = row.querySelector(".pricecust");
 
+                        let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                        let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                        let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                        let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                        let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
                         if (!categorySelect) return;
 
                         let selectedCat = categorySelect.value;
 
 
                         fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                            if (priceInput) priceInput.value = hasil.price;
+                            if (priceInput) anPrice.set(hasil.price);
                             if (priceCustInput) {
-                                let newVal = parseFloat(hasil.priceCust) || 0;
+                                let newVal = hasil.priceCust || 0;
                                 if (newVal !== 0) {
-                                    priceCustInput.value = newVal.toFixed(
-                                        2);
+                                    anPriceCust.set(newVal);
                                 }
                             }
 
                             if (brutoInput && priceCustInput) {
-                                let bruto = parseFloat(brutoInput.value) || 0;
-                                let priceCust = parseFloat(priceCustInput.value) || 0;
+                                let bruto = anBruto.getNumber() || 0;
+                                let priceCust = anPriceCust.getNumber() || 0;
                                 let netCust = bruto * priceCust;
-                                netInputCust.value = netCust.toFixed(3);
+                                anNetCust.set(netCust);
                             }
 
                             if (brutoInput && priceInput && netInput) {
-                                let bruto = parseFloat(brutoInput.value) || 0;
-                                let price = parseFloat(priceInput.value) || 0;
+                                let bruto = anBruto.getNumber() || 0;
+                                let price = anPrice.getNumber() || 0;
                                 let net = bruto * price;
-                                netInput.value = net.toFixed(3);
+                                anNet.set(net);
                             }
                             let totalnwall = 0;
                             document.querySelectorAll(".wnet").forEach(el => {
-                                totalnwall += parseFloat(el.value) || 0;
+                                const an = AutoNumeric.getAutoNumericElement(el);
+                                totalnwall += an.getNumber() || 0;
                             });
 
-                            totalnwallInput.value = totalnwall.toFixed(3);
+                            antotalnwallInput.set(totalnwall);
                         });
                     });
 
@@ -761,6 +834,12 @@
                     let netInput = row.querySelector(".wnet");
                     let netInputCust = row.querySelector('.wnetocust');
 
+                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
 
                     if (!categorySelect) return;
 
@@ -768,33 +847,34 @@
 
 
                     fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                        if (priceInput) priceInput.value = hasil.price;
+                        if (priceInput) anPrice.set(hasil.price);
                         if (priceCustInput) {
-                            let newVal = parseFloat(hasil.priceCust) || 0;
+                            let newVal = hasil.priceCust || 0;
                             if (newVal !== 0) {
-                                priceCustInput.value = newVal.toFixed(2);
+                                anPriceCust.set(newVal);
                             }
                         }
 
                         if (brutoInput && priceCustInput) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let priceCust = parseFloat(priceCustInput.value) || 0;
+                            let bruto = anBruto.getNumber() || 0;
+                            let priceCust = anPriceCust.getNumber() || 0;
                             let netCust = bruto * priceCust;
-                            netInputCust.value = netCust.toFixed(3);
+                            anNetCust.set(netCust);
                         }
 
                         if (brutoInput && priceInput && netInput) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let price = parseFloat(priceInput.value) || 0;
+                            let bruto = anBruto.getNumber() || 0;
+                            let price = anPrice.getNumber() || 0;
                             let net = bruto * price;
-                            netInput.value = net.toFixed(3);
+                            anNet.set(net);
                         }
                         let totalnwall = 0;
                         document.querySelectorAll(".wnet").forEach(el => {
-                            totalnwall += parseFloat(el.value) || 0;
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnwall += an.getNumber() || 0;
                         });
 
-                        totalnwallInput.value = totalnwall.toFixed(3);
+                        antotalnwallInput.set(totalnwall);
                     });
                 });
             });
@@ -816,50 +896,8 @@
             });
 
 
-            setGrosir = '{{ $data->Grosir }}';
-            carat = '{{ $data->Carat }}';
-            itemScan = @json($data->ItemList);
-            addRowItemsTable(itemScan, options_cat);
 
-            function addRowItemsTable(item, options_cat) {
 
-                if (item[0].isHargaCheck) {
-                    document.querySelectorAll(".isPriceCust").forEach(el => {
-                        el.classList.remove("d-none");
-                    });
-                }
-
-                itemScan.forEach(item => {
-                    let newRow = document.createElement("tr");
-                    newRow.innerHTML = `
-           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
-            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${item.caratSW}" readonly></td>
-            <td>
-                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${item.gw}" step="0.01">
-   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
-</div>
-                </td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"  value="${item.price}"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0"  value="${item.nw}" readonly step="0.01"></td>
-            <td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="form-control text-end form-control-sm pricecust" value="${item.priceCust}" min="0"   step="0.01"></td>
-            <td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="form-control text-end form-control-sm wnetocust" value="${item.netCust}" min="0" step="0.01" readonly></td>
-            <td class="text-center isEdit">
-                <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
-            </td>
-
-                        `;
-                    itemsTable.appendChild(newRow);
-
-                    let $select = $(newRow).find('.select2').select2({
-                        theme: 'bootstrap-5',
-                        width: '100%'
-                    });
-
-                    $select.val(item.desc_item).trigger("change");
-
-                });
-            }
 
 
 
@@ -900,7 +938,7 @@
                     once: true
                 });
 
-              //  loadSelect2Scan();
+                //  loadSelect2Scan();
             });
 
 
@@ -923,14 +961,14 @@
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
             <td>
               <div class="input-group input-group-sm mb-2">
-  <input type="number" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" placeholder="0.00">
+  <input type="text"  name="wbruto[]" class="autonumDec2 form-control wbruto text-end" placeholder="0.00">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0" readonly step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"   step="0.01"></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
+            <td><input type="text" name="price[]" class="autonumDec3 form-control form-control-sm price text-end" readonly ></td>
+            <td><input type="text" name="wnet[]" class="autonumDec3 form-control form-control-sm wnet text-end"  readonly ></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust" ></td>
+            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust" readonly></td>
             <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
@@ -947,13 +985,10 @@
                 //         let priceCustInput = row.querySelector(".pricecust");
 
                 //         if (priceInput) priceInput.value = hasil.price;
-
-
                 //         if (priceCustInput) {
                 //             let newVal = parseFloat(hasil.priceCust) || 0;
                 //             if (newVal !== 0) {
-                //                 priceCustInput.value = newVal.toFixed(
-                //                     2);
+                //                 priceCustInput.value = newVal.toFixed(2);
                 //             }
                 //         }
 
@@ -981,6 +1016,13 @@
                 // });
                 loadSelect2();
 
+
+                newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                    new AutoNumeric(el, optionsDec2);
+                });
+                newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                    new AutoNumeric(el, optionsDec3);
+                });
                 newRow.scrollIntoView({
                     behavior: "smooth",
                     block: "nearest"
@@ -994,6 +1036,11 @@
                         td.style.backgroundColor = "";
                     });
                 }, 1500);
+
+                // let selectEl = newRow.querySelector("select");
+                // if (selectEl) {
+                //     selectEl.focus();
+                // }
                 // let $select = $(newRow).find(".select2");
                 // $select.select2('open');
             });
@@ -1002,40 +1049,54 @@
 
             $('#itemsTable tbody').on('click', 'button.kalibrasi-btn', async function() {
                 let tr = $(this).closest('tr');
-                let priceInput = tr.find('.price');
-                let priceInputCust = tr.find('.pricecust');
-                let price = parseFloat(priceInput.val()) || 0;
-                let priceCust = parseFloat(priceInputCust.val()) || 0;
-                let brutoInput = tr.find('.wbruto');
-                let netInput = tr.find('.wnet');
-                let netInputCust = tr.find('.wnetocust');
+                let priceInput = tr.find('.price')[0];
+                let priceCustInput = tr.find('.pricecust')[0];
+                let brutoInput = tr.find('.wbruto')[0];
+                let netInput = tr.find('.wnet')[0];
+                let netInputCust = tr.find('.wnetocust')[0];
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+
                 let total = 0;
                 let totalnw = 0;
 
                 try {
                     const hasilTimbang = await kliktimbang();
-                    brutoInput.val(hasilTimbang);
+                    anBruto.set(hasilTimbang);
+
+                    let price = anPrice.getNumber() || 0;
+                    let priceCust = anPriceCust.getNumber() || 0;
+
                     let net = hasilTimbang * price;
                     let netCust = hasilTimbang * priceCust;
-                    netInput.val(net.toFixed(3));
-                    netInputCust.val(netCust.toFixed(3));
+
+                    anNetCust.set(netCust);
+                    anNet.set(net);
+
 
                     document.querySelectorAll(".wbruto").forEach(el => {
-                        total += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        total += an.getNumber() || 0;
                     });
                     document.querySelectorAll(".wnet").forEach(el => {
-                        totalnw += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnw += an.getNumber() || 0;
                     });
 
-                    totalgwallInput.value = total.toFixed(2);
-                    totalnwallInput.value = totalnw.toFixed(3);
+                    antotalgwallInput.set(total);
+                    antotalnwallInput.set(totalnw);
 
 
                 } catch (error) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: error,
+                        text: 'Periksa koneksi timbangan',
                         confirmButtonText: 'OK'
                     });
                 }
@@ -1048,149 +1109,172 @@
                 let selectedCat = $(this).val();
 
                 let cadarInput = tr.find('.cadar_item');
-                let brutoInput = tr.find('.wbruto');
-                let priceInput = tr.find('.price');
-                let priceCustInput = tr.find(".pricecust");
-                let netInput = tr.find('.wnet');
-                let netInputCust = tr.find('.wnetocust');
+                let brutoInput = tr.find('.wbruto')[0];
+                let priceInput = tr.find('.price')[0];
+                let priceCustInput = tr.find(".pricecust")[0];
+                let netInput = tr.find('.wnet')[0];
+                let netInputCust = tr.find('.wnetocust')[0];
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
 
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
-                    if (priceInput.length) priceInput.val(hasil.price);
+                    if (anPrice) {
+                        anPrice.set(hasil.price);
+                    } else {
+                        console.warn('AutoNumeric belum terpasang di', priceInput);
+                    }
+
+
 
                     if (priceCustInput) {
-                        let newVal = parseFloat(hasil.priceCust) || 0;
+                        let newVal = hasil.priceCust || 0;
                         if (newVal !== 0) {
-                            priceCustInput.val(newVal.toFixed(2));
+                            anPriceCust.set(newVal);
                         }
                     }
 
-                    if (brutoInput.length && priceCustInput.length) {
-                        let bruto = parseFloat(brutoInput.val()) || 0;
-                        let priceCust = parseFloat(priceCustInput.val()) || 0;
+                    if (brutoInput && priceCustInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let priceCust = anPriceCust.getNumber() || 0;
                         let netCust = bruto * priceCust;
-                        netInputCust.val(netCust.toFixed(3));
+                        anNetCust.set(netCust);
+
                     }
-                    if (brutoInput.length && priceInput.length && netInput.length) {
-                        let bruto = parseFloat(brutoInput.val()) || 0;
-                        let price = parseFloat(priceInput.val()) || 0;
+                    if (brutoInput && priceInput && netInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let price = anPrice.getNumber() || 0;
                         let net = bruto * price;
-                        netInput.val(net.toFixed(3));
+                        anNet.set(net);
                     }
                     let totalnwall = 0;
                     document.querySelectorAll(".wnet").forEach(el => {
-                        totalnwall += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnwall += an.getNumber() || 0;
                     });
 
-                    totalnwallInput.value = totalnwall.toFixed(3);
+                    antotalnwallInput.set(totalnwall);
+
                 });
             });
 
-            itemsTable.addEventListener("focus", function(e) {
-                if (e.target.classList.contains("wbruto")) {
-                    if (e.target.value === "0.00") {
-                        e.target.value = "";
-                    }
+            //AUTO CLEAR
+            // itemsTable.addEventListener("focus", function(e) {
+            //     if (e.target.classList.contains("wbruto")) {
+            //         if (e.target.value === "0.00") {
+            //             e.target.value = "";
+            //         }
 
 
-                    setTimeout(() => {
-                        e.target.select();
-                    }, 0);
-                }
-            }, true);
+            //         setTimeout(() => {
+            //             e.target.select();
+            //         }, 0);
+            //     }
+            // }, true);
 
 
-            itemsTable.addEventListener("blur", function(e) {
-                if (e.target.classList.contains("wbruto")) {
-                    let val = e.target.value;
+            // itemsTable.addEventListener("blur", function(e) {
+            //     if (e.target.classList.contains("wbruto")) {
+            //         let val = e.target.value;
 
-                    if (val === "" || isNaN(val)) {
-                        e.target.value = "0.00";
-                    } else {
-                        e.target.value = parseFloat(val).toFixed(2);
-                    }
-                }
-            }, true);
+            //         if (val === "" || isNaN(val)) {
+            //             e.target.value = "0.00";
+            //         } else {
+            //             e.target.value = parseFloat(val).toFixed(2);
+            //         }
+            //     }
+            // }, true);
 
-            itemsTable.addEventListener("focus", function(e) {
-                if (e.target.classList.contains("pricecust")) {
-                    if (e.target.value === "0.00") {
-                        e.target.value = "";
-                    }
-
-
-                    setTimeout(() => {
-                        e.target.select();
-                    }, 0);
-                }
-            }, true);
+            // itemsTable.addEventListener("focus", function(e) {
+            //     if (e.target.classList.contains("pricecust")) {
+            //         if (e.target.value === "0.00") {
+            //             e.target.value = "";
+            //         }
 
 
-            itemsTable.addEventListener("blur", function(e) {
-                if (e.target.classList.contains("pricecust")) {
-                    let val = e.target.value;
+            //         setTimeout(() => {
+            //             e.target.select();
+            //         }, 0);
+            //     }
+            // }, true);
 
-                    if (val === "" || isNaN(val)) {
-                        e.target.value = "0.00";
-                    } else {
-                        e.target.value = parseFloat(val).toFixed(2);
-                    }
-                }
-            }, true);
+
+            // itemsTable.addEventListener("blur", function(e) {
+            //     if (e.target.classList.contains("pricecust")) {
+            //         let val = e.target.value;
+
+            //         if (val === "" || isNaN(val)) {
+            //             e.target.value = "0.00";
+            //         } else {
+            //             e.target.value = parseFloat(val).toFixed(2);
+            //         }
+            //     }
+            // }, true);
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
                 let priceInputCust = tr.querySelector('.pricecust');
-                let priceInput = tr.querySelector('.price');
-                let brutoInput = tr.querySelector('.wbruto');
-                let netInput = tr.querySelector('.wnet');
                 let netInputCust = tr.querySelector('.wnetocust');
-                let bruto = parseFloat(brutoInput.value) || 0;
-                let price = parseFloat(priceInput.value) || 0;
-                let priceCust = parseFloat(priceInputCust.value) || 0;
+
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceInputCust);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+                let brutoInput = tr.querySelector('.wbruto');
+                let priceInput = tr.querySelector('.price');
+                let netInput = tr.querySelector('.wnet');
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+
+                let bruto = anBruto.getNumber() || 0;
+                let price = anPrice.getNumber() || 0;
+                let priceCust = anPriceCust.getNumber() || 0;
+
                 let net = bruto * price;
-                netInput.value = net.toFixed(3);
                 let netCust = bruto * priceCust;
-                netInputCust.value = netCust.toFixed(3);
+
+                anNet.set(net);
+                anNetCust.set(netCust);
 
                 let total = 0;
                 let totalnw = 0;
 
                 document.querySelectorAll(".wbruto").forEach(el => {
-                    total += parseFloat(el.value) || 0;
+                    const an = AutoNumeric.getAutoNumericElement(el);
+                    total += an.getNumber() || 0;
                 });
                 document.querySelectorAll(".wnet").forEach(el => {
-                    totalnw += parseFloat(el.value) || 0;
+                    const an = AutoNumeric.getAutoNumericElement(el);
+                    totalnw += an.getNumber() || 0;
                 });
 
-                totalgwallInput.value = total.toFixed(2);
-                totalnwallInput.value = totalnw.toFixed(3);
+                antotalgwallInput.set(total);
+                antotalnwallInput.set(totalnw);
             });
             itemsTable.addEventListener("click", function(e) {
                 if (e.target.classList.contains("removeRow")) {
                     const row = e.target.closest("tr");
-
-                    const gwall = row.cells[2].querySelector("input").value;
-                    const nwall = row.cells[4].querySelector("input").value;
-                    totalgwall -= gwall;
-                    totalnwall -= nwall;
-                    totalgwallInput.value = totalgwall;
-                    totalnwallInput.value = totalnwall;
-
 
                     e.target.closest("tr").remove();
 
                     let total = 0;
                     let totalnw = 0;
                     document.querySelectorAll(".wbruto").forEach(el => {
-                        total += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        total += an ? an.getNumber() : 0;
                     });
                     document.querySelectorAll(".wnet").forEach(el => {
-                        totalnw += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnw += an ? an.getNumber() : 0;
                     });
 
-                    totalgwallInput.value = total.toFixed(2);
-                    totalnwallInput.value = totalnw.toFixed(3);
+                    antotalgwallInput.set(total);
+                    antotalnwallInput.set(totalnw);
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -1225,6 +1309,7 @@
 
 
 
+            // ketika user tekan Enter
             barcodeInput.addEventListener("keypress", function(e) {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -1271,6 +1356,7 @@
             function resetTableScan() {
                 document.querySelector("#itemScantable tbody").innerHTML = "";
                 barcodeInput.value = '';
+                $('.select2Scan').val('');
                 totalgw = 0;
                 totalnw = 0;
                 totalItem.innerText = 0;
@@ -1310,7 +1396,6 @@
                 // modal.hide();
 
             });
-
             document.getElementById("btnTambahkan").addEventListener("click", function() {
                 if (totalItem.innerText <= 0) {
                     Swal.fire({
@@ -1332,13 +1417,16 @@
                     return false;
                 }
 
-                let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
-                let subtotalnwall = parseFloat(totalnwallInput.value) || 0;
+
+                let subtotalgwall = antotalgwallInput.getNumber() || 0;
+                let subtotalnwall = antotalnwallInput.getNumber() || 0;
                 let gwBaru = parseFloat(totalgw) || 0;
                 let nwBaru = parseFloat(totalnw) || 0;
 
-                totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
-                totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
+                // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
+                // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
+                antotalgwallInput.set(subtotalgwall + gwBaru);
+                antotalnwallInput.set(subtotalnwall + nwBaru);
 
                 let desc_item = descInput.value;
                 let carat = caratInput.value;
@@ -1354,15 +1442,15 @@
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${itemScangw}" step="0.01">
+   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScangw}" >
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
-                <td><input type="number" name="price[]" class="form-control text-end form-control-sm price" min="0" readonly step="0.01"></td>
-                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${itemScannw}" readonly step="0.01"></td>
-                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  placeholder="0.00"  step="0.01"></td>
-                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
+                <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
+                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="${itemScannw}" readonly ></td>
+                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
+                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
                 <td class="text-center isEdit">
                     <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
                 </td>
@@ -1377,9 +1465,16 @@
                     width: '100%'
                 });
 
+
+                newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                    new AutoNumeric(el, optionsDec2);
+                });
+                newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                    new AutoNumeric(el, optionsDec3);
+                });
+
                 $select.val(desc_item).trigger("change");
                 loadSelect2();
-
 
 
 
@@ -1395,6 +1490,9 @@
                 modal.hide();
 
             });
+
+
+
 
 
 

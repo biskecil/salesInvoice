@@ -208,11 +208,11 @@
                                             Kotor</label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end text-primary autonumDec2"
-                                            id="totalgwall" type="text" name="total_berat_kotor" readonly>
+                                        <input class="form-control form-control-sm text-end text-primary " id="totalgwall"
+                                            type="text" name="total_berat_kotor" readonly>
                                     </div>
                                     <div class="col-auto">
-                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat
+                                        <label for="totalnwall" class="form-label small mb-0 text-danger ">Total Berat
                                             Bersih</label>
                                     </div>
                                     <div class="col-auto">
@@ -1309,6 +1309,7 @@
             function resetTableScan() {
                 document.querySelector("#itemScantable tbody").innerHTML = "";
                 barcodeInput.value = '';
+                $('.select2Scan').val('');
                 totalgw = 0;
                 totalnw = 0;
                 totalItem.innerText = 0;
@@ -1417,14 +1418,14 @@
                     width: '100%'
                 });
 
-                
+
                 newRow.querySelectorAll('.autonumDec2').forEach(el => {
                     new AutoNumeric(el, optionsDec2);
                 });
                 newRow.querySelectorAll('.autonumDec3').forEach(el => {
                     new AutoNumeric(el, optionsDec3);
                 });
-                
+
                 $select.val(desc_item).trigger("change");
                 loadSelect2();
 
