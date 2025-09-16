@@ -455,16 +455,16 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-                window.open('/sales/cetakNota/semua/' + noNota, '_blank');
-                // printDirectNota(noNota);
+                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+                printDirectNota('semua', noNota);
             });
             $('#btnCetakCust').on('click', function() {
-                window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
-                // printDirectNota(noNota);
+                //window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
+                printDirectNota('hargacust', noNota);
             });
             $('#btnCetakKosong').on('click', function() {
-                window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
-                // printDirectNota(noNota);
+                //window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
+                printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
                 // window.open('/sales/cetakBarcode/' + noNota, '_blank');
@@ -498,13 +498,13 @@
                 }
             }
 
-            function printDirectNota(data) {
+            function printDirectNota(jenis, data) {
                 if (!printService.isConnected()) {
                     console.error("Printer WebSocket tidak aktif");
                     return;
                 }
                 try {
-                    fetch('/sales/cetakNota/' + data)
+                    fetch('/sales/cetakNota/' + jenis + '/' + data)
                         .then(res => res.json())
                         .then(res => {
                             printService.submit({

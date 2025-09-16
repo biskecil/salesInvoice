@@ -864,7 +864,7 @@
                     once: true
                 });
 
-                loadSelect2Scan();
+              //  loadSelect2Scan();
             });
 
 

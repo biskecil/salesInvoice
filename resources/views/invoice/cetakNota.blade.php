@@ -99,7 +99,7 @@
     <div class="container">
         <table style=" width: 100%;" border="0" class="header-tab">
             <tr>
-                <td width="70%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
+                <td width="65%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
                 <td width="10%" style="text-align: right;">Customer :</td>
                 <td> {{ $data->Customer }}</td>
             </tr>
@@ -209,7 +209,7 @@
                     Keterangan : {{ $data->Venue }}
 
                     @if ($data->isCustomer)
-                        <div style="position: absolute; bottom: 12; right: 150;">
+                        <div style="position: absolute; bottom: 30px; right: 150;">
                             CUSTOMER
                         </div>
                     @endif

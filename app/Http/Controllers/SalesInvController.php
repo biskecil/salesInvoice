@@ -398,6 +398,10 @@ class SalesInvController extends Controller
                 'totalnw' => DB::table('invoiceitem')
                     ->selectRaw('SUM(Netto)')
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
+                    ->limit(1),
+                'totalnwcust' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(NettoCust)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1)
             ])
             ->whereRaw("CONCAT(
@@ -439,7 +443,7 @@ class SalesInvController extends Controller
             if ($jenis == 'kosong') {
                 $data_list = $data_item->get()->map(function ($item) {
                     $item->custom_field = $item->IDM;
-                    $item->gw = number_format($item->Weight, 2, '.', '');
+                    $item->gw = number_format($item->Weight, 2, '.', ',');
                     $item->nw = '';
                     $item->price = '';
                     return $item;
@@ -449,22 +453,22 @@ class SalesInvController extends Controller
             } else if ($jenis == 'hargacust') {
                 $data_list = $data_item->get()->map(function ($item) {
                     $item->custom_field = $item->IDM;
-                    $item->gw = number_format($item->Weight, 2, '.', '');
-                    $item->nw =  number_format($item->NettoCust, 3, '.', '');
-                    $item->price =  number_format($item->PriceCust * 100, 1, '.', '');
+                    $item->gw = number_format($item->Weight, 2, '.', ',');
+                    $item->nw =  number_format($item->NettoCust, 3, '.', ',');
+                    $item->price =  number_format($item->PriceCust * 100, 1, '.', ',');
                     return $item;
                 });
-                $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');
+                $invoice->totalnw =  number_format($data->totalnwcust, 3, '.', '');
                 $invoice->isCustomer = true;
             } else {
                 $data_list = $data_item->get()->map(function ($item) {
                     $item->custom_field = $item->IDM;
-                    $item->gw = number_format($item->Weight, 2, '.', '');
-                    $item->nw =  number_format($item->Netto, 3, '.', '');
-                    $item->price =  number_format($item->Price * 100, 1, '.', '');
+                    $item->gw = number_format($item->Weight, 2, '.', ',');
+                    $item->nw =  number_format($item->Netto, 3, '.', ',');
+                    $item->price =  number_format($item->Price * 100, 1, '.', ',');
                     return $item;
                 });
-                $invoice->totalnw =  number_format($data->totalnw, 3, '.', '');
+                $invoice->totalnw =  number_format($data->totalnw, 3, '.', ',');
                 $invoice->isCustomer = false;
             }
 
@@ -483,7 +487,7 @@ class SalesInvController extends Controller
             $invoice->Venue = $data->Venue;
             $invoice->Phone = $data->Phone;
             $invoice->Remarks = $data->Remarks;
-            $invoice->totalgw = number_format($data->totalgw, 2, '.', '');
+            $invoice->totalgw = number_format($data->totalgw, 2, '.', ',');
 
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
@@ -535,7 +539,7 @@ class SalesInvController extends Controller
 
 
         $data->invoice_number = $data->noNota;
-        $data->totalgw = number_format($data->totalgw, 2, '.', '');
+        $data->totalgw = number_format($data->totalgw, 2, '.', ',');
         $data->carat = $data_item->caratSW;
 
         $qrValue =  $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
@@ -562,7 +566,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-        return $pdf->stream('filename.pdf');
+      //  return $pdf->stream('filename.pdf');
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
