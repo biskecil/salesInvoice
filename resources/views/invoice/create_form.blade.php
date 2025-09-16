@@ -468,31 +468,21 @@
                     const rows = itemsTable.querySelectorAll("tr");
                     if (rows.length > 1) { // misal biar header ga kehapus
                         const lastRow = rows[rows.length - 1];
-
-                        // ambil nilai gwall (kolom ke-3)
-                        const gwall = lastRow.cells[2].querySelector("input").value;
-                        const nwall = row.cells[4].querySelector("input").value;
-                        totalgwall -= gwall;
-                        totalnwall -= nwall;
-                        totalgwallInput.value = totalgwall;
-                        totalnwallInput.value = totalnwall;
-
-
                         // hapus baris
                         lastRow.remove();
 
-                        // hitung ulang total
                         let total = 0;
                         let totalnw = 0;
                         document.querySelectorAll(".wbruto").forEach(el => {
-                            total += parseFloat(el.value) || 0;
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            total += an ? an.getNumber() : 0;
                         });
                         document.querySelectorAll(".wnet").forEach(el => {
-                            totalnw += parseFloat(el.value) || 0;
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnw += an ? an.getNumber() : 0;
                         });
-
-                        totalgwallInput.value = total.toFixed(2);
-                        totalnwallInput.value = totalnw.toFixed(3);
+                        antotalgwallInput.set(total);
+                        antotalnwallInput.set(totalnw);
                     }
                 }
             });
@@ -657,13 +647,19 @@
                 digitGroupSeparator: ',',
                 decimalCharacter: '.',
                 decimalPlaces: 2,
+                minimumValue: "0",
                 roundingMethod: 'S',
+
+                emptyInputBehavior: "zero"
             };
             const optionsDec3 = {
                 digitGroupSeparator: ',',
                 decimalCharacter: '.',
                 decimalPlaces: 3,
+                minimumValue: "0",
                 roundingMethod: 'S',
+
+                emptyInputBehavior: "zero"
             };
 
             AutoNumeric.multiple('.autonumDec2', optionsDec2);
@@ -1006,33 +1002,47 @@
 
             $('#itemsTable tbody').on('click', 'button.kalibrasi-btn', async function() {
                 let tr = $(this).closest('tr');
-                let priceInput = tr.find('.price');
-                let priceInputCust = tr.find('.pricecust');
-                let price = parseFloat(priceInput.val()) || 0;
-                let priceCust = parseFloat(priceInputCust.val()) || 0;
-                let brutoInput = tr.find('.wbruto');
-                let netInput = tr.find('.wnet');
-                let netInputCust = tr.find('.wnetocust');
+                let priceInput = tr.find('.price')[0];
+                let priceCustInput = tr.find('.pricecust')[0];
+                let brutoInput = tr.find('.wbruto')[0];
+                let netInput = tr.find('.wnet')[0];
+                let netInputCust = tr.find('.wnetocust')[0];
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+
                 let total = 0;
                 let totalnw = 0;
 
                 try {
                     const hasilTimbang = await kliktimbang();
-                    brutoInput.val(hasilTimbang);
+                    anBruto.set(hasilTimbang);
+
+                    let price = anPrice.getNumber() || 0;
+                    let priceCust = anPriceCust.getNumber() || 0;
+
                     let net = hasilTimbang * price;
                     let netCust = hasilTimbang * priceCust;
-                    netInput.val(net.toFixed(3));
-                    netInputCust.val(netCust.toFixed(3));
+
+                    anNetCust.set(netCust);
+                    anNet.set(net);
+
 
                     document.querySelectorAll(".wbruto").forEach(el => {
-                        total += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        total += an.getNumber() || 0;
                     });
                     document.querySelectorAll(".wnet").forEach(el => {
-                        totalnw += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnw += an.getNumber() || 0;
                     });
 
-                    totalgwallInput.value = total.toFixed(2);
-                    totalnwallInput.value = totalnw.toFixed(3);
+                    antotalgwallInput.set(total);
+                    antotalnwallInput.set(totalnw);
 
 
                 } catch (error) {
@@ -1066,7 +1076,12 @@
 
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
-                    if (priceInput) anPrice.set(hasil.price);
+                    if (anPrice) {
+                        anPrice.set(hasil.price);
+                    } else {
+                        console.warn('AutoNumeric belum terpasang di', priceInput);
+                    }
+
 
 
                     if (priceCustInput) {
@@ -1092,7 +1107,7 @@
                     let totalnwall = 0;
                     document.querySelectorAll(".wnet").forEach(el => {
                         const an = AutoNumeric.getAutoNumericElement(el);
-                        totalnwall += parseFloat(el.value) || 0;
+                        totalnwall += an.getNumber() || 0;
                     });
 
                     antotalnwallInput.set(totalnwall);
@@ -1179,24 +1194,6 @@
                 anNet.set(net);
                 anNetCust.set(netCust);
 
-
-
-
-
-                // let bruto = parseFloat(brutoInput.value) || 0;
-
-                // let price = parseFloat(priceInput.value) || 0;
-
-                // let net = bruto * price;
-                // netInput.value = net.toFixed(3);
-
-                // let priceCust = parseFloat(priceInputCust.value) || 0;
-
-
-
-                // let netCust = bruto * priceCust;
-                // netInputCust.value = netCust.toFixed(3);
-
                 let total = 0;
                 let totalnw = 0;
 
@@ -1216,27 +1213,21 @@
                 if (e.target.classList.contains("removeRow")) {
                     const row = e.target.closest("tr");
 
-                    const gwall = row.cells[2].querySelector("input").value;
-                    const nwall = row.cells[4].querySelector("input").value;
-                    totalgwall -= gwall;
-                    totalnwall -= nwall;
-                    totalgwallInput.value = totalgwall;
-                    totalnwallInput.value = totalnwall;
-
-
                     e.target.closest("tr").remove();
 
                     let total = 0;
                     let totalnw = 0;
                     document.querySelectorAll(".wbruto").forEach(el => {
-                        total += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        total += an ? an.getNumber() : 0;
                     });
                     document.querySelectorAll(".wnet").forEach(el => {
-                        totalnw += parseFloat(el.value) || 0;
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnw += an ? an.getNumber() : 0;
                     });
 
-                    totalgwallInput.value = total.toFixed(2);
-                    totalnwallInput.value = totalnw.toFixed(3);
+                    antotalgwallInput.set(total);
+                    antotalnwallInput.set(totalnw);
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -1379,13 +1370,15 @@
                 }
 
 
-                let subtotalgwall = parseFloat(totalgwallInput.value) || 0;
-                let subtotalnwall = parseFloat(totalnwallInput.value) || 0;
+                let subtotalgwall = antotalgwallInput.getNumber() || 0;
+                let subtotalnwall = antotalnwallInput.getNumber() || 0;
                 let gwBaru = parseFloat(totalgw) || 0;
                 let nwBaru = parseFloat(totalnw) || 0;
 
-                totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
-                totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
+                // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
+                // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
+                antotalgwallInput.set(subtotalgwall + gwBaru);
+                antotalnwallInput.set(subtotalnwall + nwBaru);
 
                 let desc_item = descInput.value;
                 let carat = caratInput.value;
@@ -1401,15 +1394,15 @@
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="number" name="wbruto[]" class="form-control form-control-sm wbruto text-end" min="0"   value="${itemScangw}" step="0.01">
+   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScangw}" >
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
-                <td><input type="number" name="price[]" class="form-control text-end form-control-sm price" min="0" readonly step="0.01"></td>
-                <td><input type="number" name="wnet[]" class="form-control text-end form-control-sm wnet" min="0"  value="${itemScannw}" readonly step="0.01"></td>
-                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"  placeholder="0.00"  step="0.01"></td>
-                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
+                <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
+                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="${itemScannw}" readonly ></td>
+                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
+                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
                 <td class="text-center isEdit">
                     <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
                 </td>
@@ -1424,9 +1417,16 @@
                     width: '100%'
                 });
 
+                
+                newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                    new AutoNumeric(el, optionsDec2);
+                });
+                newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                    new AutoNumeric(el, optionsDec3);
+                });
+                
                 $select.val(desc_item).trigger("change");
                 loadSelect2();
-
 
 
 

@@ -205,7 +205,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
-                                            type="number" value="{{ $data->Weight }}" name="total_berat_kotor"
+                                            type="text" value="{{ $data->Weight }}" name="total_berat_kotor"
                                             readonly>
                                     </div>
                                     <div class="col-auto">
@@ -214,7 +214,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
-                                            type="number" value="{{ $data->NetWeight }}" name="total_berat_bersih"
+                                            type="text" value="{{ $data->NetWeight }}" name="total_berat_bersih"
                                             readonly>
                                     </div>
                                 </div>
@@ -247,26 +247,26 @@
                                                     <td><input type="text" name="cadar[]"
                                                             class="form-control form-control-sm cadar_item text-center"
                                                             value="{{ $item->caratSW }}" readonly></td>
-                                                    <td><input type="number" name="wbruto[]"
+                                                    <td><input type="text" name="wbruto[]"
                                                             class="form-control form-control-sm wbruto text-end"
                                                             min="0" value="{{ $item->gw }}" step="0.01"
                                                             readonly>
                                                     </td>
-                                                    <td><input type="number" name="price[]"
+                                                    <td><input type="text" name="price[]"
                                                             class="form-control form-control-sm price text-end"
                                                             min="0" readonly step="0.01"
                                                             value="{{ $item->price }}"></td>
-                                                    <td><input type="number" name="wnet[]"
+                                                    <td><input type="text" name="wnet[]"
                                                             class="form-control form-control-sm wnet text-end"
                                                             min="0" value="{{ $item->nw }}" readonly
                                                             step="0.01"></td>
                                                     @if ($data->isHarga)
-                                                        <td class="isPriceCust"><input type="number" name="pricecust[]"
+                                                        <td class="isPriceCust"><input type="text" name="pricecust[]"
                                                                 class="form-control form-control-sm pricecust text-end"
                                                                 value="{{ $item->priceCust }}" min="0" readonly
                                                                 step="0.01">
                                                         </td>
-                                                        <td class="isPriceCust "><input type="number" name="wnetocust[]"
+                                                        <td class="isPriceCust "><input type="text" name="wnetocust[]"
                                                                 class="form-control form-control-sm wnetocust text-end"
                                                                 value="{{ $item->netCust }}" min="0" readonly
                                                                 step="0.01"></td>
