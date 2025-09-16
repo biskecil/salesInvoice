@@ -94,7 +94,7 @@
     <main class="container-fluid py-4">
         @yield('content')
     </main>
-
+    <script src="{{ mix('js/app.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>

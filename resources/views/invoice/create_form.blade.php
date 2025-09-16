@@ -208,8 +208,8 @@
                                             Kotor</label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
-                                            type="number" value="0.00" name="total_berat_kotor" readonly>
+                                        <input class="form-control form-control-sm text-end text-primary autonumDec2"
+                                            id="totalgwall" type="text" name="total_berat_kotor" readonly>
                                     </div>
                                     <div class="col-auto">
                                         <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat
@@ -217,7 +217,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
-                                            type="number" value="0.00" name="total_berat_bersih" readonly>
+                                            type="text" name="total_berat_bersih" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -400,11 +400,11 @@
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', false);
 
-         
+
             $('#cariDataNota').on('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    $('#btnCari').click(); 
+                    $('#btnCari').click();
                 }
             });
 
@@ -653,9 +653,21 @@
                 });
             });
 
+            const optionsDec2 = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 2,
+                roundingMethod: 'S',
+            };
+            const optionsDec3 = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 3,
+                roundingMethod: 'S',
+            };
 
-
-
+            AutoNumeric.multiple('.autonumDec2', optionsDec2);
+            AutoNumeric.multiple('.autonumDec3', optionsDec3);
             const addRowBtn = document.getElementById("addRow");
             const itemsTable = document.getElementById("itemsTable").getElementsByTagName("tbody")[0];
             const itemScanTable = document.getElementById("itemScantable").getElementsByTagName("tbody")[0];
@@ -665,6 +677,8 @@
             const isHargaCheck = document.getElementById("is_harga_cust");
             const totalgwallInput = document.getElementById("totalgwall");
             const totalnwallInput = document.getElementById("totalnwall");
+            const antotalgwallInput = new AutoNumeric('#totalgwall', optionsDec2);
+            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3);
             const descInput = document.getElementById("descItem");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");
@@ -695,6 +709,10 @@
 
 
 
+
+
+
+
             // transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
             $('#grosir').on('change', function() {
@@ -709,40 +727,46 @@
                         let netInputCust = row.querySelector('.wnetocust');
                         let priceCustInput = row.querySelector(".pricecust");
 
+                        let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                        let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                        let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                        let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                        let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
                         if (!categorySelect) return;
 
                         let selectedCat = categorySelect.value;
 
 
                         fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                            if (priceInput) priceInput.value = hasil.price;
+                            if (priceInput) anPrice.set(hasil.price);
                             if (priceCustInput) {
-                                let newVal = parseFloat(hasil.priceCust) || 0;
+                                let newVal = hasil.priceCust || 0;
                                 if (newVal !== 0) {
-                                    priceCustInput.value = newVal.toFixed(
-                                        2);
+                                    anPriceCust.set(newVal);
                                 }
                             }
 
                             if (brutoInput && priceCustInput) {
-                                let bruto = parseFloat(brutoInput.value) || 0;
-                                let priceCust = parseFloat(priceCustInput.value) || 0;
+                                let bruto = anBruto.getNumber() || 0;
+                                let priceCust = anPriceCust.getNumber() || 0;
                                 let netCust = bruto * priceCust;
-                                netInputCust.value = netCust.toFixed(3);
+                                anNetCust.set(netCust);
                             }
 
                             if (brutoInput && priceInput && netInput) {
-                                let bruto = parseFloat(brutoInput.value) || 0;
-                                let price = parseFloat(priceInput.value) || 0;
+                                let bruto = anBruto.getNumber() || 0;
+                                let price = anPrice.getNumber() || 0;
                                 let net = bruto * price;
-                                netInput.value = net.toFixed(3);
+                                anNet.set(net);
                             }
                             let totalnwall = 0;
                             document.querySelectorAll(".wnet").forEach(el => {
-                                totalnwall += parseFloat(el.value) || 0;
+                                const an = AutoNumeric.getAutoNumericElement(el);
+                                totalnwall += an.getNumber() || 0;
                             });
 
-                            totalnwallInput.value = totalnwall.toFixed(3);
+                            antotalnwallInput.set(totalnwall);
                         });
                     });
 
@@ -767,6 +791,12 @@
                     let netInput = row.querySelector(".wnet");
                     let netInputCust = row.querySelector('.wnetocust');
 
+                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
 
                     if (!categorySelect) return;
 
@@ -774,33 +804,34 @@
 
 
                     fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                        if (priceInput) priceInput.value = hasil.price;
+                        if (priceInput) anPrice.set(hasil.price);
                         if (priceCustInput) {
-                            let newVal = parseFloat(hasil.priceCust) || 0;
+                            let newVal = hasil.priceCust || 0;
                             if (newVal !== 0) {
-                                priceCustInput.value = newVal.toFixed(2);
+                                anPriceCust.set(newVal);
                             }
                         }
 
                         if (brutoInput && priceCustInput) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let priceCust = parseFloat(priceCustInput.value) || 0;
+                            let bruto = anBruto.getNumber() || 0;
+                            let priceCust = anPriceCust.getNumber() || 0;
                             let netCust = bruto * priceCust;
-                            netInputCust.value = netCust.toFixed(3);
+                            anNetCust.set(netCust);
                         }
 
                         if (brutoInput && priceInput && netInput) {
-                            let bruto = parseFloat(brutoInput.value) || 0;
-                            let price = parseFloat(priceInput.value) || 0;
+                            let bruto = anBruto.getNumber() || 0;
+                            let price = anPrice.getNumber() || 0;
                             let net = bruto * price;
-                            netInput.value = net.toFixed(3);
+                            anNet.set(net);
                         }
                         let totalnwall = 0;
                         document.querySelectorAll(".wnet").forEach(el => {
-                            totalnwall += parseFloat(el.value) || 0;
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnwall += an.getNumber() || 0;
                         });
 
-                        totalnwallInput.value = totalnwall.toFixed(3);
+                        antotalnwallInput.set(totalnwall);
                     });
                 });
             });
@@ -864,7 +895,7 @@
                     once: true
                 });
 
-              //  loadSelect2Scan();
+                //  loadSelect2Scan();
             });
 
 
@@ -887,14 +918,14 @@
             <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
             <td>
               <div class="input-group input-group-sm mb-2">
-  <input type="number" value="0.00" name="wbruto[]" class="form-control wbruto text-end" min="0" step="0.01" placeholder="0.00">
+  <input type="text"  name="wbruto[]" class="autonumDec2 form-control wbruto text-end" placeholder="0.00">
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                 </td>
-            <td><input type="number" name="price[]" class="form-control form-control-sm price text-end" min="0" readonly step="0.01"></td>
-            <td><input type="number" name="wnet[]" class="form-control form-control-sm wnet text-end" min="0" readonly step="0.01"></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="number" name="pricecust[]" class="text-end form-control form-control-sm pricecust" min="0"    step="0.01"></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="number" name="wnetocust[]" class="text-end form-control form-control-sm wnetocust" min="0" step="0.01" readonly></td>
+            <td><input type="text" name="price[]" class="autonumDec3 form-control form-control-sm price text-end" readonly ></td>
+            <td><input type="text" name="wnet[]" class="autonumDec3 form-control form-control-sm wnet text-end"  readonly ></td>
+            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust" ></td>
+            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust" readonly></td>
             <td class="text-center isEdit">
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
@@ -941,6 +972,14 @@
                 //     width: '100%'
                 // });
                 loadSelect2();
+
+
+                newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                    new AutoNumeric(el, optionsDec2);
+                });
+                newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                    new AutoNumeric(el, optionsDec3);
+                });
                 newRow.scrollIntoView({
                     behavior: "smooth",
                     block: "nearest"
@@ -1013,123 +1052,165 @@
                 let selectedCat = $(this).val();
 
                 let cadarInput = tr.find('.cadar_item');
-                let brutoInput = tr.find('.wbruto');
-                let priceInput = tr.find('.price');
-                let priceCustInput = tr.find(".pricecust");
-                let netInput = tr.find('.wnet');
-                let netInputCust = tr.find('.wnetocust');
+                let brutoInput = tr.find('.wbruto')[0];
+                let priceInput = tr.find('.price')[0];
+                let priceCustInput = tr.find(".pricecust")[0];
+                let netInput = tr.find('.wnet')[0];
+                let netInputCust = tr.find('.wnetocust')[0];
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
 
 
                 fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
-                    if (priceInput.length) priceInput.val(hasil.price);
+                    if (priceInput) anPrice.set(hasil.price);
+
 
                     if (priceCustInput) {
-                        let newVal = parseFloat(hasil.priceCust) || 0;
+                        let newVal = hasil.priceCust || 0;
                         if (newVal !== 0) {
-                            priceCustInput.val(newVal.toFixed(2));
+                            anPriceCust.set(newVal);
                         }
                     }
 
-                    if (brutoInput.length && priceCustInput.length) {
-                        let bruto = parseFloat(brutoInput.val()) || 0;
-                        let priceCust = parseFloat(priceCustInput.val()) || 0;
+                    if (brutoInput && priceCustInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let priceCust = anPriceCust.getNumber() || 0;
                         let netCust = bruto * priceCust;
-                        netInputCust.val(netCust.toFixed(3));
+                        anNetCust.set(netCust);
+
                     }
-                    if (brutoInput.length && priceInput.length && netInput.length) {
-                        let bruto = parseFloat(brutoInput.val()) || 0;
-                        let price = parseFloat(priceInput.val()) || 0;
+                    if (brutoInput && priceInput && netInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let price = anPrice.getNumber() || 0;
                         let net = bruto * price;
-                        netInput.val(net.toFixed(3));
+                        anNet.set(net);
                     }
                     let totalnwall = 0;
                     document.querySelectorAll(".wnet").forEach(el => {
+                        const an = AutoNumeric.getAutoNumericElement(el);
                         totalnwall += parseFloat(el.value) || 0;
                     });
 
-                    totalnwallInput.value = totalnwall.toFixed(3);
+                    antotalnwallInput.set(totalnwall);
+
                 });
             });
 
-            itemsTable.addEventListener("focus", function(e) {
-                if (e.target.classList.contains("wbruto")) {
-                    if (e.target.value === "0.00") {
-                        e.target.value = "";
-                    }
+            //AUTO CLEAR
+            // itemsTable.addEventListener("focus", function(e) {
+            //     if (e.target.classList.contains("wbruto")) {
+            //         if (e.target.value === "0.00") {
+            //             e.target.value = "";
+            //         }
 
 
-                    setTimeout(() => {
-                        e.target.select();
-                    }, 0);
-                }
-            }, true);
+            //         setTimeout(() => {
+            //             e.target.select();
+            //         }, 0);
+            //     }
+            // }, true);
 
 
-            itemsTable.addEventListener("blur", function(e) {
-                if (e.target.classList.contains("wbruto")) {
-                    let val = e.target.value;
+            // itemsTable.addEventListener("blur", function(e) {
+            //     if (e.target.classList.contains("wbruto")) {
+            //         let val = e.target.value;
 
-                    if (val === "" || isNaN(val)) {
-                        e.target.value = "0.00";
-                    } else {
-                        e.target.value = parseFloat(val).toFixed(2);
-                    }
-                }
-            }, true);
+            //         if (val === "" || isNaN(val)) {
+            //             e.target.value = "0.00";
+            //         } else {
+            //             e.target.value = parseFloat(val).toFixed(2);
+            //         }
+            //     }
+            // }, true);
 
-            itemsTable.addEventListener("focus", function(e) {
-                if (e.target.classList.contains("pricecust")) {
-                    if (e.target.value === "0.00") {
-                        e.target.value = "";
-                    }
-
-
-                    setTimeout(() => {
-                        e.target.select();
-                    }, 0);
-                }
-            }, true);
+            // itemsTable.addEventListener("focus", function(e) {
+            //     if (e.target.classList.contains("pricecust")) {
+            //         if (e.target.value === "0.00") {
+            //             e.target.value = "";
+            //         }
 
 
-            itemsTable.addEventListener("blur", function(e) {
-                if (e.target.classList.contains("pricecust")) {
-                    let val = e.target.value;
+            //         setTimeout(() => {
+            //             e.target.select();
+            //         }, 0);
+            //     }
+            // }, true);
 
-                    if (val === "" || isNaN(val)) {
-                        e.target.value = "0.00";
-                    } else {
-                        e.target.value = parseFloat(val).toFixed(2);
-                    }
-                }
-            }, true);
+
+            // itemsTable.addEventListener("blur", function(e) {
+            //     if (e.target.classList.contains("pricecust")) {
+            //         let val = e.target.value;
+
+            //         if (val === "" || isNaN(val)) {
+            //             e.target.value = "0.00";
+            //         } else {
+            //             e.target.value = parseFloat(val).toFixed(2);
+            //         }
+            //     }
+            // }, true);
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
                 let priceInputCust = tr.querySelector('.pricecust');
-                let priceInput = tr.querySelector('.price');
-                let brutoInput = tr.querySelector('.wbruto');
-                let netInput = tr.querySelector('.wnet');
                 let netInputCust = tr.querySelector('.wnetocust');
-                let bruto = parseFloat(brutoInput.value) || 0;
-                let price = parseFloat(priceInput.value) || 0;
-                let priceCust = parseFloat(priceInputCust.value) || 0;
+
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceInputCust);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+                let brutoInput = tr.querySelector('.wbruto');
+                let priceInput = tr.querySelector('.price');
+                let netInput = tr.querySelector('.wnet');
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+
+                let bruto = anBruto.getNumber() || 0;
+                let price = anPrice.getNumber() || 0;
+                let priceCust = anPriceCust.getNumber() || 0;
+
                 let net = bruto * price;
-                netInput.value = net.toFixed(3);
                 let netCust = bruto * priceCust;
-                netInputCust.value = netCust.toFixed(3);
+
+                anNet.set(net);
+                anNetCust.set(netCust);
+
+
+
+
+
+                // let bruto = parseFloat(brutoInput.value) || 0;
+
+                // let price = parseFloat(priceInput.value) || 0;
+
+                // let net = bruto * price;
+                // netInput.value = net.toFixed(3);
+
+                // let priceCust = parseFloat(priceInputCust.value) || 0;
+
+
+
+                // let netCust = bruto * priceCust;
+                // netInputCust.value = netCust.toFixed(3);
 
                 let total = 0;
                 let totalnw = 0;
 
                 document.querySelectorAll(".wbruto").forEach(el => {
-                    total += parseFloat(el.value) || 0;
+                    const an = AutoNumeric.getAutoNumericElement(el);
+                    total += an.getNumber() || 0;
                 });
                 document.querySelectorAll(".wnet").forEach(el => {
-                    totalnw += parseFloat(el.value) || 0;
+                    const an = AutoNumeric.getAutoNumericElement(el);
+                    totalnw += an.getNumber() || 0;
                 });
 
-                totalgwallInput.value = total.toFixed(2);
-                totalnwallInput.value = totalnw.toFixed(3);
+                antotalgwallInput.set(total);
+                antotalnwallInput.set(totalnw);
             });
             itemsTable.addEventListener("click", function(e) {
                 if (e.target.classList.contains("removeRow")) {

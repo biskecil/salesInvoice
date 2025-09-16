@@ -37,6 +37,9 @@
                             </button>
                             <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial(false)">
                                 <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
+                            <input type="text" id="bruto" class="form-control ">
+                            <input type="text" id="price" class="form-control ">
+                            <input type="text" id="netto" class="form-control ">
                         </div>
                         <div>
                             <div class="d-flex gap-2 ">
@@ -69,6 +72,28 @@
         window.addEventListener("load", () => {
             connectSerial(true);
         });
+        document.addEventListener('DOMContentLoaded', () => {
+            const options = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 2,
+            };
+
+            const anBruto = new AutoNumeric('#bruto', options);
+            const anPrice = new AutoNumeric('#price', options);
+            const anNetto = new AutoNumeric('#netto', options);
+
+            function calcNetto() {
+                let b = anBruto.getNumber() || 0;
+                let p = anPrice.getNumber() || 0;
+                let n = b * p;
+
+                anNetto.set(n); // update dengan format otomatis
+            }
+
+            document.getElementById('bruto').addEventListener('input', calcNetto);
+            document.getElementById('price').addEventListener('input', calcNetto);
+        });
         $(document).ready(function() {
             let dataNota = '';
             $('#btnTambah').prop('disabled', false);
@@ -81,7 +106,7 @@
             $('#cariDataNota').on('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    $('#btnCari').click(); 
+                    $('#btnCari').click();
                 }
             });
 

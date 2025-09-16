@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.0.0",
+        "autonumeric": "^4.10.9",
         "devextreme": "^25.1.4",
         "html5-qrcode": "^2.3.8",
         "sweetalert2": "^11.22.5"
