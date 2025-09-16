@@ -25,6 +25,10 @@ class SalesInvController extends Controller
         return $data_return;
     }
 
+    public function tes()
+    {
+       return view('tes');
+    }
     public function getDataPrice(Request $request)
     {
         $category =   DB::table('product')

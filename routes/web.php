@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [SalesInvController::class, 'form'])->name('sales.form');
-
+Route::get('/tes/', [SalesInvController::class, 'tes']);
 Route::prefix('sales')->group(function () {
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNota']);
@@ -32,4 +32,5 @@ Route::prefix('sales')->group(function () {
     Route::put('/update/{ID}', [SalesInvController::class, 'update']);
     Route::get('/cetakNota/{style}/{ID}', [SalesInvController::class, 'cetakNota']);
     Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
+
 });

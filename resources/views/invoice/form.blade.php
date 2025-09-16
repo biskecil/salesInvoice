@@ -35,7 +35,7 @@
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
                                 <i class="fa-solid fa-print"></i> QR Code
                             </button>
-                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial()">
+                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial(false)">
                                 <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
                         </div>
                         <div>
@@ -64,9 +64,11 @@
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
-
-
+    <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
     <script>
+        window.addEventListener("load", () => {
+            connectSerial(true);
+        });
         $(document).ready(function() {
             let dataNota = '';
             $('#btnTambah').prop('disabled', false);
@@ -76,6 +78,12 @@
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', true);
 
+            $('#cariDataNota').on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $('#btnCari').click(); 
+                }
+            });
 
             $('#btnCari').on('click', function() {
                 dataNota = $('#cariDataNota').val();

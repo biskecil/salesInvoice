@@ -33,21 +33,20 @@
                                 Nota
                             </button> --}}
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-info dropdown-toggle"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i
-                                    class="fa-solid fa-print"></i> Nota
+                                <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fa-solid fa-print"></i> Nota
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                   <li><button class="dropdown-item"  id="btnCetak">Cetak dgn harga</button></li>
-                                    <li><a class="dropdown-item" id="btnCetakCust" >Cetak dgn harga customer</a></li>
-                                    <li><a class="dropdown-item" id="btnCetakKosong" >Cetak tanpa harga</a></li>
+                                    <li><button class="dropdown-item" id="btnCetak">Cetak dgn harga</button></li>
+                                    <li><a class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</a></li>
+                                    <li><a class="dropdown-item" id="btnCetakKosong">Cetak tanpa harga</a></li>
                                 </ul>
                             </div>
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
                                 <i class="fa-solid fa-print"></i> QR Code
                             </button>
-                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial()">
+                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial(false)">
                                 <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
                         </div>
                         <div>
@@ -201,7 +200,8 @@
                             <div class="px-3 py-2 border-bottom bg-light">
                                 <div class="row g-2 align-items-center">
                                     <div class="col-auto">
-                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat Kotor</label>
+                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat
+                                            Kotor</label>
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
@@ -209,7 +209,8 @@
                                             readonly>
                                     </div>
                                     <div class="col-auto">
-                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat Bersih</label>
+                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat
+                                            Bersih</label>
                                     </div>
                                     <div class="col-auto">
                                         <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
@@ -248,7 +249,8 @@
                                                             value="{{ $item->caratSW }}" readonly></td>
                                                     <td><input type="number" name="wbruto[]"
                                                             class="form-control form-control-sm wbruto text-end"
-                                                            min="0" value="{{ $item->gw }}" step="0.01" readonly>
+                                                            min="0" value="{{ $item->gw }}" step="0.01"
+                                                            readonly>
                                                     </td>
                                                     <td><input type="number" name="price[]"
                                                             class="form-control form-control-sm price text-end"
@@ -413,6 +415,10 @@
     <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
     <script>
+        window.addEventListener("load", () => {
+            connectSerial(true);
+        });
+
         var printService = new WebSocketPrinter();
         $(document).ready(function() {
             let noNota = $('input[name="noNota"]').val();
@@ -449,20 +455,27 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-                 window.open('/sales/cetakNota/semua/' + noNota, '_blank');
-               // printDirectNota(noNota);
+                window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+                // printDirectNota(noNota);
             });
             $('#btnCetakCust').on('click', function() {
-                 window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
-               // printDirectNota(noNota);
+                window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
+                // printDirectNota(noNota);
             });
             $('#btnCetakKosong').on('click', function() {
-                 window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
-               // printDirectNota(noNota);
+                window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
+                // printDirectNota(noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
                 // window.open('/sales/cetakBarcode/' + noNota, '_blank');
                 printDirectBarcode(noNota)
+            });
+
+            $('#cariDataNota').on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $('#btnCari').click();
+                }
             });
 
             function printDirectBarcode(data) {
