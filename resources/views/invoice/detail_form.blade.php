@@ -11,10 +11,14 @@
             height: auto;
             /* biar tidak terlalu tinggi */
         }
+
+        .card-main {
+            overflow: hidden;
+        }
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm  card-main ">
                 <div class="card-header bg-white border-1 pb-2">
                     <div class="d-flex gap-2 justify-content-between">
                         <div class="d-flex flex-wrap gap-2">
@@ -194,7 +198,7 @@
                         </div>
 
                         <!-- CARD TAMBAH ITEM -->
-                        <div class="card mt-4 shadow-sm">
+                        <div class="card mt-1 shadow-sm">
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0 fw-bold">Daftar Item</h6>
 
@@ -556,6 +560,7 @@
 
 
             loadSelect2();
+
             function loadSelect2() {
                 $(document).on('focus', '.select2-selection.select2-selection--single', function() {
                     let $select = $(this).closest('.select2-container').siblings('select:enabled');

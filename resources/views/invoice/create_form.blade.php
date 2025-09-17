@@ -11,10 +11,14 @@
             height: auto;
             /* biar tidak terlalu tinggi */
         }
+
+        .card-main {
+            overflow: hidden;
+        }
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card shadow-sm">
+            <div class="card  card-main shadow-sm">
                 <div class="card-header bg-white border-1 pb-2">
                     <div class="d-flex gap-2 justify-content-between">
                         <div class="d-flex flex-wrap gap-2">
@@ -189,7 +193,7 @@
                         </div>
 
                         <!-- CARD TAMBAH ITEM -->
-                        <div class="card mt-4 shadow-sm">
+                        <div class="card mt-1 shadow-sm">
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0 fw-bold">Daftar Item</h6>
                                 <div>
@@ -201,7 +205,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="px-3 py-2 border-bottom bg-light">
+                            <div class="px-3 py-2 border-bottom ">
                                 <div class="row g-2 align-items-center">
                                     <div class="col-auto">
                                         <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat
@@ -222,7 +226,7 @@
                                 </div>
                             </div>
                             <div class="card-body p-0">
-                                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;  ">
                                     <table class="table table-bordered mb-0" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
@@ -392,6 +396,9 @@
             hotkeys();
 
             loadSelect2();
+
+
+
             let dataNota = '';
             $('#btnTambah').prop('disabled', true);
             $('#btnBatal').prop('disabled', false);
@@ -702,7 +709,11 @@
 @endforeach
 `;
 
-
+            let savedValue = localStorage.getItem('last_grosir');
+            if (savedValue) {
+                $('#grosir').val(savedValue).trigger('change');
+                setGrosir = savedValue;
+            }
 
 
 
@@ -714,6 +725,7 @@
                 let id = this.value;
                 if (id) {
                     setGrosir = id;
+                    localStorage.setItem("last_grosir", setGrosir);
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                         let categorySelect = row.querySelector("select[name='category[]']");
                         let priceInput = row.querySelector(".price");
@@ -1246,7 +1258,7 @@
 
                     // update info
                     totalItem.innerText = parseInt(totalItem.innerText) - 1;
-                    total_gw.innerText =  totalgw.toFixed(2);
+                    total_gw.innerText = totalgw.toFixed(2);
                     total_nw.innerText = totalnw.toFixed(3);
 
                     const index = itemScanBcd.findIndex(item => item.id === id);
