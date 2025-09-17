@@ -347,8 +347,23 @@ class SalesInvController extends Controller
 
             $cust = DB::table('customer')->orderBy('Description')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
-            $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
-
+            $kadar = DB::table('carat')->select(
+                'ID',
+                'SW',
+                DB::raw("CASE
+            WHEN SW = '6K' THEN '#0000FF'
+            WHEN SW = '8K' THEN '#00FF00'
+            WHEN SW = '8KP' THEN '#CFB370'
+            WHEN SW = '10K' THEN '#FFFF00'
+            WHEN SW = '16K' THEN '#FF0000'
+            WHEN SW = '17K' THEN '#FF6E01'
+            WHEN SW = '17KP' THEN '#FF00FF'
+            WHEN SW = '19K' THEN '#5F2987'
+            WHEN SW = '20K' THEN '#FFC0CB'
+            ELSE '#808080'
+        END as color")
+            )
+                ->orderBy('SW')->get();
 
             return view('invoice.detail_form', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'invoice_list' => $invoice_list, 'cust' => $cust]);
         } else {

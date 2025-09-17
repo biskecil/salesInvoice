@@ -162,11 +162,13 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Kadar*</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control select2" id="carat">
-
-                                            <option value="{{ $data->Carat }}">
-                                                {{ $data->Carat }}</option>
-
+                                        <select class="form-control select2 " id="carat">
+                                            <option value="">Pilih Data</option>
+                                            @foreach ($kadar as $d)
+                                                <option value="{{ $d->SW }}"
+                                                    {{ $d->SW == $data->Carat ? 'selected' : '' }}
+                                                    data-color="{{ $d->color }}">{{ $d->SW }} </option>
+                                            @endforeach
                                         </select>
 
                                     </div>
@@ -551,6 +553,70 @@
             $('#btnTambah').on('click', function() {
                 window.location.href = '/sales/create';
             });
+
+
+            loadSelect2();
+            function loadSelect2() {
+                $(document).on('focus', '.select2-selection.select2-selection--single', function() {
+                    let $select = $(this).closest('.select2-container').siblings('select:enabled');
+                    $select.select2('open');
+                });
+
+
+                $('select.select2').on('select2:open', function() {
+                    setTimeout(() => {
+                        document.querySelector('.select2-search__field').focus();
+                    }, 50);
+                });
+
+                $('.select2').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    templateResult: function(data) {
+                        if (!data.id) return data.text;
+
+                        var color = $(data.element).data('color');
+                        var $result = $('<span></span>').text(data.text);
+
+                        if (color) {
+                            var textColor = getContrastYIQ(color);
+                            $result.css({
+                                'background-color': color,
+                                'color': textColor,
+                                'padding': '2px 6px',
+                                'border-radius': '4px'
+                            });
+                        }
+                        return $result;
+                    },
+                    templateSelection: function(data) {
+                        if (!data.id) return data.text;
+
+                        var color = $(data.element).data('color');
+                        var $result = $('<span></span>').text(data.text);
+
+                        if (color) {
+                            var textColor = getContrastYIQ(color);
+                            $result.css({
+                                'background-color': color,
+                                'color': textColor,
+                                'padding': '2px 6px',
+                                'border-radius': '4px'
+                            });
+                        }
+                        return $result;
+                    }
+                });
+            }
+
+            function getContrastYIQ(hexcolor) {
+                hexcolor = hexcolor.replace('#', '');
+                var r = parseInt(hexcolor.substr(0, 2), 16);
+                var g = parseInt(hexcolor.substr(2, 2), 16);
+                var b = parseInt(hexcolor.substr(4, 2), 16);
+                var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                return (yiq >= 128) ? '#000' : '#fff';
+            }
 
 
 

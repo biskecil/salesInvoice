@@ -99,7 +99,7 @@
     <div class="container">
         <table style=" width: 100%;" border="0" class="header-tab">
             <tr>
-                <td width="65%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
+                <td width="60%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
                 <td width="10%" style="text-align: right;">Customer :</td>
                 <td> {{ $data->Customer }}</td>
             </tr>

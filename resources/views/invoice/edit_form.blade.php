@@ -973,7 +973,7 @@
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
         `;
-                itemsTable.appendChild(newRow);
+                itemsTable.prepend(newRow);
 
 
                 // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
@@ -1456,7 +1456,7 @@
                 </td>
 
                             `;
-                itemsTable.appendChild(newRow);
+                itemsTable.prepend(newRow);
 
                 let $select = $(newRow).find('.select2').select2({
                     // placeholder: "Pilih kategori",
@@ -1472,6 +1472,20 @@
                 newRow.querySelectorAll('.autonumDec3').forEach(el => {
                     new AutoNumeric(el, optionsDec3);
                 });
+
+                newRow.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+
+                newRow.querySelectorAll("td").forEach(td => {
+                    td.style.backgroundColor = "#ffff99";
+                });
+                setTimeout(() => {
+                    newRow.querySelectorAll("td").forEach(td => {
+                        td.style.backgroundColor = "";
+                    });
+                }, 1500);
 
                 $select.val(desc_item).trigger("change");
                 loadSelect2();

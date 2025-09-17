@@ -661,7 +661,6 @@
 
                 emptyInputBehavior: "zero"
             };
-
             AutoNumeric.multiple('.autonumDec2', optionsDec2);
             AutoNumeric.multiple('.autonumDec3', optionsDec3);
             const addRowBtn = document.getElementById("addRow");
@@ -926,7 +925,7 @@
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
         `;
-                itemsTable.appendChild(newRow);
+                itemsTable.prepend(newRow);
 
 
                 // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
@@ -1247,7 +1246,7 @@
 
                     // update info
                     totalItem.innerText = parseInt(totalItem.innerText) - 1;
-                    total_gw.innerText = totalgw.toFixed(2);
+                    total_gw.innerText =  totalgw.toFixed(2);
                     total_nw.innerText = totalnw.toFixed(3);
 
                     const index = itemScanBcd.findIndex(item => item.id === id);
@@ -1409,7 +1408,7 @@
                 </td>
 
                             `;
-                itemsTable.appendChild(newRow);
+                itemsTable.prepend(newRow);
 
                 let $select = $(newRow).find('.select2').select2({
                     // placeholder: "Pilih kategori",
@@ -1425,6 +1424,20 @@
                 newRow.querySelectorAll('.autonumDec3').forEach(el => {
                     new AutoNumeric(el, optionsDec3);
                 });
+
+                newRow.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+
+                newRow.querySelectorAll("td").forEach(td => {
+                    td.style.backgroundColor = "#ffff99";
+                });
+                setTimeout(() => {
+                    newRow.querySelectorAll("td").forEach(td => {
+                        td.style.backgroundColor = "";
+                    });
+                }, 1500);
 
                 $select.val(desc_item).trigger("change");
                 loadSelect2();
