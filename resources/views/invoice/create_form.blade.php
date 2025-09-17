@@ -154,6 +154,27 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">Total</label>
+                                    <div class="col-sm-8">
+                                        <div class="row g-2">
+                                            <div class="col-md-6">
+                                                <label for="totalgwall" class="small mb-1">Berat
+                                                    Kotor <span class="fw-bold cadar_item"></span></label>
+                                                <input class="form-control fw-bold text-end text-primary" id="totalgwall"
+                                                    type="text" name="total_berat_kotor" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="totalnwall" class="small mb-1">Berat
+                                                    Bersih  <span class="fw-bold cadar_item"></span></label>
+                                                <input class="form-control fw-bold text-end text-danger" id="totalnwall"
+                                                    type="text" name="total_berat_bersih" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                              
 
                             </div>
 
@@ -188,7 +209,6 @@
                                         <textarea class="form-control" rows="2" placeholder="Catatan" name="catatan"></textarea>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
@@ -203,26 +223,6 @@
                                     <button type="button" class="btn btn-sm btn-success" id="addRow">
                                         + Item
                                     </button>
-                                </div>
-                            </div>
-                            <div class="px-3 py-2 border-bottom ">
-                                <div class="row g-2 align-items-center">
-                                    <div class="col-auto">
-                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat
-                                            Kotor</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end text-primary " id="totalgwall"
-                                            type="text" name="total_berat_kotor" readonly>
-                                    </div>
-                                    <div class="col-auto">
-                                        <label for="totalnwall" class="form-label small mb-0 text-danger ">Total Berat
-                                            Bersih</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
-                                            type="text" name="total_berat_bersih" readonly>
-                                    </div>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -788,6 +788,7 @@
                 carat = this.value;
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
+                    el.textContent = carat; 
                 })
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
