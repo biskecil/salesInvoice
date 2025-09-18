@@ -166,7 +166,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="totalnwall" class="small mb-1">Berat
-                                                    Bersih  <span class="fw-bold cadar_item"></span></label>
+                                                    Bersih <span class="fw-bold cadar_item"></span></label>
                                                 <input class="form-control fw-bold text-end text-danger" id="totalnwall"
                                                     type="text" name="total_berat_bersih" readonly>
                                             </div>
@@ -174,7 +174,7 @@
                                     </div>
                                 </div>
 
-                              
+
 
                             </div>
 
@@ -454,6 +454,8 @@
             document.getElementById("transDate").value = `${yyyy}-${mm}-${dd}`;
         }
 
+ 
+
         function hotkeys() {
             document.addEventListener("keydown", function(e) {
                 if (e.altKey && e.key === "ArrowDown") {
@@ -655,7 +657,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 2,
                 minimumValue: "0",
-                roundingMethod: 'S',
+                roundingMethod: 'D',
 
                 emptyInputBehavior: "zero"
             };
@@ -664,7 +666,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 3,
                 minimumValue: "0",
-                roundingMethod: 'S',
+                roundingMethod: 'D',
 
                 emptyInputBehavior: "zero"
             };
@@ -709,23 +711,12 @@
 @endforeach
 `;
 
-            let savedValue = localStorage.getItem('last_grosir');
-            if (savedValue) {
-                $('#grosir').val(savedValue).trigger('change');
-                setGrosir = savedValue;
-            }
-
-
-
-
-
             // transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
             $('#grosir').on('change', function() {
                 let id = this.value;
                 if (id) {
                     setGrosir = id;
-                    localStorage.setItem("last_grosir", setGrosir);
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                         let categorySelect = row.querySelector("select[name='category[]']");
                         let priceInput = row.querySelector(".price");
@@ -788,7 +779,7 @@
                 carat = this.value;
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
-                    el.textContent = carat; 
+                    el.textContent = carat;
                 })
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
@@ -878,7 +869,7 @@
 
                     return data ?? 0;
                 } catch (err) {
-                    console.error("Fetch gagal:", err);
+                    console.error("Fetch gagal");
                     return 0;
                 }
             }
@@ -938,7 +929,7 @@
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
         `;
-                itemsTable.prepend(newRow);
+                itemsTable.appendChild(newRow);
 
 
                 // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
@@ -1300,7 +1291,7 @@
                         //Info
                         totalItem.innerText = parseInt(totalItem.innerText) + 1;
                         total_gw.innerText = totalgw.toFixed(2);
-                        total_nw.innerText = totalnw.toFixed(3);
+                        total_nw.innerText = totalnw.toFixed(2);
 
 
 
@@ -1313,6 +1304,14 @@
         </td>
       `;
                         itemScantableBody.prepend(row);
+                        row.querySelectorAll("td").forEach(td => {
+                            td.style.backgroundColor = "#ffff99";
+                        });
+                        setTimeout(() => {
+                            row.querySelectorAll("td").forEach(td => {
+                                td.style.backgroundColor = "";
+                            });
+                        }, 1500);
                         barcodeInput.value = "";
                     }
                 }
@@ -1341,9 +1340,13 @@
                         document.getElementById("sub_grosir").value = data.nt;
                         document.getElementById("alamat").value = data.at;
                         document.getElementById("customer").value = data.pt;
+
+
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
+                        $('#grosir').val(1246).trigger('change');
+                        setGrosir = 1246;
                     } catch (e) {
                         Swal.fire({
                             title: "Info",
@@ -1386,12 +1389,13 @@
                 let subtotalgwall = antotalgwallInput.getNumber() || 0;
                 let subtotalnwall = antotalnwallInput.getNumber() || 0;
                 let gwBaru = parseFloat(totalgw) || 0;
-                let nwBaru = parseFloat(totalnw) || 0;
+                let nwBaru = parseFloat(totalnw.toFixed(2)) || 0;
+
 
                 // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
                 // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
-                antotalgwallInput.set(subtotalgwall + gwBaru);
-                antotalnwallInput.set(subtotalnwall + nwBaru);
+                antotalgwallInput.set(subtotalgwall + nwBaru);
+                antotalnwallInput.set(subtotalnwall + 0);
 
                 let desc_item = descInput.value;
                 let carat = caratInput.value;
@@ -1407,13 +1411,13 @@
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScangw}" >
+   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScannw.toFixed(2)}" >
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
                 <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
-                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="${itemScannw}" readonly ></td>
+                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="0" readonly ></td>
                 <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
                 <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
                 <td class="text-center isEdit">
@@ -1421,7 +1425,7 @@
                 </td>
 
                             `;
-                itemsTable.prepend(newRow);
+                itemsTable.appendChild(newRow);
 
                 let $select = $(newRow).find('.select2').select2({
                     // placeholder: "Pilih kategori",

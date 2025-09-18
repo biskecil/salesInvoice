@@ -62,15 +62,15 @@
         <tr>
             <td style="text-align:left;">
                 <div class="kode">LG &nbsp;&nbsp;{{ $data->carat }}</div>
-                <div class="nama">{{ $data->subgrosir }}</div>
+                <div class="nama">{{ $data->pelanggan }}</div>
                 <div class="area">{{ $data->tempat }}</div>
-                <div class="pelanggan">{{ $data->pelanggan }}</div>
-                <div class="pelanggan">{{ $data->invoice_number }} / {{ $data->totalgw }}</div>
+                <div>{{ $data->subgrosir }}</div>
+                <div>{{ $data->invoice_number }} / {{ $data->totalgw }}</div>
             </td>
             <td style="text-align:center; width:80px;">
                 <img src="{{ storage_path('app/public/qrcode/' . $data->invoice_number . '.png') }}" width="60"
                     height="60">
-                <div class="kode2">SA</div>
+                <div class="kode2">{{$data->Grosir}}</div>
             </td>
         </tr>
     </table>

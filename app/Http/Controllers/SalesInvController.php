@@ -204,8 +204,8 @@ class SalesInvController extends Controller
             $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
 
 
-            //return response()->json($invoice);
 
+            $caratCustom = [1, 3, 13, 4, 5, 6];
             $cust = DB::table('customer')->orderBy('Description')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
             $kadar = DB::table('carat')->select(
@@ -224,7 +224,8 @@ class SalesInvController extends Controller
             ELSE '#808080'
         END as color")
             )
-                ->orderBy('SW')->get();
+                ->whereIN('ID', $caratCustom)
+                ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get();
             $venue = DB::table('venue')->orderBy('Description')->get();
 
             return view('invoice.edit_form', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust, 'invoice_list' => $invoice_list]);
@@ -643,6 +644,7 @@ class SalesInvController extends Controller
             return $row;
         });
 
+        $caratCustom = [1, 3, 13, 4, 5, 6];
         $venue = DB::table('venue')->orderBy('Description')->get();
         $cust = DB::table('customer')->orderBy('Description')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
@@ -662,8 +664,8 @@ class SalesInvController extends Controller
             ELSE '#808080'
         END as color")
         )
-
-            ->orderBy('SW')->get();
+            ->whereIN('ID', $caratCustom)
+            ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get();
         return view('invoice.create_form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue, 'data' => $invoice]);
     }
     public function getDataNotaAll()
@@ -722,7 +724,7 @@ class SalesInvController extends Controller
             //code...
             $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
             $getNotaSW = DB::select("SELECT SW FROM invoice WHERE ID = ?", [$id]);
-
+          
             DB::table('invoice')
                 ->where('ID', $id)
                 ->update([
@@ -769,12 +771,14 @@ class SalesInvController extends Controller
             }
 
             DB::commit();
+            
 
-            $data = $this->SetReturn(true, 'Berhasil Disimpan', $request->noNota, null);
+            $data = $this->SetReturn(true, 'Berhasil Disimpan',$this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->transDate, $getNotaSW[0]->SW), null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
+           
             $data = $this->SetReturn(false, 'Server Error', null, null);
             return response()->json($data, 500);
         }

@@ -11,7 +11,7 @@
             height: auto;
             /* biar tidak terlalu tinggi */
         }
-        
+
         .card-main {
             overflow: hidden;
         }
@@ -72,7 +72,7 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Tanggal*</label>
                                     <div class="col-sm-8">
-                                        <input type="date" class="form-control" name="transDate"
+                                        <input type="date" class="form-control" name="transDate" id="transDate"
                                             value="{{ $data->TransDate }}">
                                     </div>
                                 </div>
@@ -163,6 +163,29 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">Total</label>
+                                    <div class="col-sm-8">
+                                        <div class="row g-2">
+                                            <div class="col-md-6">
+                                                <label for="totalgwall" class="small mb-1">Berat
+                                                    Kotor <span
+                                                        class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
+                                                <input class="form-control fw-bold text-end text-primary" id="totalgwall"
+                                                    type="text" value="{{ $data->Weight }}" name="total_berat_kotor"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="totalnwall" class="small mb-1">Berat
+                                                    Bersih <span
+                                                        class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
+                                                <input class="form-control fw-bold text-end text-danger" id="totalnwall"
+                                                    type="text" value="{{ $data->NetWeight }}"
+                                                    name="total_berat_bersih" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- RIGHT -->
@@ -213,28 +236,6 @@
                                     <button type="button" class="btn btn-sm btn-success" id="addRow">
                                         + Item
                                     </button>
-                                </div>
-                            </div>
-                            <div class="px-3 py-2 border-bottom bg-light">
-                                <div class="row g-2 align-items-center">
-                                    <div class="col-auto">
-                                        <label for="totalgwall" class="form-label small mb-0 text-primary">Total Berat
-                                            Kotor</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end text-primary" id="totalgwall"
-                                            type="text" value="{{ $data->Weight }}" name="total_berat_kotor"
-                                            readonly>
-                                    </div>
-                                    <div class="col-auto">
-                                        <label for="totalnwall" class="form-label small mb-0 text-danger">Total Berat
-                                            Bersih</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input class="form-control form-control-sm text-end text-danger" id="totalnwall"
-                                            type="text" value="{{ $data->NetWeight }}" name="total_berat_bersih"
-                                            readonly>
-                                    </div>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -356,11 +357,11 @@
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <span>Total GW :</span>
-                                        <span id="total_gw" class="fw-bold">0</span>
+                                        <span id="total_gw" class="fw-bold text-primary">0</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <span>Total NW :</span>
-                                        <span id="total_nw" class="fw-bold">0</span>
+                                        <span id="total_nw" class="fw-bold text-danger">0</span>
                                     </div>
                                 </div>
                             </div>
@@ -403,9 +404,8 @@
         });
 
         $(document).ready(function() {
-
+            DateNowMax();
             hotkeys();
-
             loadSelect2();
             let dataNota = '';
             $('#btnTambah').prop('disabled', true);
@@ -453,6 +453,23 @@
             });
         });
 
+        function DateNowMax() {
+
+            let input = document.getElementById("transDate");
+            let [year, month] = input.value.split("-");
+            let lastDay = new Date(year, month, 0).getDate();
+
+            input.min = `${year}-${month}-01`;
+            input.max = `${year}-${month}-${lastDay}`;
+
+
+            input.addEventListener("change", function() {
+                if (this.value.slice(0, 7) !== `${year}-${month}`) {
+                    alert(`Hanya boleh pilih bulan ${year}-${month}`);
+                    this.value = "";
+                }
+            });
+        }
 
 
         function hotkeys() {
@@ -613,41 +630,129 @@
             $("#btnSubmitCreate").on("click", function(e) {
                 e.preventDefault(); // prevent normal form submit
 
-                $.ajax({
-                    url: $("#salesForm").attr("action"),
-                    type: "POST",
-                    data: $("#salesForm").serialize(),
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Berhasil",
-                            text: "Data telah berhasil disimpan.",
-                            icon: "success",
-                            confirmButtonText: "OK"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '/sales/detail/' + response.data;
-                            }
-                        });
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 422) {
+                if (carat == carat_last) {
+                    $.ajax({
+                        url: $("#salesForm").attr("action"),
+                        type: "POST",
+                        data: $("#salesForm").serialize(),
+                        success: function(response) {
                             Swal.fire({
-                                title: "Gagal",
-                                text: "Silakan periksa kembali form yang Anda isi.",
-                                icon: "error",
+                                title: "Berhasil",
+                                text: "Data telah berhasil disimpan.",
+                                icon: "success",
                                 confirmButtonText: "OK"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/sales/detail/' + response
+                                        .data;
+                                }
                             });
-                        } else {
-                            Swal.fire({
-                                title: "Gagal",
-                                text: "Server Error",
-                                icon: "error",
-                                confirmButtonText: "OK"
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422) {
+                                Swal.fire({
+                                    title: "Gagal",
+                                    text: "Silakan periksa kembali form yang Anda isi.",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Gagal",
+                                    text: "Server Error",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            }
+
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Konfirmasi Perubahan",
+                        html: "Kadar telah diubah ke <b>" + carat + "</b><br>,Lanjutkan penyimpanan?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Lanjutkan",
+                        cancelButtonText: "Batal"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: $("#salesForm").attr("action"),
+                                type: "POST",
+                                data: $("#salesForm").serialize(),
+                                success: function(response) {
+                                    Swal.fire({
+                                        title: "Berhasil",
+                                        text: "Data telah berhasil disimpan.",
+                                        icon: "success",
+                                        confirmButtonText: "OK"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href =
+                                                '/sales/detail/' + response
+                                                .data;
+                                        }
+                                    });
+                                },
+                                error: function(xhr) {
+                                    if (xhr.status === 422) {
+                                        Swal.fire({
+                                            title: "Gagal",
+                                            text: "Silakan periksa kembali form yang Anda isi.",
+                                            icon: "error",
+                                            confirmButtonText: "OK"
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Gagal",
+                                            text: "Server Error",
+                                            icon: "error",
+                                            confirmButtonText: "OK"
+                                        });
+                                    }
+                                }
                             });
                         }
+                    });
+                    // $.ajax({
+                    //     url: $("#salesForm").attr("action"),
+                    //     type: "POST",
+                    //     data: $("#salesForm").serialize(),
+                    //     success: function(response) {
+                    //         Swal.fire({
+                    //             title: "Berhasil",
+                    //             text: "Data telah berhasil disimpan.",
+                    //             icon: "success",
+                    //             confirmButtonText: "OK"
+                    //         }).then((result) => {
+                    //             if (result.isConfirmed) {
+                    //                 window.location.href = '/sales/detail/' + response.data;
+                    //             }
+                    //         });
+                    //     },
+                    //     error: function(xhr) {
+                    //         if (xhr.status === 422) {
+                    //             Swal.fire({
+                    //                 title: "Gagal",
+                    //                 text: "Silakan periksa kembali form yang Anda isi.",
+                    //                 icon: "error",
+                    //                 confirmButtonText: "OK"
+                    //             });
+                    //         } else {
+                    //             Swal.fire({
+                    //                 title: "Gagal",
+                    //                 text: "Server Error",
+                    //                 icon: "error",
+                    //                 confirmButtonText: "OK"
+                    //             });
+                    //         }
 
-                    }
-                });
+                    //     }
+                    // });
+                }
+
+
             });
 
             const optionsDec2 = {
@@ -655,8 +760,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 2,
                 minimumValue: "0",
-                roundingMethod: 'S',
-
+                roundingMethod: 'D',
                 emptyInputBehavior: "zero"
             };
             const optionsDec3 = {
@@ -664,13 +768,13 @@
                 decimalCharacter: '.',
                 decimalPlaces: 3,
                 minimumValue: "0",
-                roundingMethod: 'S',
-
+                roundingMethod: 'D',
                 emptyInputBehavior: "zero"
             };
 
             AutoNumeric.multiple('.autonumDec2', optionsDec2);
-            AutoNumeric.multiple('.autonumDec3', optionsDec3);
+            AutoNumeric.multiple('.autonumDec3',
+                optionsDec3);
             const addRowBtn = document.getElementById("addRow");
             const itemsTable = document.getElementById("itemsTable").getElementsByTagName("tbody")[0];
             const itemScanTable = document.getElementById("itemScantable").getElementsByTagName("tbody")[0];
@@ -698,6 +802,7 @@
             let totalnwall = @json($data->NetWeight);
             let totalnw = 0;
             let carat = '';
+            let carat_last = '{{ $data->Carat }}';
             let desc_item = '';
             let default_cat = '{{ $desc[0]->Description }}';
             let itemScan = [];
@@ -712,7 +817,8 @@
 
             setGrosir = '{{ $data->Grosir }}';
             carat = '{{ $data->Carat }}';
-            itemScan = @json($data->ItemList);
+            itemScan =
+                @json($data->ItemList);
             addRowItemsTable(itemScan, options_cat);
 
             function addRowItemsTable(item, options_cat) {
@@ -809,7 +915,8 @@
                             }
                             let totalnwall = 0;
                             document.querySelectorAll(".wnet").forEach(el => {
-                                const an = AutoNumeric.getAutoNumericElement(el);
+                                const an = AutoNumeric.getAutoNumericElement(
+                                    el);
                                 totalnwall += an.getNumber() || 0;
                             });
 
@@ -828,6 +935,7 @@
                 carat = this.value;
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
+                    el.textContent = carat;
                 })
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
@@ -977,7 +1085,7 @@
                 <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
             </td>
         `;
-                itemsTable.prepend(newRow);
+                itemsTable.appendChild(newRow);
 
 
                 // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
@@ -1339,7 +1447,7 @@
                         //Info
                         totalItem.innerText = parseInt(totalItem.innerText) + 1;
                         total_gw.innerText = totalgw.toFixed(2);
-                        total_nw.innerText = totalnw.toFixed(3);
+                        total_nw.innerText = totalnw.toFixed(2);
 
 
 
@@ -1352,6 +1460,14 @@
         </td>
       `;
                         itemScantableBody.prepend(row);
+                        row.querySelectorAll("td").forEach(td => {
+                            td.style.backgroundColor = "#ffff99";
+                        });
+                        setTimeout(() => {
+                            row.querySelectorAll("td").forEach(td => {
+                                td.style.backgroundColor = "";
+                            });
+                        }, 1500);
                         barcodeInput.value = "";
                     }
                 }
@@ -1383,6 +1499,8 @@
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
+                        $('#grosir').val(1246).trigger('change');
+                        setGrosir = 1246;
                     } catch (e) {
                         Swal.fire({
                             title: "Info",
@@ -1425,12 +1543,12 @@
                 let subtotalgwall = antotalgwallInput.getNumber() || 0;
                 let subtotalnwall = antotalnwallInput.getNumber() || 0;
                 let gwBaru = parseFloat(totalgw) || 0;
-                let nwBaru = parseFloat(totalnw) || 0;
+                let nwBaru = parseFloat(totalnw.toFixed(2)) || 0;
 
                 // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
                 // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
-                antotalgwallInput.set(subtotalgwall + gwBaru);
-                antotalnwallInput.set(subtotalnwall + nwBaru);
+                antotalgwallInput.set(subtotalgwall + nwBaru);
+                antotalnwallInput.set(subtotalnwall + 0);
 
                 let desc_item = descInput.value;
                 let carat = caratInput.value;
@@ -1446,13 +1564,13 @@
                 <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
-   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScangw}" >
+   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScannw.toFixed(2)}" >
    <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
 </div>
                     
                   </td>
                 <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
-                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="${itemScannw}" readonly ></td>
+                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="0" readonly ></td>
                 <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
                 <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
                 <td class="text-center isEdit">
@@ -1460,7 +1578,7 @@
                 </td>
 
                             `;
-                itemsTable.prepend(newRow);
+                itemsTable.appendChild(newRow);
 
                 let $select = $(newRow).find('.select2').select2({
                     // placeholder: "Pilih kategori",
