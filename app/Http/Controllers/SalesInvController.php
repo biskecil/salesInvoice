@@ -27,7 +27,10 @@ class SalesInvController extends Controller
 
     public function tes()
     {
-        return view('tes');
+        $width = 100 / 25.4 * 72;
+        $height = 50 / 25.4 * 72;
+        $pdf = PDF::loadView('tes'); // view tes dipakai untuk PDF juga
+        return $pdf->stream('filename.pdf');
     }
     public function getDataPrice(Request $request)
     {
@@ -724,7 +727,7 @@ class SalesInvController extends Controller
             //code...
             $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
             $getNotaSW = DB::select("SELECT SW FROM invoice WHERE ID = ?", [$id]);
-          
+
             DB::table('invoice')
                 ->where('ID', $id)
                 ->update([
@@ -771,14 +774,14 @@ class SalesInvController extends Controller
             }
 
             DB::commit();
-            
 
-            $data = $this->SetReturn(true, 'Berhasil Disimpan',$this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->transDate, $getNotaSW[0]->SW), null);
+
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->transDate, $getNotaSW[0]->SW), null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-           
+
             $data = $this->SetReturn(false, 'Server Error', null, null);
             return response()->json($data, 500);
         }

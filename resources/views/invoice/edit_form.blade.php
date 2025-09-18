@@ -670,7 +670,7 @@
                 } else {
                     Swal.fire({
                         title: "Konfirmasi Perubahan",
-                        html: "Kadar telah diubah ke <b>" + carat + "</b><br>,Lanjutkan penyimpanan?",
+                        html: "Kadar telah diubah ke <b>" + carat + "</b>,<br>Lanjutkan penyimpanan?",
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonText: "Lanjutkan",
