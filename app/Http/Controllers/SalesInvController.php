@@ -25,6 +25,7 @@ class SalesInvController extends Controller
         return $data_return;
     }
 
+
     public function tes()
     {
         $width = 100 / 25.4 * 72;
@@ -599,6 +600,88 @@ class SalesInvController extends Controller
             'url' => asset('storage/nota/' . $nota . '.pdf'),
         ]);
     }
+    public function cetakDataNotaPack(Request $request)
+    {
+        $data_item = DB::table('invoiceitem')
+            ->select(
+                'product.SW as productSW',
+                'product.Description as desc_item',
+                'carat.SW as caratSW',
+            )
+            ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
+            ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+            ->where('invoiceitem.IDM', $request->id);
+
+        $data = DB::table('invoice')
+            ->addSelect([
+                'wbruto' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Weight)')
+                    ->where('invoiceitem.IDM', $request->id)
+                    ->limit(1),
+            ])
+            ->where('ID', $request->id)
+            ->get()->first();
+
+        $data->carat =  $data_item->first()->caratSW;
+        $data->wbruto_form = number_format($request->wbruto, 2, '.', ',');
+
+        $html = view('pack.cetakPack', [
+            'data' => $data,
+        ])->render();
+
+        return $this->cetakNotaPackDirectPrinting($html, $request->id);
+    }
+
+    public function cetakNotaPackDirectPrinting($returnHTML, $nota)
+    {
+
+        // $width = 130 / 25.4 * 72;
+        // $height = 210 / 25.4 * 72;
+        //$customPaper = array(0, 0, $height, $width);
+        $pdf = PDF::loadHtml($returnHTML);
+        // $pdf->setPaper($customPaper, 'landscape');
+        //  return $pdf->stream('filename.pdf');
+        $hasilpdf = $pdf->output();
+        Storage::disk('public')->put('notaPack/' . $nota . '.pdf', $hasilpdf);
+        return response()->json([
+            'status' => 200,
+            'html' => $returnHTML,
+            'id' => $nota,
+            'url' => asset('storage/notaPack/' . $nota . '.pdf'),
+        ]);
+    }
+    public function prevDataNotaPack(Request $request)
+    {
+        $data_item = DB::table('invoiceitem')
+            ->select(
+                'product.SW as productSW',
+                'product.Description as desc_item',
+                'carat.SW as caratSW',
+            )
+            ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
+            ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+            ->where('invoiceitem.IDM', $request->id);
+
+        $data = DB::table('invoice')
+            ->addSelect([
+                'wbruto' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Weight)')
+                    ->where('invoiceitem.IDM', $request->id)
+                    ->limit(1),
+            ])
+            ->where('ID', $request->id)
+            ->get()->first();
+
+        $data->carat =  $data_item->first()->caratSW;
+        $data->wbruto_form = number_format($request->wbruto, 2, '.', ',');
+
+
+
+        // $width = 100 / 25.4 * 72;
+        // $height = 50 / 25.4 * 72;
+        $pdf = PDF::loadView('pack.cetakPack', ['data' => $data]);
+        return $pdf->stream('filename.pdf');
+    }
 
     public function cetakBarcodeDirectPrinting($returnHTML, $nota)
     {
@@ -671,6 +754,31 @@ class SalesInvController extends Controller
             ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get();
         return view('invoice.create_form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue, 'data' => $invoice]);
     }
+    public function getDataNotaPack(Request $request)
+    {
+        $data_item = DB::table('invoiceitem')
+            ->select(
+                'product.SW as productSW',
+                'product.Description as desc_item',
+                'carat.SW as caratSW',
+            )
+            ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
+            ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+            ->where('invoiceitem.IDM', $request->id);
+
+        $data = DB::table('invoice')
+            ->addSelect([
+                'wbruto' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Weight)')
+                    ->where('invoiceitem.IDM', $request->id)
+                    ->limit(1),
+            ])
+            ->where('ID', $request->id)
+            ->get()->first();
+
+        $data->carat =  $data_item->first()->caratSW;
+        return response()->json(['data' => $data]);
+    }
     public function getDataNotaAll()
     {
         $data = DB::table('invoiceitem')
@@ -701,6 +809,26 @@ class SalesInvController extends Controller
                 return $row;
             });
         return response()->json(['data' => $data]);
+    }
+    public function show_pack()
+    {
+        $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+
+        $invoice_list->transform(function ($row) {
+
+            $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+            $transDate = Carbon::parse($row->TransDate);
+            $monthMM   = $transDate->format('m');
+            $yearYY    = $transDate->format('y');
+
+            $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+
+            $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+
+            return $row;
+        });
+        return view('pack.show', ['data' => $invoice_list]);
     }
     public function show()
     {
