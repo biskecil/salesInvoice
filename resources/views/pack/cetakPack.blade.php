@@ -47,7 +47,7 @@
             <td style="text-align:left;">Berat&nbsp;&nbsp;: {{$data->wbruto_form}}</td>
         </tr>
         <tr>
-            <td style="text-align:left;">Ket&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: IIC19090001</td>
+            <td style="text-align:left;">Ket&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ $data->noNota }}</td>
 
         </tr>
         <tr>

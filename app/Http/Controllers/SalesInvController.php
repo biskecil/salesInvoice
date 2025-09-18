@@ -613,6 +613,15 @@ class SalesInvController extends Controller
             ->where('invoiceitem.IDM', $request->id);
 
         $data = DB::table('invoice')
+            ->select(
+                'invoice.*',
+                DB::raw("CONCAT(
+    CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+    Grosir,
+    DATE_FORMAT(TransDate, '%y%m'),
+    LPAD(SW, 4, '0')
+) as noNota")
+            )
             ->addSelect([
                 'wbruto' => DB::table('invoiceitem')
                     ->selectRaw('SUM(Weight)')
@@ -663,6 +672,15 @@ class SalesInvController extends Controller
             ->where('invoiceitem.IDM', $request->id);
 
         $data = DB::table('invoice')
+            ->select(
+                'invoice.*',
+                DB::raw("CONCAT(
+        CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+        Grosir,
+        DATE_FORMAT(TransDate, '%y%m'),
+        LPAD(SW, 4, '0')
+    ) as noNota")
+            )
             ->addSelect([
                 'wbruto' => DB::table('invoiceitem')
                     ->selectRaw('SUM(Weight)')
