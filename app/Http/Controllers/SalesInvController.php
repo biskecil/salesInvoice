@@ -25,6 +25,19 @@ class SalesInvController extends Controller
         return $data_return;
     }
 
+    private function getContrastYIQ($hexcolor)
+    {
+        $hexcolor = ltrim($hexcolor, '#'); // hapus '#' jika ada
+
+        $r = hexdec(substr($hexcolor, 0, 2));
+        $g = hexdec(substr($hexcolor, 2, 2));
+        $b = hexdec(substr($hexcolor, 4, 2));
+
+        $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+        return ($yiq >= 128) ? '#000' : '#fff';
+    }
+
 
     public function tes()
     {
@@ -159,6 +172,19 @@ class SalesInvController extends Controller
                     'product.SW as productSW',
                     'product.Description as desc_item',
                     'carat.SW as caratSW',
+                    DB::raw("CASE
+                    WHEN carat.SW = '6K' THEN '#0000FF'
+                    WHEN carat.SW = '8K' THEN '#00FF00'
+                    WHEN carat.SW = '8KP' THEN '#CFB370'
+                    WHEN carat.SW = '10K' THEN '#FFFF00'
+                    WHEN carat.SW = '16K' THEN '#FF0000'
+                    WHEN carat.SW = '17K' THEN '#FF6E01'
+                    WHEN carat.SW = '17KP' THEN '#FF00FF'
+                    WHEN carat.SW = '19K' THEN '#5F2987'
+                    WHEN carat.SW = '20K' THEN '#FFC0CB'
+                    ELSE '#808080'
+                END as color")
+
                 )
                 ->addSelect([
                     'custprice' => DB::table('invoiceitem')
@@ -182,6 +208,7 @@ class SalesInvController extends Controller
                 $item->priceCust =  number_format($item->PriceCust, 3, '.', ',');
                 $item->netCust =  number_format($item->NettoCust, 3, '.', ',');
                 $item->isHargaCheck = $item->custprice + $item->nettcust  > 0 ? true : false;
+                $item->textColor = $this->getContrastYIQ($item->color);
                 return $item;
             });
 
@@ -299,6 +326,18 @@ class SalesInvController extends Controller
                     'product.SW as productSW',
                     'product.Description as desc_item',
                     'carat.SW as caratSW',
+                    DB::raw("CASE
+                    WHEN carat.SW = '6K' THEN '#0000FF'
+                    WHEN carat.SW = '8K' THEN '#00FF00'
+                    WHEN carat.SW = '8KP' THEN '#CFB370'
+                    WHEN carat.SW = '10K' THEN '#FFFF00'
+                    WHEN carat.SW = '16K' THEN '#FF0000'
+                    WHEN carat.SW = '17K' THEN '#FF6E01'
+                    WHEN carat.SW = '17KP' THEN '#FF00FF'
+                    WHEN carat.SW = '19K' THEN '#5F2987'
+                    WHEN carat.SW = '20K' THEN '#FFC0CB'
+                    ELSE '#808080'
+                END as color")
                 )
                 ->addSelect([
                     'custprice' => DB::table('invoiceitem')
@@ -323,6 +362,7 @@ class SalesInvController extends Controller
                 $item->priceCust =  number_format($item->PriceCust, 3, '.', ',');
                 $item->netCust =  number_format($item->NettoCust, 3, '.', ',');
                 $item->isHargaCheck = $item->custprice + $item->nettcust  > 0 ? true : false;
+                $item->textColor = $this->getContrastYIQ($item->color);
                 return $item;
             });
 

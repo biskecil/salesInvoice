@@ -43,7 +43,8 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                     <li><button class="dropdown-item" id="btnCetak">Cetak dgn harga</button></li>
-                                    <li><button class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</button></li>
+                                    <li><button class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</button>
+                                    </li>
                                     <li><button class="dropdown-item" id="btnCetakKosong">Cetak tanpa harga</button></li>
                                 </ul>
                             </div>
@@ -164,15 +165,19 @@
                                         <div class="row g-2">
                                             <div class="col-md-6">
                                                 <label for="totalgwall" class="small mb-1">Berat
-                                                    Kotor <span class="fw-bold cadar_item">{{$data->Carat}}</span></label>
+                                                    Kotor <span
+                                                        class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
                                                 <input class="form-control fw-bold text-end text-primary" id="totalgwall"
-                                                    type="text"  value="{{ $data->Weight }}" name="total_berat_kotor" readonly>
+                                                    type="text" value="{{ $data->Weight }}" name="total_berat_kotor"
+                                                    readonly>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="totalnwall" class="small mb-1">Berat
-                                                    Bersih <span class="fw-bold cadar_item">{{$data->Carat}}</span></label>
+                                                    Bersih <span
+                                                        class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
                                                 <input class="form-control fw-bold text-end text-danger" id="totalnwall"
-                                                    type="text"  value="{{ $data->NetWeight }}" name="total_berat_bersih" readonly>
+                                                    type="text" value="{{ $data->NetWeight }}"
+                                                    name="total_berat_bersih" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -246,9 +251,16 @@
                                                             class="form-control form-control-sm text-center"
                                                             value="{{ $item->desc_item }}" readonly>
                                                     </td>
-                                                    <td><input type="text" name="cadar[]"
+                                                    <td class="text-center align-middle"><span
+                                                            style="background-color:{{ $item->color }};color:{{ $item->textColor }};padding:2px 6px;border-radius:4px"
+                                                            class="cadar_text">{{ $item->caratSW }}</span>
+
+                                                    </td>
+                                                    {{-- <td>
+                                                        <input type="text" name="cadar[]"
                                                             class="form-control form-control-sm cadar_item text-center"
-                                                            value="{{ $item->caratSW }}" readonly></td>
+                                                            value="{{ $item->caratSW }}" readonly>
+                                                    </td> --}}
                                                     <td><input type="text" name="wbruto[]"
                                                             class="form-control form-control-sm wbruto text-end"
                                                             min="0" value="{{ $item->gw }}" step="0.01"

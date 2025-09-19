@@ -454,7 +454,7 @@
             document.getElementById("transDate").value = `${yyyy}-${mm}-${dd}`;
         }
 
- 
+
 
         function hotkeys() {
             document.addEventListener("keydown", function(e) {
@@ -699,6 +699,8 @@
             let totalnwall = 0;
             let totalnw = 0;
             let carat = '';
+            let carat_textcolor = '';
+            let carat_bgcolor = '';
             let desc_item = '';
             let default_cat = '{{ $desc[0]->Description }}';
             let itemScan = [];
@@ -777,8 +779,15 @@
 
             $('#carat').on('change', function() {
                 carat = this.value;
+                carat_bgcolor = $(this).find(':selected').data('color');
+                carat_textcolor = getContrastYIQ(carat_bgcolor);
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
+                    el.textContent = carat;
+                })
+                document.querySelectorAll(".cadar_text").forEach(el => {
+                    el.style.backgroundColor = carat_bgcolor
+                    el.style.color = carat_textcolor
                     el.textContent = carat;
                 })
 
@@ -914,7 +923,9 @@
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
-            <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
+            <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
+                <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
+            </td>
             <td>
               <div class="input-group input-group-sm mb-2">
   <input type="text"  name="wbruto[]" class="autonumDec2 form-control wbruto text-end" placeholder="0.00">
@@ -1408,7 +1419,9 @@
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
-                <td><input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center"  value="${carat}" readonly></td>
+                <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
+                <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
+            </td>
                 <td>
                     <div class="input-group input-group-sm mb-2">
    <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScannw.toFixed(2)}" >
