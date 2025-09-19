@@ -13,7 +13,7 @@
         }
     </style>
     <div class="row justify-content-center">
-        <div class="col-md-5">
+        <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-1 pb-2">
                     <div class="d-flex gap-2 justify-content-between">

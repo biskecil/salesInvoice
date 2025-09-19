@@ -40,7 +40,7 @@
     <table style="width:100%; " border="0">
         <tr>
             <td style="text-align:left;font-weight: bold;font-size:28px;">LG</td>
-            <td style="text-align:left;font-size:28px;" rowspan="2">Kadar&nbsp;: <b>{{ $data->carat }}</b>
+            <td style="text-align:left;font-size:20px;" rowspan="2">Berat&nbsp;: <b>{{$data->wbruto_form}}</b>
             </td>
         </tr>
         <tr>
@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td style="text-align:left;">Ket&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ $data->noNota }}</td>
-            <td style="text-align:left;font-size:18px;">Berat&nbsp;&nbsp;: <b>{{$data->wbruto_form}}</b></td>
+            <td style="text-align:left;">Kadar&nbsp;&nbsp;: <b>{{ $data->carat }}</b></td>
         </tr>
         <tr>
             <td style="text-align:left;">&nbsp;</td>
