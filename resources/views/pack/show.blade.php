@@ -93,9 +93,8 @@
                         <div class="col-md-4 d-flex items-center ">
                             <button class="btn btn-warning preview-btn flex-fill me-1" type="button" id="btnPreview"
                                 disabled><i class="fa-regular fa-eye"></i> Preview</button>
-                            <button class="btn btn-info cetak-btn flex-fill ms-1" type="button" id="btnCetak"
-                                disabled><i
-                                class="fa-solid fa-print"></i> Label</button>
+                            <button class="btn btn-info cetak-btn flex-fill ms-1" type="button" id="btnCetak" disabled><i
+                                    class="fa-solid fa-print"></i> Label</button>
                         </div>
                     </div>
 
@@ -169,6 +168,7 @@
         }
 
         $('#kalibrasi-btn').on('click', async function() {
+            const wbrutoInput =  document.getElementById('wbruto');
             let anBruto = AutoNumeric.getAutoNumericElement(wbrutoInput);
             try {
                 const hasilTimbang = await kliktimbang();
@@ -177,7 +177,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
-                    text: 'Periksa koneksi timbangan',
+                    text: error,
                     confirmButtonText: 'OK'
                 });
             }
