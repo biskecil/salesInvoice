@@ -936,9 +936,9 @@
             });
 
 
-            $('#carat').on('change', function() {
-                carat = this.value;
-                carat_bgcolor = $(this).find(':selected').data('color');
+            function updateCarat(carat, $select) {
+
+                carat_bgcolor = $select.find(':selected').data('color');
                 carat_textcolor = getContrastYIQ(carat_bgcolor);
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
@@ -949,8 +949,6 @@
                     el.style.color = carat_textcolor
                     el.textContent = carat;
                 })
-
-
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                     let categorySelect = row.querySelector("select[name='category[]']");
                     let priceInput = row.querySelector(".price");
@@ -1002,6 +1000,27 @@
                         antotalnwallInput.set(totalnwall);
                     });
                 });
+            }
+            $('#carat').on('change', function() {
+                let newCarat = this.value;
+                if (newCarat === carat) return;
+                Swal.fire({
+                    title: "Konfirmasi Perubahan",
+                    html: "Kadar diubah ke <b>" + newCarat +
+                        "</b>,<br>Lanjutkan perubahan?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        updateCarat(newCarat, $('#carat'));
+                        carat = newCarat;
+                    } else {
+                        $('#carat').val(carat).trigger('change');
+                    }
+                });
+
             });
 
 
