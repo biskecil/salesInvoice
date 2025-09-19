@@ -140,7 +140,7 @@
         const optionsDec2 = {
             digitGroupSeparator: ',',
             decimalCharacter: '.',
-            decimalPlaces: 2,
+            decimalPlaces: 3,
             minimumValue: "0",
             roundingMethod: 'D',
 

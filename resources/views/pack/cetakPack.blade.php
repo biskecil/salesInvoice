@@ -12,8 +12,8 @@
 
         body {
             font-family: Arial, sans-serif;
-            font-weight: bold;
-            font-size:16px;
+            /* font-weight: bold; */
+            font-size: 16px;
             padding-left: 15px;
             padding-top: 16px;
         }
@@ -39,24 +39,26 @@
 <body>
     <table style="width:100%; " border="0">
         <tr>
-            <td style="text-align:left;">Lestari</td>
-            <td style="text-align:left;">Kadar&nbsp;: {{$data->carat}}</td>
+            <td style="text-align:left;font-weight: bold;font-size:28px;">LG</td>
+            <td style="text-align:left;font-size:28px;" rowspan="2">Kadar&nbsp;: <b>{{ $data->carat }}</b>
+            </td>
         </tr>
         <tr>
-            <td style="text-align:left;">Grosir&nbsp;: {{$data->Grosir}}</td>
-            <td style="text-align:left;">Berat&nbsp;&nbsp;: {{$data->wbruto_form}}</td>
+            <td style="text-align:left;">Grosir&nbsp;: {{ $data->Grosir }}</td>
+
         </tr>
         <tr>
             <td style="text-align:left;">Ket&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ $data->noNota }}</td>
-
+            <td style="text-align:left;font-size:18px;">Berat&nbsp;&nbsp;: <b>{{$data->wbruto_form}}</b></td>
         </tr>
         <tr>
             <td style="text-align:left;">&nbsp;</td>
 
         </tr>
+       
         <tr>
             <td colspan="2" style="text-align:center; font-size:25px; vertical-align:bottom;">
-                {{$data->Customer}}<br>
+                {{ $data->Customer }}<br>
                 <p style="font-size:15px; margin:0; line-height:18px;"><i>{{$data->Address}}</i></p>
             </td>
         </tr>

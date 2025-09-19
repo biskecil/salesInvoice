@@ -632,7 +632,7 @@ class SalesInvController extends Controller
             ->get()->first();
 
         $data->carat =  $data_item->first()->caratSW;
-        $data->wbruto_form = number_format($request->wbruto, 2, '.', ',');
+        $data->wbruto_form = number_format($request->wbruto, 3, '.', ',');
 
         $html = view('pack.cetakPack', [
             'data' => $data,
@@ -691,7 +691,7 @@ class SalesInvController extends Controller
             ->get()->first();
 
         $data->carat =  $data_item->first()->caratSW;
-        $data->wbruto_form = number_format($request->wbruto, 2, '.', ',');
+        $data->wbruto_form = number_format($request->wbruto, 3, '.', ',');
 
 
 
@@ -794,6 +794,7 @@ class SalesInvController extends Controller
             ->where('ID', $request->id)
             ->get()->first();
 
+        $data->gw = number_format($data->wbruto, 3, '.', ',');
         $data->carat =  $data_item->first()->caratSW;
         return response()->json(['data' => $data]);
     }
