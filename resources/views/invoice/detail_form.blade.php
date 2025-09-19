@@ -43,8 +43,8 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                     <li><button class="dropdown-item" id="btnCetak">Cetak dgn harga</button></li>
-                                    <li><a class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</a></li>
-                                    <li><a class="dropdown-item" id="btnCetakKosong">Cetak tanpa harga</a></li>
+                                    <li><button class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</button></li>
+                                    <li><button class="dropdown-item" id="btnCetakKosong">Cetak tanpa harga</button></li>
                                 </ul>
                             </div>
                             <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
