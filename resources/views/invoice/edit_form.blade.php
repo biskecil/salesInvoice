@@ -635,128 +635,42 @@
             $("#btnSubmitCreate").on("click", function(e) {
                 e.preventDefault(); // prevent normal form submit
 
-                if (carat == carat_last) {
-                    $.ajax({
-                        url: $("#salesForm").attr("action"),
-                        type: "POST",
-                        data: $("#salesForm").serialize(),
-                        success: function(response) {
-                            Swal.fire({
-                                title: "Berhasil",
-                                text: "Data telah berhasil disimpan.",
-                                icon: "success",
-                                confirmButtonText: "OK"
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = '/sales/detail/' + response
-                                        .data;
-                                }
-                            });
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 422) {
-                                Swal.fire({
-                                    title: "Gagal",
-                                    text: "Silakan periksa kembali form yang Anda isi.",
-                                    icon: "error",
-                                    confirmButtonText: "OK"
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: "Gagal",
-                                    text: "Server Error",
-                                    icon: "error",
-                                    confirmButtonText: "OK"
-                                });
+                $.ajax({
+                    url: $("#salesForm").attr("action"),
+                    type: "POST",
+                    data: $("#salesForm").serialize(),
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: "Data telah berhasil disimpan.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/sales/detail/' + response
+                                    .data;
                             }
-
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Konfirmasi Perubahan",
-                        html: "Kadar telah diubah ke <b>" + carat +
-                            "</b>,<br>Lanjutkan penyimpanan?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Lanjutkan",
-                        cancelButtonText: "Batal"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: $("#salesForm").attr("action"),
-                                type: "POST",
-                                data: $("#salesForm").serialize(),
-                                success: function(response) {
-                                    Swal.fire({
-                                        title: "Berhasil",
-                                        text: "Data telah berhasil disimpan.",
-                                        icon: "success",
-                                        confirmButtonText: "OK"
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.href =
-                                                '/sales/detail/' + response
-                                                .data;
-                                        }
-                                    });
-                                },
-                                error: function(xhr) {
-                                    if (xhr.status === 422) {
-                                        Swal.fire({
-                                            title: "Gagal",
-                                            text: "Silakan periksa kembali form yang Anda isi.",
-                                            icon: "error",
-                                            confirmButtonText: "OK"
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: "Gagal",
-                                            text: "Server Error",
-                                            icon: "error",
-                                            confirmButtonText: "OK"
-                                        });
-                                    }
-                                }
+                        });
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Silakan periksa kembali form yang Anda isi.",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Server Error",
+                                icon: "error",
+                                confirmButtonText: "OK"
                             });
                         }
-                    });
-                    // $.ajax({
-                    //     url: $("#salesForm").attr("action"),
-                    //     type: "POST",
-                    //     data: $("#salesForm").serialize(),
-                    //     success: function(response) {
-                    //         Swal.fire({
-                    //             title: "Berhasil",
-                    //             text: "Data telah berhasil disimpan.",
-                    //             icon: "success",
-                    //             confirmButtonText: "OK"
-                    //         }).then((result) => {
-                    //             if (result.isConfirmed) {
-                    //                 window.location.href = '/sales/detail/' + response.data;
-                    //             }
-                    //         });
-                    //     },
-                    //     error: function(xhr) {
-                    //         if (xhr.status === 422) {
-                    //             Swal.fire({
-                    //                 title: "Gagal",
-                    //                 text: "Silakan periksa kembali form yang Anda isi.",
-                    //                 icon: "error",
-                    //                 confirmButtonText: "OK"
-                    //             });
-                    //         } else {
-                    //             Swal.fire({
-                    //                 title: "Gagal",
-                    //                 text: "Server Error",
-                    //                 icon: "error",
-                    //                 confirmButtonText: "OK"
-                    //             });
-                    //         }
 
-                    //     }
-                    // });
-                }
+                    }
+                });
 
 
             });
