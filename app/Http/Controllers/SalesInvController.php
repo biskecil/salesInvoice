@@ -147,7 +147,7 @@ class SalesInvController extends Controller
             ->first();
 
         if ($data) {
-            $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+            $invoice_list =  DB::table('invoice')->orderBy('ID')->whereNotIN('id', [0])->get();
 
             $invoice_list->transform(function ($row) {
 
@@ -300,7 +300,7 @@ class SalesInvController extends Controller
             ->first();
 
         if ($data) {
-            $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+            $invoice_list =  DB::table('invoice')->orderBy('ID')->whereNotIN('id', [0])->get();
 
             $invoice_list->transform(function ($row) {
 
@@ -417,7 +417,7 @@ class SalesInvController extends Controller
     }
     public function form()
     {
-        $invoice =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+        $invoice =  DB::table('invoice')->orderBy('ID')->whereNotIN('id', [0])->get();
 
         $invoice->transform(function ($row) {
 
@@ -771,7 +771,7 @@ class SalesInvController extends Controller
     }
     public function create()
     {
-        $invoice =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+        $invoice =  DB::table('invoice')->orderBy('ID')->whereNotIN('id', [0])->get();
 
         $invoice->transform(function ($row) {
 

@@ -44,13 +44,13 @@
                         </div>
                         <div>
                             <div class="d-flex gap-2 ">
-                                <input type="search" class="form-control" id="cariDataNota" list="datalistNota"
-                                    style="flex:1" placeholder="Cari Nota">
-                                <datalist id="datalistNota">
-                                    @foreach ($data as $list)
-                                        <option value="{{ $list->invoice_number }}">{{ $list->invoice_number }}</option>
-                                    @endforeach
-                                </datalist>
+                                <div class="position-relative" style="max-width:400px;">
+                                    <input type="search" class="form-control" id="cariDataNota" autocomplete="off"
+                                        placeholder="Cari Nota">
+                                    <ul id="notaSuggestions" class="list-group position-absolute w-100"
+                                        style="z-index:1000; max-height:200px; overflow-y:auto; display:none;">
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -386,6 +386,11 @@
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
+    <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
+    <script>
+        const dataNota = @json($data->pluck('invoice_number'));
+        createAutocomplete('cariDataNota', 'notaSuggestions', dataNota);
+    </script>
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);

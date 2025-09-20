@@ -54,15 +54,16 @@
                             <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial(false)">
                                 <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
                         </div>
+                   
                         <div>
                             <div class="d-flex gap-2 ">
-                                <input type="search" class="form-control" id="cariDataNota" list="datalistNota"
-                                    style="flex:1" placeholder="Cari Nota">
-                                <datalist id="datalistNota">
-                                    @foreach ($invoice_list as $list)
-                                        <option value="{{ $list->invoice_number }}">{{ $list->invoice_number }}</option>
-                                    @endforeach
-                                </datalist>
+                                <div class="position-relative" style="max-width:400px;">
+                                    <input type="search" class="form-control" id="cariDataNota" autocomplete="off"
+                                        placeholder="Cari Nota">
+                                    <ul id="notaSuggestions" class="list-group position-absolute w-100"
+                                        style="z-index:1000; max-height:200px; overflow-y:auto; display:none;">
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -91,8 +92,8 @@
                                     <div class="col-sm-8 d-flex gap-2 ">
                                         <input type="text" class="form-control" id="customer" name="customer"
                                             style="flex:1" value="{{ $data->Customer }}" readonly>
-                                        <button type="button" class="text-sm btn btn-primary d-none" data-bs-toggle="modal"
-                                            data-bs-target="#scanQRModal" readonly>
+                                        <button type="button" class="text-sm btn btn-primary d-none"
+                                            data-bs-toggle="modal" data-bs-target="#scanQRModal" readonly>
                                             Scan QR
                                         </button>
                                     </div>
@@ -100,8 +101,8 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Nama Pembeli</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
-                                            value="{{ $data->Person }}" readonly>
+                                        <input type="text" class="form-control" placeholder="Nama pembeli"
+                                            name="pembeli" value="{{ $data->Person }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -428,6 +429,11 @@
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
+    <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
+    <script>
+        const dataNota = @json($invoice_list->pluck('invoice_number'));
+        createAutocomplete('cariDataNota', 'notaSuggestions', dataNota);
+    </script>
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);
