@@ -39,13 +39,7 @@ class SalesInvController extends Controller
     }
 
 
-    public function tes()
-    {
-        $width = 100 / 25.4 * 72;
-        $height = 50 / 25.4 * 72;
-        $pdf = PDF::loadView('tes'); // view tes dipakai untuk PDF juga
-        return $pdf->stream('filename.pdf');
-    }
+
     public function getDataPrice(Request $request)
     {
         $category =   DB::table('product')

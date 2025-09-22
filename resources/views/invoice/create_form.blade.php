@@ -19,42 +19,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card  card-main shadow-sm">
-                <div class="card-header bg-white border-1 pb-2">
-                    <div class="d-flex gap-2 justify-content-between">
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-warning btn-sm buttonForm" id="btnSubmitCreate"><i
-                                    class="fa-solid fa-floppy-disk"></i> Simpan</button>
-                            <button type="button" class="btn btn-danger btn-sm" id="btnBatal"><i
-                                    class="fa-regular fa-circle-xmark"></i> Batal</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btnTambah"><i
-                                    class="fa-solid fa-plus"></i> Baru</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btnEdit"><i
-                                    class="fa-regular fa-pen-to-square"></i> Ubah</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btnCari"><i
-                                    class="fa-solid fa-list"></i> Lihat</button>
-                            <button type="button" class="btn btn-info btn-sm" id="btnCetak"><i
-                                    class="fa-solid fa-print"></i>
-                                Nota
-                            </button>
-                            <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
-                                <i class="fa-solid fa-print"></i> QR Code
-                            </button>
-                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial(false)">
-                                <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
-                        </div>
-                        <div>
-                            <div class="d-flex gap-2 ">
-                                <div class="position-relative" style="max-width:400px;">
-                                    <input type="search" class="form-control" id="cariDataNota" autocomplete="off"
-                                        placeholder="Cari Nota">
-                                    <ul id="notaSuggestions" class="list-group position-absolute w-100"
-                                        style="z-index:1000; max-height:200px; overflow-y:auto; display:none;">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @include('layouts.navbar')
                 <div class="card-body pt-0">
                     <!-- FORM UTAMA -->
                     <form action="/sales/store" method="post" id="salesForm" class="mt-4">
@@ -62,12 +27,6 @@
                         <div class="row">
                             <!-- LEFT -->
                             <div class="col-md-4">
-                                {{-- <div class="mb-2 row">
-                   <label class="form-label col-sm-4 ">No Nota*</label>
-                   <div class="col-sm-8">
-                       <input type="text" class="form-control" name="noNota">
-                   </div>
-               </div> --}}
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Tanggal*</label>
                                     <div class="col-sm-8">
@@ -244,12 +203,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- <tr>
-                                            <td colspan="8" class="text-center"> Data kosong</td>
-                                        </tr> --}}
-
                                         </tbody>
-
                                     </table>
                                 </div>
                             </div>
@@ -261,127 +215,10 @@
         </div>
     </div>
 
-    <!-- Modal  QR Scan -->
-    <div class="modal fade" id="scanQRModal" tabindex="-1" aria-labelledby="scanQRModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scanQRModalLabel">Scan QR Code</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="text" class="form-control" id="qrcode" placeholder="Scan Barcode di sini"
-                        autofocus>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    {{-- <button type="button" class="btn btn-primary" id="btnTambahkanQR">Simpan</button> --}}
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal  Camera QR Scan -->
-    {{-- <div class="modal fade" id="scanQRModalCamera" tabindex="-1" aria-labelledby="scanQRModalCameraLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scanQRModalCameraLabel">Scan QR Camera</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div id="reader"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-
-            </div>
-        </div>
-    </div> --}}
-
-    <!-- Modal  Item Scan -->
-    <div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true"
-        data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog  modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scanModalLabel">Tambah Item</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
+    @include('layouts.modalQR')
+    @include('layouts.modalScan')
 
 
-                    <h6 class="mt-3">Pilih Kategori</h6>
-                    <select class="form-control select2Scan" id="descItem">
-                        <option value="">Pilih Data</option>
-                        @foreach ($desc as $d)
-                            <option value="{{ $d->Description }}">{{ $d->Description }}</option>
-                        @endforeach
-                    </select>
-
-                    <div class="row mt-3">
-                        <!-- KANAN: Total -->
-                        <div class="col-md-4">
-                            <h6 class="mt-3">Barcode</h6>
-                            <input type="text" class="form-control mt-3" autofocus placeholder="Scan barcode disini"
-                                id="barcodeInput" />
-                            <h6 class="mt-3">Info</h6>
-                            <div class="card shadow-sm mt-3">
-                                <div class="card-body p-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span>Total Item :</span>
-                                        <span id="total_item" class="fw-bold">0</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span class="text-primary">Total GW :</span>
-                                        <span id="total_gw" class="fw-bold text-primary">0</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span class="text-danger">Total NW :</span>
-                                        <span id="total_nw" class="fw-bold text-danger">0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-8">
-                            <h6 class="mt-3">Rincian</h6>
-                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                                <table class="table table-bordered" id="itemScantable">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Item</th>
-                                            <th class="text-center">GW</th>
-                                            <th class="text-center">NW</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{-- data item --}}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="btnTambahkan">Simpan</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
@@ -718,61 +555,184 @@
 @endforeach
 `;
 
-            // transDateinput.value = `${yyyy}-${mm}-${dd}`;
+            function addRowItemsTable(items, options_cat) {
+
+                if (items[0].isHargaCheck) {
+                    document.querySelectorAll(".isPriceCust").forEach(el => {
+                        el.classList.remove("d-none");
+                    });
+                }
+
+                items.forEach(item => {
+                    let newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+<td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" value="${item.desc_item || ''}"> ${options_cat}</select></td>
+<td class="text-center align-middle"><span style="background-color:${item.color};color:${item.textColor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
+<input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${item.caratSW}" readonly>
+</td>
+<td>
+<div class="input-group input-group-sm mb-2">
+<input type="text" name="wbruto[]" class="autonumDec2 form-control form-control-sm wbruto text-end"   value="${item.gw}" >
+<button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
+</div>
+</td>
+<td><input type="text" name="price[]" class="autonumDec3 form-control form-control-sm price text-end" readonly   value="${item.price}"></td>
+<td><input type="text" name="wnet[]" class="autonumDec3 form-control form-control-sm wnet text-end"  value="${item.nw}" readonly ></td>
+<td class="isPriceCust ${item.isHargaCheck ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 form-control text-end form-control-sm pricecust" value="${item.priceCust}"   ></td>
+<td class="isPriceCust  ${item.isHargaCheck ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 form-control text-end form-control-sm wnetocust" value="${item.netCust}"  readonly></td>
+<td class="text-center isEdit">
+<button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
+</td>
+
+`;
+                    itemsTable.appendChild(newRow);
+
+                    newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                        new AutoNumeric(el, optionsDec2);
+                    });
+                    newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                        new AutoNumeric(el, optionsDec3);
+                    });
+                    let $select = $(newRow).find('.select2').select2({
+                        theme: 'bootstrap-5',
+                        width: '100%'
+                    });
+
+                    newRow.scrollIntoView({
+                        behavior: "smooth",
+                        block: "nearest"
+                    });
+
+                    newRow.querySelectorAll("td").forEach(td => {
+                        td.style.backgroundColor = "#ffff99";
+                    });
+                    setTimeout(() => {
+                        newRow.querySelectorAll("td").forEach(td => {
+                            td.style.backgroundColor = "";
+                        });
+                    }, 1500);
+
+                    $select.val(item.desc_item).trigger("change");
+
+                });
+            }
+
+            function updateRowPrices(setGrosir = '', selectedCat = '', carat = '', wbruto = null) {
+                let totalnwall = 0;
+
+                document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+                    let categorySelect = row.querySelector("select[name='category[]']");
+                    let priceInput = row.querySelector(".price");
+                    let priceCustInput = row.querySelector(".pricecust");
+                    let brutoInput = row.querySelector(".wbruto");
+                    let netInput = row.querySelector(".wnet");
+                    let netInputCust = row.querySelector(".wnetocust");
+
+                    if (!categorySelect) return;
+
+                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+                    let selectedCat = categorySelect.value;
+
+                    fetchPrice(grosir, selectedCat, carat, 0).then(hasil => {
+                        // Update harga grosir
+                        if (priceInput) anPrice.set(hasil.price);
+
+                        // Update harga customer (jika ada)
+                        if (priceCustInput) {
+                            let newVal = hasil.priceCust || 0;
+                            if (newVal !== 0) {
+                                anPriceCust.set(newVal);
+                            }
+                        }
+
+                        // Hitung net untuk customer
+                        if (brutoInput && priceCustInput && netInputCust) {
+                            let bruto = anBruto.getNumber() || 0;
+                            let priceCust = anPriceCust.getNumber() || 0;
+                            let netCust = bruto * priceCust;
+                            anNetCust.set(netCust);
+                        }
+
+                        // Hitung net untuk grosir
+                        if (brutoInput && priceInput && netInput) {
+                            let bruto = anBruto.getNumber() || 0;
+                            let price = anPrice.getNumber() || 0;
+                            let net = bruto * price;
+                            anNet.set(net);
+                        }
+
+                        // Total semua net grosir
+                        totalnwall = 0;
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnwall += an.getNumber() || 0;
+                        });
+
+                        antotalnwallInput.set(totalnwall);
+                    });
+                });
+            }
 
             $('#grosir').on('change', function() {
                 let id = this.value;
                 if (id) {
                     setGrosir = id;
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                        let categorySelect = row.querySelector("select[name='category[]']");
-                        let priceInput = row.querySelector(".price");
-                        let brutoInput = row.querySelector(".wbruto");
-                        let netInput = row.querySelector(".wnet");
-                        let netInputCust = row.querySelector('.wnetocust');
-                        let priceCustInput = row.querySelector(".pricecust");
+                        // let categorySelect = row.querySelector("select[name='category[]']");
+                        // let priceInput = row.querySelector(".price");
+                        // let brutoInput = row.querySelector(".wbruto");
+                        // let netInput = row.querySelector(".wnet");
+                        // let netInputCust = row.querySelector('.wnetocust');
+                        // let priceCustInput = row.querySelector(".pricecust");
 
-                        let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                        let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                        let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                        let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                        let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+                        // let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                        // let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                        // let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                        // let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                        // let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
 
-                        if (!categorySelect) return;
+                        // if (!categorySelect) return;
 
-                        let selectedCat = categorySelect.value;
+                        // let selectedCat = categorySelect.value;
+
+                        updateRowPrices(setGrosir, '', carat, 0)
 
 
-                        fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                            if (priceInput) anPrice.set(hasil.price);
-                            if (priceCustInput) {
-                                let newVal = hasil.priceCust || 0;
-                                if (newVal !== 0) {
-                                    anPriceCust.set(newVal);
-                                }
-                            }
+                        // fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                        //     if (priceInput) anPrice.set(hasil.price);
+                        //     if (priceCustInput) {
+                        //         let newVal = hasil.priceCust || 0;
+                        //         if (newVal !== 0) {
+                        //             anPriceCust.set(newVal);
+                        //         }
+                        //     }
 
-                            if (brutoInput && priceCustInput) {
-                                let bruto = anBruto.getNumber() || 0;
-                                let priceCust = anPriceCust.getNumber() || 0;
-                                let netCust = bruto * priceCust;
-                                anNetCust.set(netCust);
-                            }
+                        //     if (brutoInput && priceCustInput) {
+                        //         let bruto = anBruto.getNumber() || 0;
+                        //         let priceCust = anPriceCust.getNumber() || 0;
+                        //         let netCust = bruto * priceCust;
+                        //         anNetCust.set(netCust);
+                        //     }
 
-                            if (brutoInput && priceInput && netInput) {
-                                let bruto = anBruto.getNumber() || 0;
-                                let price = anPrice.getNumber() || 0;
-                                let net = bruto * price;
-                                anNet.set(net);
-                            }
-                            let totalnwall = 0;
-                            document.querySelectorAll(".wnet").forEach(el => {
-                                const an = AutoNumeric.getAutoNumericElement(el);
-                                totalnwall += an.getNumber() || 0;
-                            });
+                        //     if (brutoInput && priceInput && netInput) {
+                        //         let bruto = anBruto.getNumber() || 0;
+                        //         let price = anPrice.getNumber() || 0;
+                        //         let net = bruto * price;
+                        //         anNet.set(net);
+                        //     }
+                        //     let totalnwall = 0;
+                        //     document.querySelectorAll(".wnet").forEach(el => {
+                        //         const an = AutoNumeric.getAutoNumericElement(el);
+                        //         totalnwall += an.getNumber() || 0;
+                        //     });
 
-                            antotalnwallInput.set(totalnwall);
-                        });
+                        //     antotalnwallInput.set(totalnwall);
+                        // });
                     });
 
                 } else {
@@ -912,6 +872,8 @@
             });
 
 
+
+
             addRowBtn.addEventListener("click", function() {
                 if (setGrosir == '' || carat == '') {
 
@@ -925,96 +887,13 @@
                     return false;
                 }
 
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = `
-            <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
-            <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
-                <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
-            </td>
-            <td>
-              <div class="input-group input-group-sm mb-2">
-  <input type="text"  name="wbruto[]" class="autonumDec2 form-control wbruto text-end" placeholder="0.00">
-   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
-</div>
-                </td>
-            <td><input type="text" name="price[]" class="autonumDec3 form-control form-control-sm price text-end" readonly ></td>
-            <td><input type="text" name="wnet[]" class="autonumDec3 form-control form-control-sm wnet text-end"  readonly ></td>
-            <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'} "><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust" ></td>
-            <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust" readonly></td>
-            <td class="text-center isEdit">
-                <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
-            </td>
-        `;
-                itemsTable.appendChild(newRow);
-
-
-                // fetchPrice(setGrosir, default_cat, carat, 0).then(hasil => {
-                //     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                //         let priceInput = row.querySelector(".price");
-                //         let brutoInput = row.querySelector(".wbruto");
-                //         let netInput = row.querySelector(".wnet");
-                //         let netInputCust = row.querySelector(".wnetocust");
-                //         let priceCustInput = row.querySelector(".pricecust");
-
-                //         if (priceInput) priceInput.value = hasil.price;
-                //         if (priceCustInput) {
-                //             let newVal = parseFloat(hasil.priceCust) || 0;
-                //             if (newVal !== 0) {
-                //                 priceCustInput.value = newVal.toFixed(2);
-                //             }
-                //         }
-
-                //         if (brutoInput && priceCustInput && netInputCust) {
-                //             let bruto = parseFloat(brutoInput.value) || 0;
-                //             let priceCust = parseFloat(priceCustInput.value) || 0;
-                //             let netCust = bruto * priceCust;
-                //             netInputCust.value = netCust.toFixed(3);
-                //         }
-
-                //         if (brutoInput && priceInput && netInput) {
-                //             let bruto = parseFloat(brutoInput.value) || 0;
-                //             let price = parseFloat(priceInput.value) || 0;
-                //             let net = bruto * price;
-
-                //             netInput.value = net.toFixed(3);
-                //         }
-                //     });
-                // });
-
-                // $(newRow).find('.select2').select2({
-                //     placeholder: "Pilih kategori",
-                //     allowClear: true,
-                //     width: '100%'
-                // });
-                loadSelect2();
-
-
-                newRow.querySelectorAll('.autonumDec2').forEach(el => {
-                    new AutoNumeric(el, optionsDec2);
-                });
-                newRow.querySelectorAll('.autonumDec3').forEach(el => {
-                    new AutoNumeric(el, optionsDec3);
-                });
-                newRow.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest"
-                });
-
-                newRow.querySelectorAll("td").forEach(td => {
-                    td.style.backgroundColor = "#ffff99";
-                });
-                setTimeout(() => {
-                    newRow.querySelectorAll("td").forEach(td => {
-                        td.style.backgroundColor = "";
-                    });
-                }, 1500);
-
-                // let selectEl = newRow.querySelector("select");
-                // if (selectEl) {
-                //     selectEl.focus();
-                // }
-                // let $select = $(newRow).find(".select2");
-                // $select.select2('open');
+                let item = [{
+                    color: carat_bgcolor,
+                    textColor: carat_textcolor,
+                    caratSW: carat,
+                    isHargaCheck: isHargaCheck.checked ? true : false
+                }]
+                addRowItemsTable(item, options_cat)
             });
 
 
@@ -1133,59 +1012,6 @@
 
                 });
             });
-
-            //AUTO CLEAR
-            // itemsTable.addEventListener("focus", function(e) {
-            //     if (e.target.classList.contains("wbruto")) {
-            //         if (e.target.value === "0.00") {
-            //             e.target.value = "";
-            //         }
-
-
-            //         setTimeout(() => {
-            //             e.target.select();
-            //         }, 0);
-            //     }
-            // }, true);
-
-
-            // itemsTable.addEventListener("blur", function(e) {
-            //     if (e.target.classList.contains("wbruto")) {
-            //         let val = e.target.value;
-
-            //         if (val === "" || isNaN(val)) {
-            //             e.target.value = "0.00";
-            //         } else {
-            //             e.target.value = parseFloat(val).toFixed(2);
-            //         }
-            //     }
-            // }, true);
-
-            // itemsTable.addEventListener("focus", function(e) {
-            //     if (e.target.classList.contains("pricecust")) {
-            //         if (e.target.value === "0.00") {
-            //             e.target.value = "";
-            //         }
-
-
-            //         setTimeout(() => {
-            //             e.target.select();
-            //         }, 0);
-            //     }
-            // }, true);
-
-
-            // itemsTable.addEventListener("blur", function(e) {
-            //     if (e.target.classList.contains("pricecust")) {
-            //         let val = e.target.value;
-
-            //         if (val === "" || isNaN(val)) {
-            //             e.target.value = "0.00";
-            //         } else {
-            //             e.target.value = parseFloat(val).toFixed(2);
-            //         }
-            //     }
-            // }, true);
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
@@ -1407,9 +1233,6 @@
                 let gwBaru = parseFloat(totalgw) || 0;
                 let nwBaru = parseFloat(totalnw.toFixed(2)) || 0;
 
-
-                // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
-                // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
                 antotalgwallInput.set(subtotalgwall + nwBaru);
                 antotalnwallInput.set(subtotalnwall + 0);
 
@@ -1421,67 +1244,19 @@
                     itemScangw += item.gw;
                     itemScannw += item.nw;
                 });
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = `
-               <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
-                <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
-                <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
-            </td>
-                <td>
-                    <div class="input-group input-group-sm mb-2">
-   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScannw.toFixed(2)}" >
-   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
-</div>
-                    
-                  </td>
-                <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
-                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="0" readonly ></td>
-                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec2 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
-                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
-                <td class="text-center isEdit">
-                    <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
-                </td>
 
-                            `;
-                itemsTable.appendChild(newRow);
-
-                let $select = $(newRow).find('.select2').select2({
-                    // placeholder: "Pilih kategori",
-                    // allowClear: true,
-                    theme: 'bootstrap-5',
-                    width: '100%'
-                });
-
-
-                newRow.querySelectorAll('.autonumDec2').forEach(el => {
-                    new AutoNumeric(el, optionsDec2);
-                });
-                newRow.querySelectorAll('.autonumDec3').forEach(el => {
-                    new AutoNumeric(el, optionsDec3);
-                });
-
-                newRow.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest"
-                });
-
-                newRow.querySelectorAll("td").forEach(td => {
-                    td.style.backgroundColor = "#ffff99";
-                });
-                setTimeout(() => {
-                    newRow.querySelectorAll("td").forEach(td => {
-                        td.style.backgroundColor = "";
-                    });
-                }, 1500);
-
-                $select.val(desc_item).trigger("change");
-                loadSelect2();
-
-
+                let item = [{
+                    color: carat_bgcolor,
+                    textColor: carat_textcolor,
+                    caratSW: carat,
+                    isHargaCheck: isHargaCheck.checked ? true : false,
+                    desc_item: desc_item,
+                    gw: itemScannw.toFixed(2)
+                }]
+                addRowItemsTable(item, options_cat)
 
                 itemScanBcd = [];
                 resetTableScan()
-
 
                 let modalEl = document.getElementById("scanModal");
                 let modal = bootstrap.Modal.getInstance(modalEl);
