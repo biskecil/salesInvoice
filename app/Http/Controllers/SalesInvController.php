@@ -42,32 +42,38 @@ class SalesInvController extends Controller
 
     public function getDataPrice(Request $request)
     {
-        $category =   DB::table('product')
-            ->where([
-                'Description' => $request->category,
-            ])
-            ->first();
+        try {
+            //code...
+            $category =   DB::table('product')
+                ->where([
+                    'Description' => $request->category,
+                ])
+                ->first();
 
-        $carat =  DB::table('carat')
-            ->where([
-                'SW' => $request->carat,
-            ])
-            ->first();
+            $carat =  DB::table('carat')
+                ->where([
+                    'SW' => $request->carat,
+                ])
+                ->first();
 
-        $data = DB::table('pricelist')
-            ->where([
-                'Customer' => $request->customer,
-                'Category' => $category->ID,
-                'Carat' => $carat->ID,
-                'Currency' => 40
-            ])
-            ->first();
+            $data = DB::table('pricelist')
+                ->where([
+                    'Customer' => $request->customer,
+                    'Category' => $category->ID,
+                    'Carat' => $carat->ID,
+                    'Currency' => 40
+                ])
+                ->first();
 
 
 
-        if ($data) {
-            return response()->json(['price' => $data->Price > 0 ?  $data->Price / 100  : 0, 'priceCust' => $data->PriceCust > 0 ? $data->PriceCust / 100 : 0]);
-        } else {
+            if ($data) {
+                return response()->json(['price' => $data->Price > 0 ?  $data->Price / 100  : 0, 'priceCust' => $data->PriceCust > 0 ? $data->PriceCust / 100 : 0]);
+            } else {
+                return response()->json(['price' => 0, 'priceCust' => 0]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
             return response()->json(['price' => 0, 'priceCust' => 0]);
         }
     }

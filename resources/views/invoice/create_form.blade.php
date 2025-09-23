@@ -555,6 +555,22 @@
 @endforeach
 `;
 
+            async function fetchPrice(grosirId, categoryId, caratId, wbruto = 0) {
+                if (!grosirId || !caratId) return 0;
+
+                try {
+                    let res = await fetch(
+                        `/sales/getData/Price?customer=${grosirId}&carat=${caratId}&category=${categoryId}`
+                    );
+                    let data = await res.json();
+
+                    return data ?? 0;
+                } catch (err) {
+                    console.error("Fetch gagal");
+                    return 0;
+                }
+            }
+
             function addRowItemsTable(items, options_cat) {
 
                 if (items[0].isHargaCheck) {
@@ -611,34 +627,54 @@
                             td.style.backgroundColor = "";
                         });
                     }, 1500);
-
                     $select.val(item.desc_item).trigger("change");
-
                 });
             }
 
-            function updateRowPrices(setGrosir = '', selectedCat = '', carat = '', wbruto = null) {
+            function updateTotalRow() {
                 let totalnwall = 0;
+                let totalgwall = 0;
 
-                document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                    let categorySelect = row.querySelector("select[name='category[]']");
-                    let priceInput = row.querySelector(".price");
-                    let priceCustInput = row.querySelector(".pricecust");
-                    let brutoInput = row.querySelector(".wbruto");
-                    let netInput = row.querySelector(".wnet");
-                    let netInputCust = row.querySelector(".wnetocust");
+                document.querySelectorAll(".wnet").forEach(el => {
+                    const an = AutoNumeric.getAutoNumericElement(el);
+                    totalnwall += an.getNumber() || 0;
+                });
+                document.querySelectorAll(".wbruto").forEach(el => {
+                    const an = AutoNumeric.getAutoNumericElement(el);
+                    totalgwall += an.getNumber() || 0;
+                });
 
-                    if (!categorySelect) return;
+                antotalnwallInput.set(totalnwall);
+                antotalgwallInput.set(totalgwall);
+            }
 
-                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+            function updateRowPrices(setGrosir = '', selectedCat = '', carat = '', wbruto = null, row = '',
+                ambil_harga = '') {
+                let categorySelect = row.querySelector("select[name='category[]']");
+                let priceInput = row.querySelector(".price");
+                let priceCustInput = row.querySelector(".pricecust");
+                let brutoInput = row.querySelector(".wbruto");
+                let netInput = row.querySelector(".wnet");
+                let netInputCust = row.querySelector(".wnetocust");
 
-                    let selectedCat = categorySelect.value;
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
 
-                    fetchPrice(grosir, selectedCat, carat, 0).then(hasil => {
+                if (selectedCat == '') {
+                    selectedCat = categorySelect.value;
+                }
+
+
+                console.log('grosir:' + setGrosir);
+                console.log('category:' + selectedCat);
+                console.log('carat:' + carat);
+                console.log('bruto:' + wbruto);
+
+                if (ambil_harga != '') {
+                    fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                         // Update harga grosir
                         if (priceInput) anPrice.set(hasil.price);
 
@@ -665,74 +701,26 @@
                             let net = bruto * price;
                             anNet.set(net);
                         }
-
-                        // Total semua net grosir
-                        totalnwall = 0;
-                        document.querySelectorAll(".wnet").forEach(el => {
-                            const an = AutoNumeric.getAutoNumericElement(el);
-                            totalnwall += an.getNumber() || 0;
-                        });
-
-                        antotalnwallInput.set(totalnwall);
                     });
-                });
+                } else {
+                    let bruto = anBruto.getNumber() || 0;
+                    let price = anPrice.getNumber() || 0;
+                    let net = bruto * price;
+                    anNet.set(net);
+                }
+
+                updateTotalRow();
+
             }
+
+
 
             $('#grosir').on('change', function() {
                 let id = this.value;
                 if (id) {
                     setGrosir = id;
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                        // let categorySelect = row.querySelector("select[name='category[]']");
-                        // let priceInput = row.querySelector(".price");
-                        // let brutoInput = row.querySelector(".wbruto");
-                        // let netInput = row.querySelector(".wnet");
-                        // let netInputCust = row.querySelector('.wnetocust');
-                        // let priceCustInput = row.querySelector(".pricecust");
-
-                        // let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                        // let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                        // let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                        // let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                        // let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
-
-                        // if (!categorySelect) return;
-
-                        // let selectedCat = categorySelect.value;
-
-                        updateRowPrices(setGrosir, '', carat, 0)
-
-
-                        // fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                        //     if (priceInput) anPrice.set(hasil.price);
-                        //     if (priceCustInput) {
-                        //         let newVal = hasil.priceCust || 0;
-                        //         if (newVal !== 0) {
-                        //             anPriceCust.set(newVal);
-                        //         }
-                        //     }
-
-                        //     if (brutoInput && priceCustInput) {
-                        //         let bruto = anBruto.getNumber() || 0;
-                        //         let priceCust = anPriceCust.getNumber() || 0;
-                        //         let netCust = bruto * priceCust;
-                        //         anNetCust.set(netCust);
-                        //     }
-
-                        //     if (brutoInput && priceInput && netInput) {
-                        //         let bruto = anBruto.getNumber() || 0;
-                        //         let price = anPrice.getNumber() || 0;
-                        //         let net = bruto * price;
-                        //         anNet.set(net);
-                        //     }
-                        //     let totalnwall = 0;
-                        //     document.querySelectorAll(".wnet").forEach(el => {
-                        //         const an = AutoNumeric.getAutoNumericElement(el);
-                        //         totalnwall += an.getNumber() || 0;
-                        //     });
-
-                        //     antotalnwallInput.set(totalnwall);
-                        // });
+                        updateRowPrices(setGrosir, '', carat, 0, row, 'ambil_harga')
                     });
 
                 } else {
@@ -757,55 +745,7 @@
                 })
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                    let categorySelect = row.querySelector("select[name='category[]']");
-                    let priceInput = row.querySelector(".price");
-                    let priceCustInput = row.querySelector(".pricecust");
-                    let brutoInput = row.querySelector(".wbruto");
-                    let netInput = row.querySelector(".wnet");
-                    let netInputCust = row.querySelector('.wnetocust');
-
-                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
-
-
-                    if (!categorySelect) return;
-
-                    let selectedCat = categorySelect.value;
-
-
-                    fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
-                        if (priceInput) anPrice.set(hasil.price);
-                        if (priceCustInput) {
-                            let newVal = hasil.priceCust || 0;
-                            if (newVal !== 0) {
-                                anPriceCust.set(newVal);
-                            }
-                        }
-
-                        if (brutoInput && priceCustInput) {
-                            let bruto = anBruto.getNumber() || 0;
-                            let priceCust = anPriceCust.getNumber() || 0;
-                            let netCust = bruto * priceCust;
-                            anNetCust.set(netCust);
-                        }
-
-                        if (brutoInput && priceInput && netInput) {
-                            let bruto = anBruto.getNumber() || 0;
-                            let price = anPrice.getNumber() || 0;
-                            let net = bruto * price;
-                            anNet.set(net);
-                        }
-                        let totalnwall = 0;
-                        document.querySelectorAll(".wnet").forEach(el => {
-                            const an = AutoNumeric.getAutoNumericElement(el);
-                            totalnwall += an.getNumber() || 0;
-                        });
-
-                        antotalnwallInput.set(totalnwall);
-                    });
+                    updateRowPrices(setGrosir, '', carat, 0, row, 'ambil_harga');
                 });
             });
 
@@ -827,26 +767,6 @@
 
 
 
-
-
-
-
-
-            async function fetchPrice(grosirId, categoryId, caratId, wbruto = 0) {
-                if (!grosirId || !caratId) return 0;
-
-                try {
-                    let res = await fetch(
-                        `/sales/getData/Price?customer=${grosirId}&carat=${caratId}&category=${categoryId}`
-                    );
-                    let data = await res.json();
-
-                    return data ?? 0;
-                } catch (err) {
-                    console.error("Fetch gagal");
-                    return 0;
-                }
-            }
 
             document.getElementById("btnScan").addEventListener("click", function() {
                 if (setGrosir == '' || carat == '') {
@@ -899,48 +819,35 @@
 
 
             $('#itemsTable tbody').on('click', 'button.kalibrasi-btn', async function() {
-                let tr = $(this).closest('tr');
-                let priceInput = tr.find('.price')[0];
-                let priceCustInput = tr.find('.pricecust')[0];
-                let brutoInput = tr.find('.wbruto')[0];
-                let netInput = tr.find('.wnet')[0];
-                let netInputCust = tr.find('.wnetocust')[0];
-
-                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
-
-
-                let total = 0;
-                let totalnw = 0;
+                let tr = $(this).closest('tr')[0];
 
                 try {
                     const hasilTimbang = await kliktimbang();
                     anBruto.set(hasilTimbang);
 
-                    let price = anPrice.getNumber() || 0;
-                    let priceCust = anPriceCust.getNumber() || 0;
+                    updateRowPrices(setGrosir, '', carat, hasilTimbang, tr, '')
+                    
+                    // let price = anPrice.getNumber() || 0;
+                    // let priceCust = anPriceCust.getNumber() || 0;
 
-                    let net = hasilTimbang * price;
-                    let netCust = hasilTimbang * priceCust;
+                    // let net = hasilTimbang * price;
+                    // let netCust = hasilTimbang * priceCust;
 
-                    anNetCust.set(netCust);
-                    anNet.set(net);
+                    // anNetCust.set(netCust);
+                    // anNet.set(net);
 
 
-                    document.querySelectorAll(".wbruto").forEach(el => {
-                        const an = AutoNumeric.getAutoNumericElement(el);
-                        total += an.getNumber() || 0;
-                    });
-                    document.querySelectorAll(".wnet").forEach(el => {
-                        const an = AutoNumeric.getAutoNumericElement(el);
-                        totalnw += an.getNumber() || 0;
-                    });
+                    // document.querySelectorAll(".wbruto").forEach(el => {
+                    //     const an = AutoNumeric.getAutoNumericElement(el);
+                    //     total += an.getNumber() || 0;
+                    // });
+                    // document.querySelectorAll(".wnet").forEach(el => {
+                    //     const an = AutoNumeric.getAutoNumericElement(el);
+                    //     totalnw += an.getNumber() || 0;
+                    // });
 
-                    antotalgwallInput.set(total);
-                    antotalnwallInput.set(totalnw);
+                    // antotalgwallInput.set(total);
+                    // antotalnwallInput.set(totalnw);
 
 
                 } catch (error) {
@@ -955,124 +862,23 @@
 
             });
             $('#itemsTable tbody').on('change', 'select[name="category[]"]', function() {
-
-                let tr = $(this).closest('tr');
+                let tr = $(this).closest('tr')[0];
                 let selectedCat = $(this).val();
+                updateRowPrices(setGrosir, '', carat, 0, tr, 'ambil_harga')
 
-                let cadarInput = tr.find('.cadar_item');
-                let brutoInput = tr.find('.wbruto')[0];
-                let priceInput = tr.find('.price')[0];
-                let priceCustInput = tr.find(".pricecust")[0];
-                let netInput = tr.find('.wnet')[0];
-                let netInputCust = tr.find('.wnetocust')[0];
-
-                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
-
-
-                fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
-                    if (anPrice) {
-                        anPrice.set(hasil.price);
-                    } else {
-                        console.warn('AutoNumeric belum terpasang di', priceInput);
-                    }
-
-
-
-                    if (priceCustInput) {
-                        let newVal = hasil.priceCust || 0;
-                        if (newVal !== 0) {
-                            anPriceCust.set(newVal);
-                        }
-                    }
-
-                    if (brutoInput && priceCustInput) {
-                        let bruto = anBruto.getNumber() || 0;
-                        let priceCust = anPriceCust.getNumber() || 0;
-                        let netCust = bruto * priceCust;
-                        anNetCust.set(netCust);
-
-                    }
-                    if (brutoInput && priceInput && netInput) {
-                        let bruto = anBruto.getNumber() || 0;
-                        let price = anPrice.getNumber() || 0;
-                        let net = bruto * price;
-                        anNet.set(net);
-                    }
-                    let totalnwall = 0;
-                    document.querySelectorAll(".wnet").forEach(el => {
-                        const an = AutoNumeric.getAutoNumericElement(el);
-                        totalnwall += an.getNumber() || 0;
-                    });
-
-                    antotalnwallInput.set(totalnwall);
-
-                });
             });
 
             itemsTable.addEventListener("change", function(e) {
                 let tr = e.target.closest("tr");
-                let priceInputCust = tr.querySelector('.pricecust');
-                let netInputCust = tr.querySelector('.wnetocust');
-
-                let anPriceCust = AutoNumeric.getAutoNumericElement(priceInputCust);
-                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
-
-                let brutoInput = tr.querySelector('.wbruto');
-                let priceInput = tr.querySelector('.price');
-                let netInput = tr.querySelector('.wnet');
-
-                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                let anNet = AutoNumeric.getAutoNumericElement(netInput);
-
-                let bruto = anBruto.getNumber() || 0;
-                let price = anPrice.getNumber() || 0;
-                let priceCust = anPriceCust.getNumber() || 0;
-
-                let net = bruto * price;
-                let netCust = bruto * priceCust;
-
-                anNet.set(net);
-                anNetCust.set(netCust);
-
-                let total = 0;
-                let totalnw = 0;
-
-                document.querySelectorAll(".wbruto").forEach(el => {
-                    const an = AutoNumeric.getAutoNumericElement(el);
-                    total += an.getNumber() || 0;
-                });
-                document.querySelectorAll(".wnet").forEach(el => {
-                    const an = AutoNumeric.getAutoNumericElement(el);
-                    totalnw += an.getNumber() || 0;
-                });
-
-                antotalgwallInput.set(total);
-                antotalnwallInput.set(totalnw);
+                updateRowPrices(setGrosir, '', carat, 0, tr, '');
             });
             itemsTable.addEventListener("click", function(e) {
                 if (e.target.classList.contains("removeRow")) {
                     const row = e.target.closest("tr");
 
                     e.target.closest("tr").remove();
+                    updateTotalRow();
 
-                    let total = 0;
-                    let totalnw = 0;
-                    document.querySelectorAll(".wbruto").forEach(el => {
-                        const an = AutoNumeric.getAutoNumericElement(el);
-                        total += an ? an.getNumber() : 0;
-                    });
-                    document.querySelectorAll(".wnet").forEach(el => {
-                        const an = AutoNumeric.getAutoNumericElement(el);
-                        totalnw += an ? an.getNumber() : 0;
-                    });
-
-                    antotalgwallInput.set(total);
-                    antotalnwallInput.set(totalnw);
                 }
             });
             itemScantable.addEventListener("click", function(e) {
