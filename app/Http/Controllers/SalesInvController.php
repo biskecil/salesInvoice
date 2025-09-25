@@ -101,6 +101,23 @@ class SalesInvController extends Controller
             ->get();
         return response()->json($data);
     }
+    public function getDataNotaSearch()
+    {
+        $invoice_list =  DB::table('invoice')->orderBy('ID')->whereNotIN('id', [0])->get();
+
+        $invoice_list->transform(function ($row) {
+            $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+            $transDate = Carbon::parse($row->TransDate);
+            $monthMM   = $transDate->format('m');
+            $yearYY    = $transDate->format('y');
+
+            $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+            $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+            return $row;
+        });
+        return response()->json($invoice_list);
+    }
     public function getDataGros($id)
     {
         $data = DB::table('customer')
@@ -231,6 +248,8 @@ class SalesInvController extends Controller
             $invoice->NetWeight = number_format($data->netweight, 3, '.', ',');
             $invoice->Remarks = $data->Remarks;
             $invoice->Carat = $data_item->first()->caratSW;
+            $invoice->textColor =  $this->getContrastYIQ($data_item->first()->color);
+            $invoice->Color =  $data_item->first()->color;
             $invoice->ItemList = $data_list;
             $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
 
@@ -871,7 +890,7 @@ class SalesInvController extends Controller
     }
     public function show_pack()
     {
-        $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->limit(10)->get();
+        $invoice_list =  DB::table('invoice')->orderByDesc('ID')->whereNotIN('id', [0])->get();
 
         $invoice_list->transform(function ($row) {
 

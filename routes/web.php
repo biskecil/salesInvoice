@@ -25,6 +25,7 @@ Route::prefix('pack')->group(function () {
 });
 Route::prefix('sales')->group(function () {
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
+    Route::get('/getData/Nota/search', [SalesInvController::class, 'getDataNotaSearch']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNota']);
     Route::get('/getData/NotaAll/', [SalesInvController::class, 'getDataNotaAll']);
     Route::get('/getData/Gros/{ID}', [SalesInvController::class, 'getDataGros']);
@@ -37,5 +38,4 @@ Route::prefix('sales')->group(function () {
     Route::put('/update/{ID}', [SalesInvController::class, 'update']);
     Route::get('/cetakNota/{style}/{ID}', [SalesInvController::class, 'cetakNota']);
     Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
-
 });

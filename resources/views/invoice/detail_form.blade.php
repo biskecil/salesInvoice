@@ -19,55 +19,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card shadow-sm  card-main ">
-                <div class="card-header bg-white border-1 pb-2">
-                    <div class="d-flex gap-2 justify-content-between">
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-warning btn-sm buttonForm" id="btnSubmitCreate"><i
-                                    class="fa-solid fa-floppy-disk"></i> Simpan</button>
-                            <button type="button" class="btn btn-danger btn-sm" id="btnBatal"><i
-                                    class="fa-regular fa-circle-xmark"></i> Batal</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btnTambah"><i
-                                    class="fa-solid fa-plus"></i> Baru</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btnEdit"><i
-                                    class="fa-regular fa-pen-to-square"></i> Ubah</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="btnCari"><i
-                                    class="fa-solid fa-list"></i> Lihat</button>
-                            {{-- <button type="button" class="btn btn-info btn-sm" id="btnCetak"><i
-                                    class="fa-solid fa-print"></i>
-                                Nota
-                            </button> --}}
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <i class="fa-solid fa-print"></i> Nota
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <li><button class="dropdown-item" id="btnCetak">Cetak dgn harga</button></li>
-                                    <li><button class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</button>
-                                    </li>
-                                    <li><button class="dropdown-item" id="btnCetakKosong">Cetak tanpa harga</button></li>
-                                </ul>
-                            </div>
-                            <button type="button" class="btn btn-info btn-sm" id="btnCetakBarcode">
-                                <i class="fa-solid fa-print"></i> QR Code
-                            </button>
-                            <button type="button" class="btn btn-primary" id="conscale" onclick="connectSerial(false)">
-                                <i class="fa-solid fa-scale-balanced"></i> : Hubungkan</button>
-                        </div>
-                   
-                        <div>
-                            <div class="d-flex gap-2 ">
-                                <div class="position-relative" style="max-width:400px;">
-                                    <input type="search" class="form-control" id="cariDataNota" autocomplete="off"
-                                        placeholder="Cari Nota">
-                                    <ul id="notaSuggestions" class="list-group position-absolute w-100"
-                                        style="z-index:1000; max-height:200px; overflow-y:auto; display:none;">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @include('layouts.navbar')
                 <div class="card-body pt-0">
                     <form method="post" class="mt-4">
                         <div class="row">
@@ -76,47 +28,37 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4 ">No Nota*</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" name="noNota" readonly
-                                            value="{{ $data->invoice_number }}">
+                                        : <span class="fw-bold">{{ $data->invoice_number }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Tanggal*</label>
                                     <div class="col-sm-8">
-                                        <input type="date" class="form-control" name="transDate"
-                                            value="{{ $data->TransDate }}" readonly>
+                                        : <span>{{ $data->TransDate }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Customer*</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
-                                        <input type="text" class="form-control" id="customer" name="customer"
-                                            style="flex:1" value="{{ $data->Customer }}" readonly>
-                                        <button type="button" class="text-sm btn btn-primary d-none"
-                                            data-bs-toggle="modal" data-bs-target="#scanQRModal" readonly>
-                                            Scan QR
-                                        </button>
+                                           : <span>{{ $data->Customer  }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Nama Pembeli</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Nama pembeli"
-                                            name="pembeli" value="{{ $data->Person }}" readonly>
+                                       : <span>{{ $data->Person ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Alamat</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" rows="2" placeholder="Alamat"
-                                            name="alamat" value="{{ $data->Address }}" id="alamat" readonly>
+                                           : <span>{{ $data->Address ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Phone</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Phone" name="phone"
-                                            readonly value="{{ $data->Phone }}">
+                                           : <span>{{ $data->Phone ?? '-' }}</span>
                                     </div>
                                 </div>
 
@@ -132,32 +74,25 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Event*</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control select2" name="event">
-                                            <option value="0"> {{ $data->Event }}</option>
-                                        </select>
+                                       : <span >{{ $data->Event ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Grosir*</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control select2" name="grosir" id="grosir">
-                                            <option value="0"> {{ $data->Grosir }}</option>
-                                        </select>
+                                       : <span >{{ $data->Grosir }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            name="sub_grosir" readonly value="{{ $data->SubGrosir }}" id="sub_grosir">
+                                           : <span >{{ $data->SubGrosir ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Tempat</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control select2" name="tempat">
-                                            <option value="0"> {{ $data->Venue }}</option>
-                                        </select>
+                                       : <span >{{ $data->Venue ?? '-' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -168,17 +103,13 @@
                                                 <label for="totalgwall" class="small mb-1">Berat
                                                     Kotor <span
                                                         class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
-                                                <input class="form-control fw-bold text-end text-primary" id="totalgwall"
-                                                    type="text" value="{{ $data->Weight }}" name="total_berat_kotor"
-                                                    readonly>
+                                                    <span  class="form-control fw-bold text-end text-primary">{{ $data->Weight ?? '-' }}</span>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="totalnwall" class="small mb-1">Berat
                                                     Bersih <span
                                                         class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
-                                                <input class="form-control fw-bold text-end text-danger" id="totalnwall"
-                                                    type="text" value="{{ $data->NetWeight }}"
-                                                    name="total_berat_bersih" readonly>
+                                                    <span  class="form-control fw-bold text-end text-danger">{{ $data->NetWeight ?? '-' }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -190,31 +121,24 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Kadar*</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control select2 " id="carat">
-                                            <option value="">Pilih Data</option>
-                                            @foreach ($kadar as $d)
-                                                <option value="{{ $d->SW }}"
-                                                    {{ $d->SW == $data->Carat ? 'selected' : '' }}
-                                                    data-color="{{ $d->color }}">{{ $d->SW }} </option>
-                                            @endforeach
-                                        </select>
+
+
+                                       : <span
+                                            style="background-color:{{ $data->ItemList[0]->color }};color:{{ $data->ItemList[0]->textColor }};padding:2px 6px;border-radius:4px"
+                                            class="cadar_text">{{ $data->ItemList[0]->caratSW }}</span>
 
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4 d-block">Harga*</label>
                                     <div class="col-sm-8">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="harga"
-                                                id="is_harga_cust" {{ $data->isHarga ? 'checked' : '' }} readonly>
-                                            <label class="form-check-label" for="is_harga_cust">Iya</label>
-                                        </div>
+                                           : <span >{{ $data->isHarga ? 'Iya' : 'Tidak' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Catatan</label>
                                     <div class="col-sm-8">
-                                        <textarea class="form-control" rows="2" placeholder="Catatan" name="catatan" readonly>{{ $data->Remarks }}</textarea>
+                                       : <span >{{ $data->Remarks ?? '-' }}</span>
                                     </div>
                                 </div>
 
@@ -304,136 +228,16 @@
         </div>
     </div>
 
-    <!-- Modal  QR Scan -->
-    <div class="modal fade" id="scanQRModal" tabindex="-1" aria-labelledby="scanQRModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scanQRModalLabel">Scan QR Code</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="text" class="form-control" id="qrcode" placeholder="Scan Barcode di sini"
-                        autofocus>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    {{-- <button type="button" class="btn btn-primary" id="btnTambahkanQR">Simpan</button> --}}
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal  Camera QR Scan -->
-    {{-- <div class="modal fade" id="scanQRModalCamera" tabindex="-1" aria-labelledby="scanQRModalCameraLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scanQRModalCameraLabel">Scan QR Camera</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div id="reader"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-
-            </div>
-        </div>
-    </div> --}}
-
-    <!-- Modal  Item Scan -->
-    <div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true"
-        data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog  modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scanModalLabel">Tambah Item</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
 
 
-                    <h6 class="mt-3">Pilih Kategori</h6>
-                    <select class="form-control" id="descItem">
-                        @foreach ($desc as $d)
-                            <option value="{{ $d->Description }}">{{ $d->Description }}</option>
-                        @endforeach
-                    </select>
-
-                    <div class="row mt-3">
-                        <!-- KANAN: Total -->
-                        <div class="col-md-4">
-                            <h6 class="mt-3">Barcode</h6>
-                            <input type="text" class="form-control mt-3" autofocus placeholder="Scan barcode disini"
-                                id="barcodeInput" />
-                            <h6 class="mt-3">Info</h6>
-                            <div class="card shadow-sm mt-3">
-                                <div class="card-body p-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span>Total Item :</span>
-                                        <span id="total_item" class="fw-bold">0</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Total GW :</span>
-                                        <span id="total_gw" class="fw-bold">0</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Total NW :</span>
-                                        <span id="total_nw" class="fw-bold">0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-8">
-                            <h6 class="mt-3">Rincian</h6>
-                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                                <table class="table table-bordered" id="itemScantable">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Item</th>
-                                            <th class="text-center">GW</th>
-                                            <th class="text-center">NW</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{-- data item --}}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="btnTambahkan">Simpan</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
+    <script src="{!! asset('form/form.js') !!}"></script>
     <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
-    <script>
-        const dataNota = @json($invoice_list->pluck('invoice_number'));
-        createAutocomplete('cariDataNota', 'notaSuggestions', dataNota);
-    </script>
+
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);
@@ -441,7 +245,7 @@
 
         var printService = new WebSocketPrinter();
         $(document).ready(function() {
-            let noNota = $('input[name="noNota"]').val();
+            let noNota = '{{ $data->invoice_number}}';
             $('.select2').prop('disabled', true);
             let dataNota = "";
 
@@ -575,67 +379,7 @@
 
             loadSelect2();
 
-            function loadSelect2() {
-                $(document).on('focus', '.select2-selection.select2-selection--single', function() {
-                    let $select = $(this).closest('.select2-container').siblings('select:enabled');
-                    $select.select2('open');
-                });
 
-
-                $('select.select2').on('select2:open', function() {
-                    setTimeout(() => {
-                        document.querySelector('.select2-search__field').focus();
-                    }, 50);
-                });
-
-                $('.select2').select2({
-                    theme: 'bootstrap-5',
-                    width: '100%',
-                    templateResult: function(data) {
-                        if (!data.id) return data.text;
-
-                        var color = $(data.element).data('color');
-                        var $result = $('<span></span>').text(data.text);
-
-                        if (color) {
-                            var textColor = getContrastYIQ(color);
-                            $result.css({
-                                'background-color': color,
-                                'color': textColor,
-                                'padding': '2px 6px',
-                                'border-radius': '4px'
-                            });
-                        }
-                        return $result;
-                    },
-                    templateSelection: function(data) {
-                        if (!data.id) return data.text;
-
-                        var color = $(data.element).data('color');
-                        var $result = $('<span></span>').text(data.text);
-
-                        if (color) {
-                            var textColor = getContrastYIQ(color);
-                            $result.css({
-                                'background-color': color,
-                                'color': textColor,
-                                'padding': '2px 6px',
-                                'border-radius': '4px'
-                            });
-                        }
-                        return $result;
-                    }
-                });
-            }
-
-            function getContrastYIQ(hexcolor) {
-                hexcolor = hexcolor.replace('#', '');
-                var r = parseInt(hexcolor.substr(0, 2), 16);
-                var g = parseInt(hexcolor.substr(2, 2), 16);
-                var b = parseInt(hexcolor.substr(4, 2), 16);
-                var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-                return (yiq >= 128) ? '#000' : '#fff';
-            }
 
 
 

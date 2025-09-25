@@ -31,10 +31,10 @@
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
     <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
-    <script>
+    {{-- <script>
         const dataNota = @json($data->pluck('invoice_number'));
         createAutocomplete('cariDataNota', 'notaSuggestions', dataNota);
-    </script>
+    </script> --}}
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);
@@ -44,7 +44,7 @@
             let dataNota = '';
             $('#btnTambah').prop('disabled', false);
             $('#btnBatal').prop('disabled', true);
-            $('#btnCetak').prop('disabled', true);
+            $('#btnCetakParent').prop('disabled', true);
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', true);
