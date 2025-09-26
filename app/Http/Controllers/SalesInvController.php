@@ -762,9 +762,9 @@ class SalesInvController extends Controller
     {
         $QRvalue = new stdClass();
         $QRvalue->it = '1';
-        $QRvalue->nt = $subgrosir;
-        $QRvalue->at = $tempat;
-        $QRvalue->pt = $pelanggan;
+        $QRvalue->nt = $pelanggan ?? '';
+        $QRvalue->at = $tempat ?? '';
+        $QRvalue->pt = $subgrosir ?? ''; 
         $QRvalue->kp = 'LG';
 
         return json_encode($QRvalue);

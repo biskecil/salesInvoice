@@ -1532,9 +1532,9 @@
                     e.preventDefault();
                     try {
                         let data = JSON.parse(qrInput.value);
-                        document.getElementById("sub_grosir").value = data.nt;
+                        document.getElementById("sub_grosir").value = data.pt;
                         document.getElementById("alamat").value = data.at;
-                        document.getElementById("customer").value = data.pt;
+                        document.getElementById("customer").value = data.nt;
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
