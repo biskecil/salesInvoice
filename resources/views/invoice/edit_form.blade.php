@@ -478,6 +478,30 @@
 
 
         function hotkeys() {
+            const optionsDec2 = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 2,
+                minimumValue: "0",
+                roundingMethod: 'D',
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false,
+                emptyInputBehavior: "zero"
+            };
+            const optionsDec3 = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 3,
+                minimumValue: "0",
+                roundingMethod: 'D',
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false,
+                emptyInputBehavior: "zero"
+            };
+
+            const antotalgwallInput = new AutoNumeric('#totalgwall', optionsDec2);
+            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3);
+
             document.addEventListener("keydown", function(e) {
                 if (e.altKey && e.key === "ArrowDown") {
                     e.preventDefault();
@@ -494,7 +518,6 @@
                 if (e.altKey && e.key === "ArrowUp") {
                     e.preventDefault();
                     const itemsTable = document.getElementById("itemsTable").getElementsByTagName("tbody")[0];
-                    const totalgwallInput = document.getElementById("totalgwall");
                     const rows = itemsTable.querySelectorAll("tr");
                     if (rows.length > 1) { // misal biar header ga kehapus
                         const lastRow = rows[rows.length - 1];
@@ -511,6 +534,7 @@
                             const an = AutoNumeric.getAutoNumericElement(el);
                             totalnw += an ? an.getNumber() : 0;
                         });
+
                         antotalgwallInput.set(total);
                         antotalnwallInput.set(totalnw);
                     }
@@ -767,6 +791,8 @@
                 decimalPlaces: 2,
                 minimumValue: "0",
                 roundingMethod: 'D',
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
             };
             const optionsDec3 = {
@@ -775,6 +801,8 @@
                 decimalPlaces: 3,
                 minimumValue: "0",
                 roundingMethod: 'D',
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
             };
 
