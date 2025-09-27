@@ -232,6 +232,7 @@ class SalesInvController extends Controller
             $invoice->Remarks = $data->Remarks;
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
+            $invoice->linkid = $data->LinkID;
             $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
 
 
@@ -555,7 +556,7 @@ class SalesInvController extends Controller
 
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
-            $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
+            $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan,$data->LinkID);
         }
 
         $html = view('invoice.cetakNota', [
@@ -606,7 +607,7 @@ class SalesInvController extends Controller
         $data->totalgw = number_format($data->totalgw, 2, '.', ',');
         $data->carat = $data_item->caratSW;
 
-        $qrValue =  $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan);
+        $qrValue =  $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan, $data->LinkID);
         $qrCode = QrCode::format('png')
             ->size(200)
             ->generate($qrValue);
@@ -758,10 +759,10 @@ class SalesInvController extends Controller
             'url' => asset('storage/label/' . $nota . '.pdf'),
         ]);
     }
-    public function Qrformat($subgrosir, $tempat, $pelanggan)
+    public function Qrformat($subgrosir, $tempat, $pelanggan,$id)
     {
         $QRvalue = new stdClass();
-        $QRvalue->it = '1';
+        $QRvalue->it = $id ?? '';
         $QRvalue->nt = $pelanggan ?? '';
         $QRvalue->at = $tempat ?? '';
         $QRvalue->pt = $subgrosir ?? ''; 
@@ -931,6 +932,7 @@ class SalesInvController extends Controller
                     'Currency' => NULL,
                     'Person' => $request->pembeli,
                     'SubGrosir' => $request->sub_grosir,
+                    'LinkID' => $request->linkid,
                 ]);
 
             $cekOpnameItem = DB::table('invoiceitem')->where('IDM', $id);
@@ -1021,6 +1023,7 @@ class SalesInvController extends Controller
                 'Currency' => NULL,
                 'Person' => $request->pembeli,
                 'SubGrosir' => $request->sub_grosir,
+                'LinkID' => $request->linkid,
             ]);
 
             if (count($request->cadar) > 0) {

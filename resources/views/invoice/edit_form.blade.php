@@ -221,6 +221,12 @@
                                         <textarea class="form-control" rows="2" placeholder="Catatan" name="catatan">{{ $data->Remarks }}</textarea>
                                     </div>
                                 </div>
+                                <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">LinkID</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" rows="2" name="linkid" id="linkid" value="{{ $data->linkid }}">
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -658,131 +664,42 @@
 
             $("#btnSubmitCreate").on("click", function(e) {
                 e.preventDefault(); // prevent normal form submit
-
-                if (carat == carat_last) {
-                    $.ajax({
-                        url: $("#salesForm").attr("action"),
-                        type: "POST",
-                        data: $("#salesForm").serialize(),
-                        success: function(response) {
-                            Swal.fire({
-                                title: "Berhasil",
-                                text: "Data telah berhasil disimpan.",
-                                icon: "success",
-                                confirmButtonText: "OK"
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = '/sales/detail/' + response
-                                        .data;
-                                }
-                            });
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 422) {
-                                Swal.fire({
-                                    title: "Gagal",
-                                    text: "Silakan periksa kembali form yang Anda isi.",
-                                    icon: "error",
-                                    confirmButtonText: "OK"
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: "Gagal",
-                                    text: "Server Error",
-                                    icon: "error",
-                                    confirmButtonText: "OK"
-                                });
+                $.ajax({
+                    url: $("#salesForm").attr("action"),
+                    type: "POST",
+                    data: $("#salesForm").serialize(),
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: "Data telah berhasil disimpan.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/sales/detail/' + response
+                                    .data;
                             }
-
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Konfirmasi Perubahan",
-                        html: "Kadar telah diubah ke <b>" + carat +
-                            "</b>,<br>Lanjutkan penyimpanan?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Lanjutkan",
-                        cancelButtonText: "Batal"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: $("#salesForm").attr("action"),
-                                type: "POST",
-                                data: $("#salesForm").serialize(),
-                                success: function(response) {
-                                    Swal.fire({
-                                        title: "Berhasil",
-                                        text: "Data telah berhasil disimpan.",
-                                        icon: "success",
-                                        confirmButtonText: "OK"
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.href =
-                                                '/sales/detail/' + response
-                                                .data;
-                                        }
-                                    });
-                                },
-                                error: function(xhr) {
-                                    if (xhr.status === 422) {
-                                        Swal.fire({
-                                            title: "Gagal",
-                                            text: "Silakan periksa kembali form yang Anda isi.",
-                                            icon: "error",
-                                            confirmButtonText: "OK"
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: "Gagal",
-                                            text: "Server Error",
-                                            icon: "error",
-                                            confirmButtonText: "OK"
-                                        });
-                                    }
-                                }
+                        });
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Silakan periksa kembali form yang Anda isi.",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Gagal",
+                                text: "Server Error",
+                                icon: "error",
+                                confirmButtonText: "OK"
                             });
                         }
-                    });
-                    // $.ajax({
-                    //     url: $("#salesForm").attr("action"),
-                    //     type: "POST",
-                    //     data: $("#salesForm").serialize(),
-                    //     success: function(response) {
-                    //         Swal.fire({
-                    //             title: "Berhasil",
-                    //             text: "Data telah berhasil disimpan.",
-                    //             icon: "success",
-                    //             confirmButtonText: "OK"
-                    //         }).then((result) => {
-                    //             if (result.isConfirmed) {
-                    //                 window.location.href = '/sales/detail/' + response.data;
-                    //             }
-                    //         });
-                    //     },
-                    //     error: function(xhr) {
-                    //         if (xhr.status === 422) {
-                    //             Swal.fire({
-                    //                 title: "Gagal",
-                    //                 text: "Silakan periksa kembali form yang Anda isi.",
-                    //                 icon: "error",
-                    //                 confirmButtonText: "OK"
-                    //             });
-                    //         } else {
-                    //             Swal.fire({
-                    //                 title: "Gagal",
-                    //                 text: "Server Error",
-                    //                 icon: "error",
-                    //                 confirmButtonText: "OK"
-                    //             });
-                    //         }
 
-                    //     }
-                    // });
-                }
-
-
+                    }
+                });
             });
 
             const optionsDec2 = {
@@ -1563,6 +1480,7 @@
                         document.getElementById("sub_grosir").value = data.pt;
                         document.getElementById("alamat").value = data.at;
                         document.getElementById("customer").value = data.nt;
+                        document.getElementById("linkid").value = data.it;
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();

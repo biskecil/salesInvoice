@@ -209,6 +209,12 @@
                                         <textarea class="form-control" rows="2" placeholder="Catatan" name="catatan"></textarea>
                                     </div>
                                 </div>
+                                <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">LinkID</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" rows="2" name="linkid" id="linkid">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1385,8 +1391,7 @@
                         document.getElementById("sub_grosir").value = data.pt;
                         document.getElementById("alamat").value = data.at;
                         document.getElementById("customer").value = data.nt;
-
-
+                        document.getElementById("linkid").value = data.it;
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
