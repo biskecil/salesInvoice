@@ -862,6 +862,7 @@ class SalesInvController extends Controller
             ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
             ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
             ->whereNotIn('invoice.ID', [0])
+            ->orderBy('ID','DESC')
             ->get()
             ->map(function ($row) {
 
