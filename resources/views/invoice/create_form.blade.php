@@ -221,7 +221,6 @@
                         <!-- CARD TAMBAH ITEM -->
                         <div class="card mt-1 shadow-sm">
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-bold">Daftar Item</h6>
                                 <div>
                                     <button type="button" id="btnScan" class="btn btn-sm btn-success">
                                         <i class="fa-solid fa-expand"></i> Scan
@@ -230,6 +229,8 @@
                                         + Item
                                     </button>
                                 </div>
+                                <h6 class="mb-0 fw-bold">Daftar Item</h6>
+                                
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: 250px; overflow-y: auto;  ">
@@ -664,7 +665,7 @@
                             icon: "success",
                             confirmButtonText: "OK"
                         }).then((result) => {
-                            if (result.isConfirmed) {
+                            if (result.isConfirmed || result.isDismissed) {
                                 window.location.href = '/sales/detail/' + response.data;
                             }
                         });
@@ -1244,6 +1245,9 @@
 
                 let net = bruto * price;
                 let netCust = bruto * priceCust;
+                netCust = Math.round((netCust + Number.EPSILON) * 1000) / 1000;
+
+                console.log(netCust)
 
                 anNet.set(net);
                 anNetCust.set(netCust);
@@ -1377,6 +1381,7 @@
                 totalItem.innerText = 0;
                 total_gw.innerText = "0.00 gram";
                 total_nw.innerText = "0.00 gram";
+                itemScanBcd = [];
             }
 
             document.getElementById('scanModal').addEventListener('hidden.bs.modal', function() {

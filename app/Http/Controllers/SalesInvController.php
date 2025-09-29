@@ -238,7 +238,7 @@ class SalesInvController extends Controller
 
 
             $caratCustom = [1, 3, 13, 4, 5, 6];
-            $cust = DB::table('customer')->orderBy('Description')->get();
+            $cust = DB::table('customer')->orderBy('SW','ASC')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
@@ -791,7 +791,7 @@ class SalesInvController extends Controller
 
         $caratCustom = [1, 3, 13, 4, 5, 6];
         $venue = DB::table('venue')->orderBy('Description')->get();
-        $cust = DB::table('customer')->orderBy('Description')->get();
+        $cust = DB::table('customer')->orderBy('SW','ASC')->get();
         $desc = DB::table('product')->select('ID', 'Description')->get();
         $kadar = DB::table('carat')->select(
             'ID',

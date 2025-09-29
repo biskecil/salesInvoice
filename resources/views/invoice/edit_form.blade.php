@@ -234,7 +234,6 @@
                         <!-- CARD TAMBAH ITEM -->
                         <div class="card mt-1 shadow-sm">
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-bold">Daftar Item</h6>
                                 <div>
                                     <button type="button" id="btnScan" class="btn btn-sm btn-success">
                                         <i class="fa-solid fa-expand"></i> Scan
@@ -243,6 +242,7 @@
                                         + Item
                                     </button>
                                 </div>
+                                <h6 class="mb-0 fw-bold">Daftar Item</h6>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
@@ -415,7 +415,7 @@
         });
 
         $(document).ready(function() {
-            DateNowMax();
+            // DateNowMax();
             hotkeys();
             loadSelect2();
             let dataNota = '';
@@ -675,7 +675,7 @@
                             icon: "success",
                             confirmButtonText: "OK"
                         }).then((result) => {
-                            if (result.isConfirmed) {
+                            if (result.isConfirmed || result.isDismissed) {
                                 window.location.href = '/sales/detail/' + response
                                     .data;
                             }
@@ -1466,6 +1466,7 @@
                 totalItem.innerText = 0;
                 total_gw.innerText = "0.00 gram";
                 total_nw.innerText = "0.00 gram";
+                itemScanBcd = [];
             }
 
             document.getElementById('scanModal').addEventListener('hidden.bs.modal', function() {
