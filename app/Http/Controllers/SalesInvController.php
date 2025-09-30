@@ -38,14 +38,6 @@ class SalesInvController extends Controller
         return ($yiq >= 128) ? '#000' : '#fff';
     }
 
-
-    public function tes()
-    {
-        $width = 100 / 25.4 * 72;
-        $height = 50 / 25.4 * 72;
-        $pdf = PDF::loadView('tes'); // view tes dipakai untuk PDF juga
-        return $pdf->stream('filename.pdf');
-    }
     public function getDataPrice(Request $request)
     {
         $category =   DB::table('product')
@@ -100,6 +92,23 @@ class SalesInvController extends Controller
             ->groupBy('SW')
             ->get();
         return response()->json($data);
+    }
+    public function getDataNotaSearch()
+    {
+        $invoice_list =  DB::table('invoice')->orderBy('ID','DESC')->whereNotIN('id', [0])->get();
+
+        $invoice_list->transform(function ($row) {
+            $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+            $transDate = Carbon::parse($row->TransDate);
+            $monthMM   = $transDate->format('m');
+            $yearYY    = $transDate->format('y');
+
+            $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+            $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+            return $row;
+        });
+        return response()->json($invoice_list);
     }
     public function getDataGros($id)
     {

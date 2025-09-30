@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [SalesInvController::class, 'form'])->name('sales.form');
-Route::get('/tes/', [SalesInvController::class, 'tes']);
 Route::prefix('pack')->group(function () {
     Route::get('/show', [SalesInvController::class, 'show_pack']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNotaPack']);
@@ -25,6 +24,7 @@ Route::prefix('pack')->group(function () {
     Route::get('/prevNota/', [SalesInvController::class, 'prevDataNotaPack']);
 });
 Route::prefix('sales')->group(function () {
+    Route::get('/getData/Nota/search', [SalesInvController::class, 'getDataNotaSearch']);
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNota']);
     Route::get('/getData/NotaAll/', [SalesInvController::class, 'getDataNotaAll']);
