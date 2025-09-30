@@ -11,6 +11,25 @@
             height: auto;
             /* biar tidak terlalu tinggi */
         }
+
+        .summary-weight {
+            font-weight: bold;
+            color: #d9534f;
+            font-size: 16px;
+        }
+
+        .myGrid .dx-datagrid-rowsview .dx-row>td {
+            font-size: 16px;
+            /* perbesar font */
+            font-weight: normal;
+        }
+
+        /* Header column */
+        .myGrid .dx-datagrid-headers .dx-header-row>td {
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+        }
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -19,7 +38,7 @@
                     <h5 class="mb-0 text-center fw-bold ">List Nota</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table table-bordered mb-0" id="invTable">
+                    <div id="invTable" class="myGrid">
                     </div>
                 </div>
             </div>
@@ -35,11 +54,15 @@
                     let dataGrid = $("#invTable").dxDataGrid({
                         dataSource: data.data,
                         keyExpr: "IDM",
-                        columnsAutoWidth: true,
+                        //  columnsAutoWidth: true,
                         scrollX: true,
-                        columnMinWidth: 90,
+                        // columnMinWidth: 90,
                         height: 600,
                         allowColumnReordering: true,
+                        scrolling: {
+                            mode: "standard",
+                            columnRenderingMode: "virtual"
+                        },
                         showBorders: true,
                         headerFilter: {
                             visible: true
@@ -69,82 +92,95 @@
                         },
                         columns: [{
                                 dataField: "TransDate",
-                                dataType: "string",
+                                dataType: "date",
                                 caption: "Tanggal",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                format: "dd/MM/yyyy",
+                                width: "6%"
                             },
                             {
                                 dataField: "IDM",
                                 dataType: "string",
                                 caption: "ID",
-                                width: '5%',
+                                width: "4%",
                                 cssClass: "cls"
                             },
                             {
                                 dataField: "invoice_number",
                                 dataType: "string",
                                 caption: "No Nota",
+                                width: "7%",
                                 cssClass: "cls"
                             },
                             {
                                 dataField: "Grosir",
                                 dataType: "string",
                                 caption: "Grosir",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "4%",
                             },
                             {
                                 dataField: "Customer",
                                 dataType: "string",
                                 caption: "Customer",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "20%",
                             },
                             {
                                 dataField: "Address",
                                 dataType: "string",
                                 caption: "Address",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "12%",
                             },
                             {
                                 dataField: "Phone",
                                 dataType: "string",
                                 caption: "Phone",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "10%",
                             },
                             {
                                 dataField: "productSW",
                                 dataType: "string",
                                 caption: "Kategori",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "4%",
                             },
                             {
                                 dataField: "caratSW",
                                 dataType: "string",
                                 caption: "Kadar",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "4%",
                             },
                             {
                                 dataField: "Weight",
                                 dataType: "number",
                                 caption: "Berat",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "6%",
                             },
                             {
                                 dataField: "Event",
                                 dataType: "string",
                                 caption: "Event",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "5%",
                             },
                             {
                                 dataField: "SubGrosir",
                                 dataType: "string",
                                 caption: "SubGrosir",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "14%",
                             },
                             {
                                 dataField: "Venue",
                                 dataType: "string",
                                 caption: "Tempat",
-                                cssClass: "cls"
+                                cssClass: "cls",
+                                width: "4%",
                             },
                         ],
                         summary: {
@@ -155,7 +191,7 @@
                                     type: "fixedPoint",
                                     precision: 2
                                 },
-                                displayFormat: "Berat: {0}"
+                                displayFormat: "{0}"
                             }],
                             totalItems: [{
                                 column: "Weight",
@@ -164,7 +200,8 @@
                                     type: "fixedPoint",
                                     precision: 2
                                 },
-                                displayFormat: "Berat: {0}"
+                                displayFormat: "{0}",
+                                cssClass: "summary-weight"
                             }, ]
                         },
                     }).dxDataGrid("instance");
