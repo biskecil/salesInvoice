@@ -32,11 +32,8 @@
         <div>
             <div class="d-flex gap-2 ">
                 <div class="position-relative" style="max-width:400px;">
-                    <input type="search" class="form-control" id="cariDataNota" autocomplete="off"
-                        placeholder="Cari Nota">
-                    <ul id="notaSuggestions" class="list-group position-absolute w-100"
-                        style="z-index:1000; max-height:200px; overflow-y:auto; display:none;">
-                    </ul>
+                    <input id="cariDataNota" autocomplete="off"
+                   >
                 </div>
             </div>
         </div>

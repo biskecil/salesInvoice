@@ -124,7 +124,7 @@
                                 dataType: "string",
                                 caption: "Customer",
                                 cssClass: "cls",
-                                width: "20%",
+                                width: "18%",
                             },
                             {
                                 dataField: "Address",
@@ -159,7 +159,7 @@
                                 dataType: "number",
                                 caption: "Berat",
                                 cssClass: "cls",
-                                width: "6%",
+                                width: "8%",
                             },
                             {
                                 dataField: "Event",

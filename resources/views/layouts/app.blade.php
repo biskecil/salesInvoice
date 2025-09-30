@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('DevExtreme/css/dx.light.compact.css') }}">
     <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('autocomplete/autocomplete.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('assets/images/favicon.png') !!}">

@@ -268,11 +268,6 @@
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{{ asset('websocket/websocket-printer.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
-    <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
-    <script>
-        const dataNota = @json($invoice_list->pluck('invoice_number'));
-        createAutocomplete('cariDataNota', 'notaSuggestions', dataNota);
-    </script>
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);

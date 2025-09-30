@@ -30,11 +30,7 @@
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
-    <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
-    <script>
-        const dataNota = @json($data->pluck('invoice_number'));
-        createAutocomplete('cariDataNota', 'notaSuggestions', dataNota);
-    </script>
+
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);

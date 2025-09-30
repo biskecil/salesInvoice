@@ -95,7 +95,7 @@ class SalesInvController extends Controller
     }
     public function getDataNotaSearch()
     {
-        $invoice_list =  DB::table('invoice')->orderBy('ID','DESC')->whereNotIN('id', [0])->get();
+        $invoice_list =  DB::table('invoice')->orderBy('ID', 'DESC')->whereNotIN('id', [0])->get();
 
         $invoice_list->transform(function ($row) {
             $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
@@ -247,8 +247,8 @@ class SalesInvController extends Controller
 
 
             $caratCustom = [1, 3, 13, 4, 5, 6];
-            $cust = DB::table('customer')->orderBy('SW','ASC')->get();
-            $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description','ASC')->get();
+            $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
+            $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
                 'SW',
@@ -566,7 +566,7 @@ class SalesInvController extends Controller
 
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
-            $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan,$data->LinkID);
+            $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan, $data->LinkID);
         }
 
         $html = view('invoice.cetakNota', [
@@ -769,13 +769,13 @@ class SalesInvController extends Controller
             'url' => asset('storage/label/' . $nota . '.pdf'),
         ]);
     }
-    public function Qrformat($subgrosir, $tempat, $pelanggan,$id)
+    public function Qrformat($subgrosir, $tempat, $pelanggan, $id)
     {
         $QRvalue = new stdClass();
         $QRvalue->it = $id ?? '';
         $QRvalue->nt = $pelanggan ?? '';
         $QRvalue->at = $tempat ?? '';
-        $QRvalue->pt = $subgrosir ?? ''; 
+        $QRvalue->pt = $subgrosir ?? '';
         $QRvalue->kp = 'LG';
 
         return json_encode($QRvalue);
@@ -801,8 +801,8 @@ class SalesInvController extends Controller
 
         $caratCustom = [1, 3, 13, 4, 5, 6];
         $venue = DB::table('venue')->orderBy('Description')->get();
-        $cust = DB::table('customer')->orderBy('SW','ASC')->get();
-        $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description','ASC')->get();
+        $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
+        $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
         $kadar = DB::table('carat')->select(
             'ID',
             'SW',
@@ -872,7 +872,7 @@ class SalesInvController extends Controller
             ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
             ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
             ->whereNotIn('invoice.ID', [0])
-            ->orderBy('ID','DESC')
+            ->orderBy('ID', 'DESC')
             ->get()
             ->map(function ($row) {
 
@@ -915,11 +915,21 @@ class SalesInvController extends Controller
             'cadar'       => 'required|array|min:1',
         ]);
 
+
         if ($validated->fails()) {
-            $data = $this->SetReturn(true, 'Cek Form', null, null);
-            return response()->json($data, 500);
+            $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+            return response()->json($data, 422);
         }
 
+        if (in_array(null, $request->category, true)) {
+            $data = $this->SetReturn(true, 'Item ada yang kosong', null, null);
+            return response()->json($data, 422);
+        }
+
+        if (in_array("0.000", $request->price)) {
+            $data = $this->SetReturn(true, 'Harga item ada yang kosong', null, null);
+            return response()->json($data, 422);
+        }
 
         try {
             DB::beginTransaction();
@@ -989,6 +999,7 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
+    
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',
@@ -998,7 +1009,17 @@ class SalesInvController extends Controller
         ]);
 
         if ($validated->fails()) {
-            $data = $this->SetReturn(true, 'Cek Form', null, null);
+            $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+            return response()->json($data, 422);
+        }
+
+        if (in_array(null, $request->category, true)) {
+            $data = $this->SetReturn(true, 'Item ada yang kosong', null, null);
+            return response()->json($data, 422);
+        }
+
+        if (in_array("0.000", $request->price)) {
+            $data = $this->SetReturn(true, 'Harga item ada yang kosong', null, null);
             return response()->json($data, 422);
         }
 
