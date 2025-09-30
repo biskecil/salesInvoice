@@ -169,6 +169,13 @@
                                         <textarea class="form-control" rows="2" placeholder="Catatan" name="catatan" readonly>{{ $data->Remarks }}</textarea>
                                     </div>
                                 </div>
+                                <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">LinkID</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" rows="2" name="linkid" id="linkid"  readonly value="{{ $data->linkid }}">
+                                    </div>
+                                </div>
+
 
                             </div>
                         </div>

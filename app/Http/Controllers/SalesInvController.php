@@ -395,6 +395,7 @@ class SalesInvController extends Controller
             $invoice->Remarks = $data->Remarks;
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
+            $invoice->linkid = $data->LinkID;
             $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
 
 

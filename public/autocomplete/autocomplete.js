@@ -15,6 +15,7 @@ async function fetchDataFromAPI() {
 function createAutocomplete(inputId, suggestionBoxId, dataArray) {
     const input = document.getElementById(inputId);
     const suggestionBox = document.getElementById(suggestionBoxId);
+    let currentIndex = -1; // index suggestion yang dipilih
 
     function showSuggestions(list) {
         suggestionBox.innerHTML = '';
@@ -49,12 +50,39 @@ function createAutocomplete(inputId, suggestionBoxId, dataArray) {
         showSuggestions(filtered);
     });
 
-    // saat focus → tampilkan 5 terakhir
-    input.addEventListener('focus', function() {
-        if (!this.value) {
-            const lastFive = dataArray.slice().reverse().slice(0,5);
-            showSuggestions(lastFive);
+    // // saat focus → tampilkan 5 terakhir
+    // input.addEventListener('focus', function() {
+    //     if (!this.value) {
+    //         const lastFive = dataArray.slice().reverse().slice(0,5);
+    //         showSuggestions(lastFive);
+    //     }
+    // });
+
+    input.addEventListener('keydown', function (e) {
+        const items = suggestionBox.querySelectorAll('li');
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentIndex = (currentIndex + 1) % items.length;
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (currentIndex >= 0 && currentIndex < items.length) {
+                input.value = items[currentIndex].textContent;
+                suggestionBox.style.display = 'none';
+            }
         }
+
+        items.forEach((item, idx) => {
+            if (idx === currentIndex) {
+                item.classList.add('active'); // bootstrap sudah ada style untuk .active
+            } else {
+                item.classList.remove('active');
+            }
+        });
     });
 
     // hide kalau klik di luar

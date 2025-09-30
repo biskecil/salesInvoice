@@ -44,7 +44,7 @@
             let dataNota = '';
             $('#btnTambah').prop('disabled', false);
             $('#btnBatal').prop('disabled', true);
-            $('#btnCetak').prop('disabled', true);
+            $('#btnCetakParent').prop('disabled', true);
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', true);

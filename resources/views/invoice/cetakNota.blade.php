@@ -118,7 +118,12 @@
                 <tr>
                     <td></td>
                     <td style="text-align: right;vertical-align:top"><b>Grosir:</b></td>
-                    <td> {{ $data->SubGrosir }} - {{ $data->Grosir }}</td>
+                    <td>
+                        @if ($data->SubGrosir)
+                            {{ $data->SubGrosir }} -
+                        @endif
+                        {{ $data->Grosir }}
+                    </td>
                 </tr>
             @endif
 
