@@ -195,7 +195,7 @@
                                     </button>
                                 </div>
                                 <h6 class="mb-0 fw-bold">Daftar Item</h6>
-                                
+
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: 250px; overflow-y: auto;  ">
@@ -370,7 +370,7 @@
                             totalnw += an ? an.getNumber() : 0;
                         });
 
-                       
+
                         antotalgwallInput.set(total);
                         antotalnwallInput.set(totalnw);
                     }
@@ -598,9 +598,15 @@
 
             // transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
-            $('#grosir').on('change', function() {
+            $('#grosir').on('change', async function() {
                 let id = this.value;
                 if (id) {
+                    let btn = document.getElementById("btnSubmitCreate");
+                    let oldText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
+                    let promises = [];
+
                     setGrosir = id;
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                         let categorySelect = row.querySelector("select[name='category[]']");
@@ -621,7 +627,7 @@
                         let selectedCat = categorySelect.value;
 
 
-                        fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                        let p = fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                             if (priceInput) anPrice.set(hasil.price);
                             if (priceCustInput) {
                                 let newVal = hasil.priceCust || 0;
@@ -645,13 +651,20 @@
                             }
                             let totalnwall = 0;
                             document.querySelectorAll(".wnet").forEach(el => {
-                                const an = AutoNumeric.getAutoNumericElement(el);
+                                const an = AutoNumeric.getAutoNumericElement(
+                                    el);
                                 totalnwall += an.getNumber() || 0;
                             });
 
                             antotalnwallInput.set(totalnwall);
                         });
+                        promises.push(p);
                     });
+
+                    await Promise.all(promises);
+
+                    btn.disabled = false;
+                    btn.innerHTML = oldText;
 
                 } else {
                     document.getElementById("customer").value = "";
@@ -660,7 +673,7 @@
             });
 
 
-            $('#carat').on('change', function() {
+            $('#carat').on('change', async function() {
                 carat = this.value;
                 carat_bgcolor = $(this).find(':selected').data('color');
                 carat_textcolor = getContrastYIQ(carat_bgcolor);
@@ -673,6 +686,13 @@
                     el.style.color = carat_textcolor
                     el.textContent = carat;
                 })
+
+                let btn = document.getElementById("btnSubmitCreate");
+                let oldText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
+                let promises = [];
+
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                     let categorySelect = row.querySelector("select[name='category[]']");
@@ -694,7 +714,7 @@
                     let selectedCat = categorySelect.value;
 
 
-                    fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                    let p = fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                         if (priceInput) anPrice.set(hasil.price);
                         if (priceCustInput) {
                             let newVal = hasil.priceCust || 0;
@@ -724,7 +744,12 @@
 
                         antotalnwallInput.set(totalnwall);
                     });
+                    promises.push(p);
                 });
+                await Promise.all(promises);
+
+                btn.disabled = false;
+                btn.innerHTML = oldText;
             });
 
 

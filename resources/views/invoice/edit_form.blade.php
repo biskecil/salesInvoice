@@ -189,7 +189,8 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">LinkID</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" rows="2" name="linkid" id="linkid" value="{{ $data->linkid }}">
+                                        <input class="form-control" rows="2" name="linkid" id="linkid"
+                                            value="{{ $data->linkid }}">
                                     </div>
                                 </div>
 
@@ -665,9 +666,15 @@
             }
 
 
-            $('#grosir').on('change', function() {
+            $('#grosir').on('change', async function() {
                 let id = this.value;
                 if (id) {
+                    let btn = document.getElementById("btnSubmitCreate");
+                    let oldText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
+                    let promises = [];
+
                     setGrosir = id;
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                         let categorySelect = row.querySelector("select[name='category[]']");
@@ -688,7 +695,7 @@
                         let selectedCat = categorySelect.value;
 
 
-                        fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                        let p = fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                             if (priceInput) anPrice.set(hasil.price);
                             if (priceCustInput) {
                                 let newVal = hasil.priceCust || 0;
@@ -719,7 +726,13 @@
 
                             antotalnwallInput.set(totalnwall);
                         });
+                        promises.push(p);
                     });
+
+                    await Promise.all(promises);
+
+                    btn.disabled = false;
+                    btn.innerHTML = oldText;
 
                 } else {
                     document.getElementById("customer").value = "";
@@ -728,7 +741,7 @@
             });
 
 
-            function updateCarat(carat, $select) {
+            async function updateCarat(carat, $select) {
 
                 carat_bgcolor = $select.find(':selected').data('color');
                 carat_textcolor = getContrastYIQ(carat_bgcolor);
@@ -741,6 +754,13 @@
                     el.style.color = carat_textcolor
                     el.textContent = carat;
                 })
+
+                let btn = document.getElementById("btnSubmitCreate");
+                let oldText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
+                let promises = [];
+
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                     let categorySelect = row.querySelector("select[name='category[]']");
                     let priceInput = row.querySelector(".price");
@@ -761,7 +781,7 @@
                     let selectedCat = categorySelect.value;
 
 
-                    fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+                    let p = fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
                         if (priceInput) anPrice.set(hasil.price);
                         if (priceCustInput) {
                             let newVal = hasil.priceCust || 0;
@@ -788,10 +808,13 @@
                             const an = AutoNumeric.getAutoNumericElement(el);
                             totalnwall += an.getNumber() || 0;
                         });
-
                         antotalnwallInput.set(totalnwall);
                     });
+                    promises.push(p);
                 });
+                await Promise.all(promises);
+                btn.disabled = false;
+                btn.innerHTML = oldText;
             }
             $('#carat').on('change', function() {
                 let newCarat = this.value;
