@@ -639,14 +639,14 @@
                             if (brutoInput && priceCustInput) {
                                 let bruto = anBruto.getNumber() || 0;
                                 let priceCust = anPriceCust.getNumber() || 0;
-                                let netCust = bruto * priceCust;
+                                let netCust =new Decimal(bruto).times(priceCust);
                                 anNetCust.set(netCust);
                             }
 
                             if (brutoInput && priceInput && netInput) {
                                 let bruto = anBruto.getNumber() || 0;
                                 let price = anPrice.getNumber() || 0;
-                                let net = bruto * price;
+                                let net =  new Decimal(bruto).times(price);
                                 anNet.set(net);
                             }
                             let totalnwall = 0;
@@ -726,14 +726,14 @@
                         if (brutoInput && priceCustInput) {
                             let bruto = anBruto.getNumber() || 0;
                             let priceCust = anPriceCust.getNumber() || 0;
-                            let netCust = bruto * priceCust;
+                            let netCust = new Decimal(bruto).times(priceCust);
                             anNetCust.set(netCust);
                         }
 
                         if (brutoInput && priceInput && netInput) {
                             let bruto = anBruto.getNumber() || 0;
                             let price = anPrice.getNumber() || 0;
-                            let net = bruto * price;
+                            let net =  new Decimal(bruto).times(price);
                             anNet.set(net);
                         }
                         let totalnwall = 0;
@@ -947,8 +947,8 @@
                     let price = anPrice.getNumber() || 0;
                     let priceCust = anPriceCust.getNumber() || 0;
 
-                    let net = hasilTimbang * price;
-                    let netCust = hasilTimbang * priceCust;
+                    let net =new Decimal(hasilTimbang).times(price);
+                    let netCust = new Decimal(hasilTimbang).times(priceCust);
 
                     anNetCust.set(netCust);
                     anNet.set(net);
@@ -1016,14 +1016,14 @@
                     if (brutoInput && priceCustInput) {
                         let bruto = anBruto.getNumber() || 0;
                         let priceCust = anPriceCust.getNumber() || 0;
-                        let netCust = bruto * priceCust;
+                        let netCust = new Decimal(bruto).times(priceCust);
                         anNetCust.set(netCust);
 
                     }
                     if (brutoInput && priceInput && netInput) {
                         let bruto = anBruto.getNumber() || 0;
                         let price = anPrice.getNumber() || 0;
-                        let net = bruto * price;
+                        let net = new Decimal(bruto).times(price);
                         anNet.set(net);
                     }
                     let totalnwall = 0;
@@ -1110,12 +1110,9 @@
                 let price = anPrice.getNumber() || 0;
                 let priceCust = anPriceCust.getNumber() || 0;
 
-                let net = bruto * price;
-                let netCust = bruto * priceCust;
-                netCust = Math.round((netCust + Number.EPSILON) * 1000) / 1000;
-
-                console.log(netCust)
-
+                let net = new Decimal(bruto).times(price);
+                let netCust = new Decimal(bruto).times(priceCust);
+             
                 anNet.set(net);
                 anNetCust.set(netCust);
 

@@ -1,7 +1,9 @@
 require("./bootstrap");
 import autoComplete from "@tarekraafat/autocomplete.js";
 import AutoNumeric from "autonumeric";
+import Decimal from "decimal.js";
 
+window.Decimal = Decimal;
 window.AutoNumeric = AutoNumeric;
 
 document.addEventListener("DOMContentLoaded", () => {

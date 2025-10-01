@@ -19,6 +19,7 @@
         "@fortawesome/fontawesome-free": "^7.0.0",
         "@tarekraafat/autocomplete.js": "^10.2.9",
         "autonumeric": "^4.10.9",
+        "decimal.js": "^10.6.0",
         "devextreme": "^25.1.4",
         "html5-qrcode": "^2.3.8",
         "sweetalert2": "^11.22.5"
