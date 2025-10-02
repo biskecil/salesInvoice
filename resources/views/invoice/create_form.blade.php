@@ -202,6 +202,7 @@
                                     <table class="table table-bordered mb-0" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
+                                                <th style="width: 50px" class="text-center">No</th>
                                                 <th style="width: 120px" class="text-center">Kategori</th>
                                                 <th style="width: 150px" class="text-center">Kadar</th>
                                                 <th style="width: 150px" class="text-center">Brt Kotor</th>
@@ -212,7 +213,7 @@
                                                 <th style="width: 150px" class="isPriceCust d-none text-center">Brt Bersih
                                                     Cust
                                                 </th>
-                                                <th style="width: 50px;"></th>
+                                                <th style="width: 30px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -358,7 +359,7 @@
                         const lastRow = rows[rows.length - 1];
                         // hapus baris
                         lastRow.remove();
-
+                        reindexRows();
                         let total = 0;
                         let totalnw = 0;
                         document.querySelectorAll(".wbruto").forEach(el => {
@@ -598,6 +599,12 @@
 
             // transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
+            function reindexRows() {
+                [...itemsTable.rows].forEach((row, index) => {
+                    row.cells[0].innerText = index + 1; // nomor otomatis
+                });
+            }
+
             $('#grosir').on('change', async function() {
                 let id = this.value;
                 if (id) {
@@ -639,14 +646,14 @@
                             if (brutoInput && priceCustInput) {
                                 let bruto = anBruto.getNumber() || 0;
                                 let priceCust = anPriceCust.getNumber() || 0;
-                                let netCust =new Decimal(bruto).times(priceCust);
+                                let netCust = new Decimal(bruto).times(priceCust);
                                 anNetCust.set(netCust);
                             }
 
                             if (brutoInput && priceInput && netInput) {
                                 let bruto = anBruto.getNumber() || 0;
                                 let price = anPrice.getNumber() || 0;
-                                let net =  new Decimal(bruto).times(price);
+                                let net = new Decimal(bruto).times(price);
                                 anNet.set(net);
                             }
                             let totalnwall = 0;
@@ -733,7 +740,7 @@
                         if (brutoInput && priceInput && netInput) {
                             let bruto = anBruto.getNumber() || 0;
                             let price = anPrice.getNumber() || 0;
-                            let net =  new Decimal(bruto).times(price);
+                            let net = new Decimal(bruto).times(price);
                             anNet.set(net);
                         }
                         let totalnwall = 0;
@@ -816,6 +823,17 @@
 
 
             addRowBtn.addEventListener("click", function() {
+                if (itemsTable.rows.length >= 10) {
+                    Swal.fire({
+                        title: "Batas Tercapai",
+                        text: "Maksimal hanya boleh 10 item.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
+
+
                 if (setGrosir == '' || carat == '') {
 
                     Swal.fire({
@@ -830,6 +848,7 @@
 
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
+                <td class="text-center"></td>
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
             <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
@@ -889,6 +908,7 @@
                 //     allowClear: true,
                 //     width: '100%'
                 // });
+                reindexRows()
                 loadSelect2();
 
 
@@ -947,7 +967,7 @@
                     let price = anPrice.getNumber() || 0;
                     let priceCust = anPriceCust.getNumber() || 0;
 
-                    let net =new Decimal(hasilTimbang).times(price);
+                    let net = new Decimal(hasilTimbang).times(price);
                     let netCust = new Decimal(hasilTimbang).times(priceCust);
 
                     anNetCust.set(netCust);
@@ -1112,7 +1132,7 @@
 
                 let net = new Decimal(bruto).times(price);
                 let netCust = new Decimal(bruto).times(priceCust);
-             
+
                 anNet.set(net);
                 anNetCust.set(netCust);
 
@@ -1150,6 +1170,7 @@
 
                     antotalgwallInput.set(total);
                     antotalnwallInput.set(totalnw);
+                    reindexRows();
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -1301,6 +1322,15 @@
                     });
                     return false;
                 }
+                if (itemsTable.rows.length >= 10) {
+                    Swal.fire({
+                        title: "Batas Tercapai",
+                        text: "Maksimal hanya boleh 10 item.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
 
 
                 let subtotalgwall = antotalgwallInput.getNumber() || 0;
@@ -1324,6 +1354,7 @@
                 });
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
+                 <td class="text-center"></td>
                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
                 <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
@@ -1381,6 +1412,7 @@
 
 
                 itemScanBcd = [];
+                reindexRows()
                 resetTableScan()
 
 
