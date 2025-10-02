@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MasterController;
 use App\Http\Controllers\SalesInvController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +24,16 @@ Route::prefix('pack')->group(function () {
     Route::get('/cetakNota/', [SalesInvController::class, 'cetakDataNotaPack']);
     Route::get('/prevNota/', [SalesInvController::class, 'prevDataNotaPack']);
 });
+Route::prefix('pricelist')->group(function () {
+    Route::get('/show', [MasterController::class, 'show_pricelist']);
+});
 Route::prefix('grosir')->group(function () {
-    Route::get('/show', [SalesInvController::class, 'show_pack']);
+    Route::get('/show', [MasterController::class, 'show_grosir']);
+    Route::get('/create', [MasterController::class, 'create_grosir']);
+    Route::get('/edit/{id}', [MasterController::class, 'edit_grosir']);
+    Route::post('/store', [MasterController::class, 'store_grosir']);
+    Route::post('/update', [MasterController::class, 'update_grosir']);
+    Route::get('/show_data', [MasterController::class, 'show_grosir_data']);
 });
 
 Route::prefix('sales')->group(function () {
