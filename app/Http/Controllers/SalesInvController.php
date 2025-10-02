@@ -16,6 +16,11 @@ use stdClass;
 class SalesInvController extends Controller
 {
     //
+       public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     private function SetReturn($success, $message, $data, $error)
     {
         $data_return = [

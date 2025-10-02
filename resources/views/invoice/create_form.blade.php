@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts-client.app')
 
 @section('content')
     <style>
@@ -19,7 +19,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card  card-main shadow-sm">
-                @include('layouts.navbar')
+                @include('layouts-client.navbar')
                 <div class="card-body pt-0">
                     <!-- FORM UTAMA -->
                     <form action="/sales/store" method="post" id="salesForm" class="mt-4">
@@ -234,8 +234,8 @@
         </div>
     </div>
 
-    @include('layouts.modalQR')
-    @include('layouts.modalScan')
+    @include('layouts-client.modalQR')
+    @include('layouts-client.modalScan')
 
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>

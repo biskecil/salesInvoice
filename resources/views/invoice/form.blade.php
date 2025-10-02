@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts-client.app')
 
 @section('content')
     <style>
@@ -15,7 +15,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card shadow-sm">
-                @include('layouts.navbar')
+                @include('layouts-client.navbar')
                 <div class="card-body pt-0">
 
                 </div>
