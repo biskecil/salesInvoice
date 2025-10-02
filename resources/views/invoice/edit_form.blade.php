@@ -215,6 +215,7 @@
                                     <table class="table table-bordered mb-0" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
+                                                <th style="width: 10px" class="text-center">No</th>
                                                 <th style="width: 120px;" class="text-center">Kategori</th>
                                                 <th style="width: 150px;" class="text-center">Kadar</th>
                                                 <th style="width: 150px;" class="text-center">Brt Kotor</th>
@@ -225,7 +226,7 @@
                                                 <th style="width: 150px;" class="isPriceCust text-center d-none">Brt
                                                     Bersih Cust
                                                 </th>
-                                                <th style="width: 50px;"></th>
+                                                <th style="width: 30px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -372,7 +373,7 @@
                         const lastRow = rows[rows.length - 1];
                         // hapus baris
                         lastRow.remove();
-
+                        reindexRows();
                         let total = 0;
                         let totalnw = 0;
                         document.querySelectorAll(".wbruto").forEach(el => {
@@ -625,9 +626,10 @@
                     });
                 }
 
-                itemScan.forEach(item => {
+                itemScan.forEach((item, index) => {
                     let newRow = document.createElement("tr");
                     newRow.innerHTML = `
+                    <td class="text-center">${index+1}</td>
            <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
              <td class="text-center align-middle"><span style="background-color:${item.color};color:${item.textColor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${item.caratSW}" readonly>
@@ -662,6 +664,12 @@
 
                     $select.val(item.desc_item).trigger("change");
 
+                });
+            }
+
+            function reindexRows() {
+                [...itemsTable.rows].forEach((row, index) => {
+                    row.cells[0].innerText = index + 1; // nomor otomatis
                 });
             }
 
@@ -902,6 +910,15 @@
 
 
             addRowBtn.addEventListener("click", function() {
+                if (itemsTable.rows.length >= 10) {
+                    Swal.fire({
+                        title: "Batas Tercapai",
+                        text: "Maksimal hanya boleh 10 item.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
                 if (setGrosir == '' || carat == '') {
 
                     Swal.fire({
@@ -916,6 +933,7 @@
 
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
+                 <td class="text-center"></td>
             <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
             <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
@@ -975,6 +993,7 @@
                 //     allowClear: true,
                 //     width: '100%'
                 // });
+                reindexRows();
                 loadSelect2();
 
 
@@ -1236,6 +1255,7 @@
 
                     antotalgwallInput.set(total);
                     antotalnwallInput.set(totalnw);
+                    reindexRows();
                 }
             });
             itemScantable.addEventListener("click", function(e) {
@@ -1389,6 +1409,15 @@
                     });
                     return false;
                 }
+                if (itemsTable.rows.length >= 10) {
+                    Swal.fire({
+                        title: "Batas Tercapai",
+                        text: "Maksimal hanya boleh 10 item.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
 
 
                 let subtotalgwall = antotalgwallInput.getNumber() || 0;
@@ -1411,7 +1440,8 @@
                 });
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
-               <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
+                <td class="text-center"></td>
+                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
                <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
             </td>
@@ -1468,6 +1498,7 @@
 
 
                 itemScanBcd = [];
+                reindexRows()
                 resetTableScan()
 
 

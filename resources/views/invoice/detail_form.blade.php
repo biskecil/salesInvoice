@@ -44,8 +44,8 @@
                                     <div class="col-sm-8 d-flex gap-2 ">
                                         <input type="text" class="form-control" id="customer" name="customer"
                                             style="flex:1" value="{{ $data->Customer }}" readonly>
-                                        <button type="button" class="text-sm btn btn-primary d-none"
-                                            data-bs-toggle="modal" data-bs-target="#scanQRModal" readonly>
+                                        <button type="button" class="text-sm btn btn-primary d-none" data-bs-toggle="modal"
+                                            data-bs-target="#scanQRModal" readonly>
                                             Scan QR
                                         </button>
                                     </div>
@@ -53,8 +53,8 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Nama Pembeli</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Nama pembeli"
-                                            name="pembeli" value="{{ $data->Person }}" readonly>
+                                        <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
+                                            value="{{ $data->Person }}" readonly>
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -172,7 +172,8 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">LinkID</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" rows="2" name="linkid" id="linkid"  readonly value="{{ $data->linkid }}">
+                                        <input class="form-control" rows="2" name="linkid" id="linkid"
+                                            readonly value="{{ $data->linkid }}">
                                     </div>
                                 </div>
 
@@ -191,6 +192,7 @@
                                     <table class="table table-bordered mb-0">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
+                                                <th style="width: 20px;" class="text-center">No</th>
                                                 <th style="width: 120px;" class="text-center">Kategori</th>
                                                 <th style="width: 150px;" class="text-center">Kadar</th>
                                                 <th style="width: 150px;" class="text-center">Brt Kotor</th>
@@ -207,6 +209,7 @@
                                         <tbody>
                                             @foreach ($data->ItemList as $item)
                                                 <tr>
+                                                    <td class="text-center">{{ $loop->iteration }}</th>
                                                     <td><input type="text" name="category[]"
                                                             class="form-control form-control-sm text-center"
                                                             value="{{ $item->desc_item }}" readonly>
@@ -321,7 +324,7 @@
                 printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-                 window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                window.open('/sales/cetakBarcode/' + noNota, '_blank');
                 //printDirectBarcode(noNota)
             });
 

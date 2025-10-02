@@ -202,7 +202,7 @@
                                     <table class="table table-bordered mb-0" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
-                                                <th style="width: 50px" class="text-center">No</th>
+                                                <th style="width: 10px" class="text-center">No</th>
                                                 <th style="width: 120px" class="text-center">Kategori</th>
                                                 <th style="width: 150px" class="text-center">Kadar</th>
                                                 <th style="width: 150px" class="text-center">Brt Kotor</th>

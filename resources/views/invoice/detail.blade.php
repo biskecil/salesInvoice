@@ -149,6 +149,7 @@
                 <table class="table table-bordered mb-0">
                     <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                         <tr>
+                            <th class="text-center">No</th>
                             <th style="width: 120px;" class="text-center">Kategori</th>
                             <th style="width: 150px;"  class="text-center">Kadar</th>
                             <th style="width: 150px;"  class="text-center">Brt Kotor</th>
@@ -165,6 +166,7 @@
                     <tbody>
                         @foreach ($data->ItemList as $item)
                             <tr>
+                                <td class="text-center">{{$loop->iteration}}</td>
                                 <td><input type="text" name="category[]"
                                         class="form-control form-control-sm text-center" value="{{ $item->desc_item }}" readonly>
                                 </td>
