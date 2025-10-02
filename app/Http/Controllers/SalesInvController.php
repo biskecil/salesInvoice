@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use PDF;
 use Carbon\Carbon;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -566,7 +568,6 @@ class SalesInvController extends Controller
 
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
-            $invoice->QRvalue = $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan, $data->LinkID);
         }
 
         $html = view('invoice.cetakNota', [
@@ -597,6 +598,12 @@ class SalesInvController extends Controller
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1),
             ])
+            ->addSelect([
+                'totalnw' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(Netto)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.id')
+                    ->limit(1),
+            ])
             ->whereRaw("CONCAT(
                 CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
                 Grosir,
@@ -615,16 +622,32 @@ class SalesInvController extends Controller
 
         $data->invoice_number = $data->noNota;
         $data->totalgw = number_format($data->totalgw, 2, '.', ',');
+        $data->totalnw = number_format($data->totalnw, 3, '.', ',');
         $data->carat = $data_item->caratSW;
+        $data->TransDate = Carbon::parse($data->TransDate)->format('d.m.y');
 
-        $qrValue =  $this->Qrformat($data->subgrosir, $data->tempat, $data->pelanggan, $data->LinkID);
-        $qrCode = QrCode::format('png')
-            ->size(200)
-            ->generate($qrValue);
+        if ($data->Grosir == 'SA') {
 
-        $fileName =  $data->noNota . '.png';
+            $qrValue =  $this->Qrformat(
+                $data->subgrosir,
+                $data->tempat,
+                $data->pelanggan,
+                $data->LinkID,
+                $data->TransDate,
+                $data->noNota,
+                $data->totalgw,
+                $data->totalnw,
+                $data_item->caratSW,
 
-        Storage::put('public/qrcode/' . $fileName, $qrCode);
+            );
+            $qrCode = QrCode::format('png')
+                ->size(200)
+                ->generate($qrValue);
+
+            $fileName =  $data->noNota . '.png';
+
+            Storage::put('public/qrcode/' . $fileName, $qrCode);
+        }
 
         $html = view('invoice.cetakBarcode', [
             'data' => $data,
@@ -759,7 +782,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-
+        return $pdf->stream();
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('label/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
@@ -769,9 +792,26 @@ class SalesInvController extends Controller
             'url' => asset('storage/label/' . $nota . '.pdf'),
         ]);
     }
-    public function Qrformat($subgrosir, $tempat, $pelanggan, $id)
+    public function Qrformat($subgrosir, $tempat, $pelanggan, $id, $tgl, $nota, $gw, $nw, $carat)
     {
+
+        if ($tgl != '') {
+            $dt = new DateTime($tgl, new DateTimeZone("UTC"));
+        }
+
         $QRvalue = new stdClass();
+        $QRvalue->np = '';
+        $QRvalue->kt = '';
+        $QRvalue->tb = $dt->format("Y-m-d\TH:i:s.v\Z") ?? '';
+        $QRvalue->nb =  $nota ?? '';
+        $QRvalue->bk = (float)($gw ?? 0.00);
+        $QRvalue->nbl = (float)($nw ?? 0.00);
+        $QRvalue->njl = 'NETTO JUAL';
+        $QRvalue->oi =  0;
+        $QRvalue->pr =   $carat;
+        $QRvalue->ds =  '';
+        $QRvalue->te =  '';
+        $QRvalue->dc =  'SA';
         $QRvalue->it = $id ?? '';
         $QRvalue->nt = $pelanggan ?? '';
         $QRvalue->at = $tempat ?? '';
@@ -999,7 +1039,7 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
-    
+
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',

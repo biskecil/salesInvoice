@@ -284,7 +284,7 @@
             $('#btnCetak').prop('disabled', false);
             $('#btnCetakBarcode').prop('disabled', false);
             $('#btnEdit').prop('disabled', false);
-            $('.buttonForm').prop('disabled', true);
+            $('.buttonForm').prop('disabled', true).hide();
 
             $('#btnEdit').on('click', function() {
 
@@ -321,8 +321,8 @@
                 printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-                // window.open('/sales/cetakBarcode/' + noNota, '_blank');
-                printDirectBarcode(noNota)
+                 window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                //printDirectBarcode(noNota)
             });
 
             $('#cariDataNota').on('keydown', function(e) {

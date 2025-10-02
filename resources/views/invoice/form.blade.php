@@ -43,7 +43,7 @@
             $('#btnCetakParent').prop('disabled', true);
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
-            $('.buttonForm').prop('disabled', true);
+            $('.buttonForm').prop('disabled', true).hide();
 
             $('#cariDataNota').on('keydown', function(e) {
                 if (e.key === 'Enter') {

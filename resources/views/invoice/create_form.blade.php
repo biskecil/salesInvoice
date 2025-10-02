@@ -1274,9 +1274,7 @@
                             confirmButtonText: "OK"
                         })
                         qrInput.value = '';
-
                     }
-
                 }
 
                 // let modal = new bootstrap.Modal(document.getElementById('scanQRModal'));

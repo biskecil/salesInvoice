@@ -81,12 +81,6 @@
             width: 250px;
         }
 
-        .qrcode {
-            width: 20mm;
-            height: 20mm;
-            margin: 0 auto;
-        }
-
         .header-tab {
             margin: 0px !important;
             border: 0 !important;
