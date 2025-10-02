@@ -104,8 +104,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pack/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                        href="/pack/show">
+                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                        href="/pricelist/show">
                         <i class="bi bi-receipt me-2"></i>
                         Pricelist
                     </a>

@@ -35,12 +35,12 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-0">
-                    <h5 class="mb-0 text-center fw-bold ">List Grosir</h5>
+                    <h5 class="mb-0 text-center fw-bold ">List Harga</h5>
                 </div>
                 <div class="card-body">
-                    <a type="button" class="btn btn-primary btn-sm" href="/grosir/create"><i class="fa-solid fa-plus"></i>
+                    <a type="button" class="btn btn-primary btn-sm" href="/pricelist/create"><i class="fa-solid fa-plus"></i>
                         Baru</a>
-                    <div id="grosTable" class="myGrid">
+                    <div id="priceTable" class="myGrid">
                     </div>
                 </div>
             </div>
@@ -50,10 +50,10 @@
     <script>
         $(document).ready(function() {
             $.ajax({
-                url: '/grosir/show_data',
+                url: '/pricelist/show_data',
                 type: 'GET',
                 success: function(data) {
-                    let dataGrid = $("#grosTable").dxDataGrid({
+                    let dataGrid = $("#priceTable").dxDataGrid({
                         dataSource: data.data,
                         keyExpr: "ID",
                         scrollX: true,
@@ -93,36 +93,59 @@
                         columns: [{
                                 dataField: "ID",
                                 dataType: "string",
-                                caption: "ID",
-                                width: "7%",
+                                caption: "No",
+                                width: "5%",
                                 cssClass: "cls"
                             },
                             {
-                                dataField: "SW",
-                                dataType: "string",
-                                caption: "No Nota",
-                                width: "10%",
-                                cssClass: "cls"
-                            },
-                            {
-                                dataField: "Description",
+                                dataField: "nama_customer",
                                 dataType: "string",
                                 caption: "Grosir",
+                                width: "35%",
+                                cssClass: "cls"
+                            },
+                            {
+                                dataField: "nama_produk",
+                                dataType: "string",
+                                caption: "Kategori",
                                 cssClass: "cls",
-                                width: "76%",
+                                width: "15%",
+                            },
+                            {
+                                dataField: "nama_kadar",
+                                dataType: "string",
+                                caption: "Kadar",
+                                cssClass: "cls",
+                                width: "20%",
+                            },
+                            {
+                                dataField: "price_format",
+                                dataType: "string",
+                                caption: "Harga",
+                                cssClass: "cls",
+                                width: "10%",
+                            },
+                            {
+                                dataField: "priceCust_format",
+                                dataType: "string",
+                                caption: "Harga Customer",
+                                cssClass: "cls",
+                                width: "10%",
                             },
                             {
                                 allowReordering: false,
                                 caption: "Aksi",
-                                width: "7%",
+                                width: "5%",
                                 alignment: "center",
                                 cellTemplate: function(container, options) {
-                                    let id = options.data.ID;
+                                    let cus = options.data.Customer;
+                                    let cat = options.data.Category;
+                                    let car = options.data.Carat;
 
-                                    // Tombol Edit (pencil)
                                     $("<a>")
                                         .addClass("btn btn-sm btn-primary me-1")
-                                        .attr("href", "/grosir/edit/" + id)
+                                        .attr("href", "/pricelist/edit/" + cus + "/" +
+                                            cat + "/" + car)
                                         .attr("title", "Edit")
                                         .html('<i class="fa-solid fa-pencil"></i>')
                                         .appendTo(container);

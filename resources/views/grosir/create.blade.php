@@ -35,10 +35,11 @@
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-0">
-                    <h5 class="mb-0 text-center fw-bold ">Form Grosir</h5>
+                    <h5 class="mb-0 text-center fw-bold ">Form Grosir - Tambah</h5>
                 </div>
                 <div class="card-body">
                     <div class="card card-main shadow-sm " id="formCard">
+                        @include('grosir.action')
                         <div class="card-body pt-0">
                             <!-- FORM UTAMA -->
                             <form action="/grosir/store" method="post" id="salesForm" class="mt-4">
@@ -60,15 +61,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="mt-3 text-end">
-                                    <button type="button" id="btnSubmitCreate" class="btn btn-warning btn-sm">
-                                        <i class="fa-solid fa-save"></i> Simpan
-                                    </button>
-                                    <a type="button" class="btn btn-danger btn-sm" id="btnBatal" href="/grosir/show">
-                                        <i class="fa-solid fa-xmark"></i> Batal
-                                    </a>
                                 </div>
                             </form>
                         </div>

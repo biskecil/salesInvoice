@@ -91,6 +91,13 @@
                             allowExportSelectedData: true
                         },
                         columns: [{
+                                dataField: "no",
+                                dataType: "string",
+                                caption: "No",
+                                width: "7%",
+                                cssClass: "cls"
+                            },
+                            {
                                 dataField: "ID",
                                 dataType: "string",
                                 caption: "ID",
@@ -109,7 +116,7 @@
                                 dataType: "string",
                                 caption: "Grosir",
                                 cssClass: "cls",
-                                width: "76%",
+                                width: "69%",
                             },
                             {
                                 allowReordering: false,
