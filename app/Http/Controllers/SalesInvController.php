@@ -16,11 +16,11 @@ use stdClass;
 class SalesInvController extends Controller
 {
     //
-       public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
     }
-    
+
     private function SetReturn($success, $message, $data, $error)
     {
         $data_return = [
@@ -602,10 +602,12 @@ class SalesInvController extends Controller
                     ->selectRaw('SUM(Weight)')
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1),
-            ])
-            ->addSelect([
                 'totalnw' => DB::table('invoiceitem')
                     ->selectRaw('SUM(Netto)')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.id')
+                    ->limit(1),
+                'totalnwcust' => DB::table('invoiceitem')
+                    ->selectRaw('SUM(NettoCust)')
                     ->whereColumn('invoiceitem.IDM', 'invoice.id')
                     ->limit(1),
             ])
@@ -628,6 +630,7 @@ class SalesInvController extends Controller
         $data->invoice_number = $data->noNota;
         $data->totalgw = number_format($data->totalgw, 2, '.', ',');
         $data->totalnw = number_format($data->totalnw, 3, '.', ',');
+        $data->totalnwcust = number_format($data->totalnwcust, 3, '.', ',');
         $data->carat = $data_item->caratSW;
         $data->TransDate = Carbon::parse($data->TransDate)->format('d.m.y');
 
@@ -642,7 +645,9 @@ class SalesInvController extends Controller
                 $data->noNota,
                 $data->totalgw,
                 $data->totalnw,
+                $data->totalnwcust,
                 $data_item->caratSW,
+                $data->Grosir
 
             );
             $qrCode = QrCode::format('png')
@@ -787,7 +792,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-        return $pdf->stream();
+        //return $pdf->stream();
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('label/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
@@ -797,7 +802,7 @@ class SalesInvController extends Controller
             'url' => asset('storage/label/' . $nota . '.pdf'),
         ]);
     }
-    public function Qrformat($subgrosir, $tempat, $pelanggan, $id, $tgl, $nota, $gw, $nw, $carat)
+    public function Qrformat($subgrosir, $tempat, $pelanggan, $id, $tgl, $nota, $gw, $nw, $nwcust, $carat, $grosir)
     {
 
         if ($tgl != '') {
@@ -805,18 +810,18 @@ class SalesInvController extends Controller
         }
 
         $QRvalue = new stdClass();
-        $QRvalue->np = '';
-        $QRvalue->kt = '';
         $QRvalue->tb = $dt->format("Y-m-d\TH:i:s.v\Z") ?? '';
         $QRvalue->nb =  $nota ?? '';
-        $QRvalue->bk = (float)($gw ?? 0.00);
-        $QRvalue->nbl = (float)($nw ?? 0.00);
-        $QRvalue->njl = 'NETTO JUAL';
-        $QRvalue->oi =  0;
+        $QRvalue->bk = (float)($this->parseNumeric($gw) ?? 0.00);
+        $QRvalue->nbl = (float)($this->parseNumeric($nw)  ?? 0.00);
+        $QRvalue->njl =  (float)($this->parseNumeric($nwcust) ?? 0.00);
         $QRvalue->pr =   $carat;
-        $QRvalue->ds =  '';
-        $QRvalue->te =  '';
-        $QRvalue->dc =  'SA';
+        // $QRvalue->np = '';
+        // $QRvalue->kt = '';
+        // $QRvalue->oi =  0;
+        // $QRvalue->ds =  '';
+        // $QRvalue->te =  '';
+        $QRvalue->dc =  $grosir;
         $QRvalue->it = $id ?? '';
         $QRvalue->nt = $pelanggan ?? '';
         $QRvalue->at = $tempat ?? '';

@@ -15,6 +15,8 @@
         .card-main {
             overflow: hidden;
         }
+
+      
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -34,7 +36,7 @@
                    </div>
                </div> --}}
                                 <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Tanggal*</label>
+                                    <label class="form-label col-sm-4 ">Tanggal*</label>
                                     <div class="col-sm-8">
                                         <input type="date" class="form-control" name="transDate" id="transDate">
                                     </div>
@@ -126,14 +128,18 @@
                                             <div class="col-md-6">
                                                 <label for="totalgwall" class="small mb-1">Berat
                                                     Kotor <span class="fw-bold cadar_item"></span></label>
-                                                <input class="form-control fw-bold text-end text-primary" id="totalgwall"
-                                                    type="text" name="total_berat_kotor" readonly>
+                                                <span id="totalgwall"
+                                                    class="form-control fw-bold text-end text-primary d-block">
+                                                    0.00
+                                                </span>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="totalnwall" class="small mb-1">Berat
                                                     Bersih <span class="fw-bold cadar_item"></span></label>
-                                                <input class="form-control fw-bold text-end text-danger" id="totalnwall"
-                                                    type="text" name="total_berat_bersih" readonly>
+                                                <span id="totalnwall"
+                                                    class="form-control fw-bold text-end text-danger d-block">
+                                                    0.00
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -334,8 +340,18 @@
                 emptyInputBehavior: "zero"
             };
 
+            const optionsDec3Default = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 3,
+                minimumValue: "0",
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false,
+                emptyInputBehavior: "zero"
+            };
+
             const antotalgwallInput = new AutoNumeric('#totalgwall', optionsDec2);
-            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3);
+            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3Default);
 
 
             document.addEventListener("keydown", function(e) {
@@ -554,6 +570,16 @@
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
             };
+            const optionsDec3Default = {
+                digitGroupSeparator: ',',
+                decimalCharacter: '.',
+                decimalPlaces: 3,
+                minimumValue: "0",
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false,
+                emptyInputBehavior: "zero"
+            };
+
             AutoNumeric.multiple('.autonumDec2', optionsDec2);
             AutoNumeric.multiple('.autonumDec3', optionsDec3);
             const addRowBtn = document.getElementById("addRow");
@@ -566,7 +592,7 @@
             const totalgwallInput = document.getElementById("totalgwall");
             const totalnwallInput = document.getElementById("totalnwall");
             const antotalgwallInput = new AutoNumeric('#totalgwall', optionsDec2);
-            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3);
+            const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3Default);
             const descInput = document.getElementById("descItem");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");

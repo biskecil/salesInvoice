@@ -156,11 +156,10 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4 d-block">Harga*</label>
                                     <div class="col-sm-8">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="harga"
-                                                id="is_harga_cust" {{ $data->isHarga ? 'checked' : '' }} readonly>
-                                            <label class="form-check-label" for="is_harga_cust">Iya</label>
-                                        </div>
+
+                                        <label class="form-label" for="is_harga_cust">
+                                            {{ $data->isHarga ? 'Iya' : 'Tidak' }}</label>
+
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -324,8 +323,8 @@
                 printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-                window.open('/sales/cetakBarcode/' + noNota, '_blank');
-                //printDirectBarcode(noNota)
+                //  window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                printDirectBarcode(noNota)
             });
 
             $('#cariDataNota').on('keydown', function(e) {

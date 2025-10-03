@@ -6,8 +6,9 @@
     <title>Label Customer</title>
     <style>
         @page {
-            size: 80mm 30mm;
+            size: 81mm 30mm;
             margin: 0;
+            
         }
 
         body {
@@ -58,26 +59,27 @@
 </head>
 
 <body>
-    <table style="width:100%;  padding-top: 1mm;padding-left: 11mm;padding-right: 8mm;" border="0">
+    <table style="width:100%;  padding-top: 1mm;padding-left: 12mm;padding-right: 9mm;" border="0">
         <tr>
             <td style="text-align:left;vertical-align:top">
-                <div class="kode">LG &nbsp;&nbsp;{{ $data->carat }}</div>
+                <div class="kode">LG {{ $data->carat }} &nbsp;{{ $data->Grosir }}</div>
                 <div class="nama">{{ $data->pelanggan }}</div>
                 <div class="area">{{ $data->tempat }}</div>
                 <div>{{ $data->subgrosir }}</div>
                 <div>{{ $data->invoice_number }} / {{ $data->TransDate }}</div>
                 <div>{{ $data->totalgw }} / {{ $data->totalnw }}</div>
             </td>
-            <td style="text-align:center; width:80px;">
-                @if ($data->Grosir == 'SA')
-                    <img src="{{ storage_path('app/public/qrcode/' . $data->invoice_number . '.png') }}" width="60"
-                        height="60">
-                    <div class="kode2">{{ $data->Grosir }}</div>
+            @if ($data->Grosir == 'SA')
+            <td style="text-align:center; width:95px;">
+              
+                    <img src="{{ storage_path('app/public/qrcode/' . $data->invoice_number . '.png') }}" width="80"
+                        height="80">
+                    {{-- <div class="kode2">{{ $data->Grosir }}</div> --}}
                 @else
                 <div style="height:60px"></div>
-                <div class="kode2">{{ $data->Grosir }}</div>
-                @endif
+              
             </td>
+            @endif
         </tr>
     </table>
 </body>

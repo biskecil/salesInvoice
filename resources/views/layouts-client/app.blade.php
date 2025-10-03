@@ -53,6 +53,10 @@
             font-family: 'Poppins', sans-serif;
 
         }
+
+        .font-custom {
+            font-size: 18px;
+        }
     </style>
 </head>
 
@@ -69,98 +73,98 @@
 
         <div class="d-flex align-items-center">
             <div id="datetime" class="me-3"></div>
-             @auth
-            <div class="dropdown">
-                <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#"
-                    role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-circle fs-4 me-1"></i>
-                    <span>{{ Auth::user()->name ?? 'User' }}</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
-                    <li>
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="dropdown-item">Logout</button>
-                        </form>
-                    </li>
-                </ul>
+            @auth
+                <div class="dropdown">
+                    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#"
+                        role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-4 me-1"></i>
+                        <span>{{ Auth::user()->name ?? 'User' }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                @endif
             </div>
-            @endif
         </div>
-    </div>
 
-    {{-- Navbar menu --}}
-    @auth
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
-        <div class="container-fluid">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center  {{ request()->is('/') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
-                        href="/">
-                        <i class="bi bi-receipt me-2"></i>
-                        Nota Tagihan
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                        href="/sales/show">
-                        <i class="bi bi-receipt me-2"></i>
-                        Informasi
-                    </a>
-                </li>
-                {{-- <li class="nav-item">
+        {{-- Navbar menu --}}
+        @auth
+            <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
+                <div class="container-fluid">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center  {{ request()->is('/') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                href="/">
+                                <i class="bi bi-receipt me-2"></i>
+                                Nota Tagihan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                href="/sales/show">
+                                <i class="bi bi-receipt me-2"></i>
+                                Informasi
+                            </a>
+                        </li>
+                        {{-- <li class="nav-item">
                     <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pack/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
                         href="/pack/show">
                         <i class="bi bi-receipt me-2"></i>
                         Kemasan
                     </a>
                 </li> --}}
-                <li class="nav-item">
-                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('grosir/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                        href="/grosir/show">
-                        <i class="bi bi-receipt me-2"></i>
-                        Grosir
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                        href="/pricelist/show">
-                        <i class="bi bi-receipt me-2"></i>
-                        Pricelist
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    @endif
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('grosir/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                href="/grosir/show">
+                                <i class="bi bi-receipt me-2"></i>
+                                Grosir
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                href="/pricelist/show">
+                                <i class="bi bi-receipt me-2"></i>
+                                Pricelist
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            @endif
 
-    {{-- Content --}}
-    <main class="container-fluid py-4">
-        @yield('content')
-    </main>
-    <script src="{{ mix('js/app.js') }}"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
-    <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
-    <script>
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            const formatted = now.toLocaleDateString('en-US', options);
-            document.getElementById('datetime').textContent = formatted;
-        }
+            {{-- Content --}}
+            <main class="container-fluid py-4">
+                @yield('content')
+            </main>
+            <script src="{{ mix('js/app.js') }}"></script>
+            <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
+            <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
+            <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
+            <script>
+                function updateDateTime() {
+                    const now = new Date();
+                    const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    };
+                    const formatted = now.toLocaleDateString('en-US', options);
+                    document.getElementById('datetime').textContent = formatted;
+                }
 
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-    </script>
-</body>
+                updateDateTime();
+                setInterval(updateDateTime, 1000);
+            </script>
+        </body>
 
-</html>
+        </html>
