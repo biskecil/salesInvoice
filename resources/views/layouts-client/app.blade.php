@@ -76,7 +76,7 @@
                     <i class="bi bi-person-circle fs-4 me-1"></i>
                     <span>{{ Auth::user()->name ?? 'User' }}</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
                     <li>
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf
@@ -90,6 +90,7 @@
     </div>
 
     {{-- Navbar menu --}}
+    @auth
     <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
         <div class="container-fluid">
             <ul class="navbar-nav">
@@ -131,6 +132,7 @@
             </ul>
         </div>
     </nav>
+    @endif
 
     {{-- Content --}}
     <main class="container-fluid py-4">

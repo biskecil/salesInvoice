@@ -999,6 +999,7 @@ class SalesInvController extends Controller
                     'Person' => $request->pembeli,
                     'SubGrosir' => $request->sub_grosir,
                     'LinkID' => $request->linkid,
+                    'updated_by' => auth()->user()->username,
                 ]);
 
             $cekOpnameItem = DB::table('invoiceitem')->where('IDM', $id);
@@ -1101,6 +1102,7 @@ class SalesInvController extends Controller
                 'Person' => $request->pembeli,
                 'SubGrosir' => $request->sub_grosir,
                 'LinkID' => $request->linkid,
+                'created_by' => auth()->user()->username,
             ]);
 
             if (count($request->cadar) > 0) {
