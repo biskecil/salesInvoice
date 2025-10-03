@@ -54,8 +54,25 @@
 
         }
 
-        .font-custom {
-            font-size: 18px;
+        /* .font-custom {
+                font-size: 17px;
+            } */
+        .font-custom.form-control {
+            font-size: 17px;
+        }
+
+        /* kalau ingin khusus label */
+        .font-custom.form-label {
+            font-size: 17px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            font-size: 17px;
+        }
+
+        .itemsTable td {
+            font-size: 17px;
+            /* ubah angka sesuai kebutuhan */
         }
     </style>
 </head>

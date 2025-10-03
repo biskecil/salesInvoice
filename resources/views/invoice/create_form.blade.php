@@ -15,8 +15,7 @@
         .card-main {
             overflow: hidden;
         }
-
-      
+        
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -36,7 +35,7 @@
                    </div>
                </div> --}}
                                 <div class="mb-2 row">
-                                    <label class="form-label col-sm-4 ">Tanggal*</label>
+                                    <label class="form-label col-sm-4">Tanggal*</label>
                                     <div class="col-sm-8">
                                         <input type="date" class="form-control" name="transDate" id="transDate">
                                     </div>
@@ -205,7 +204,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: 250px; overflow-y: auto;  ">
-                                    <table class="table table-bordered mb-0" id="itemsTable">
+                                    <table class="table table-bordered mb-0 itemsTable" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
                                                 <th style="width: 10px" class="text-center">No</th>
@@ -579,7 +578,7 @@
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
             };
-
+            
             AutoNumeric.multiple('.autonumDec2', optionsDec2);
             AutoNumeric.multiple('.autonumDec3', optionsDec3);
             const addRowBtn = document.getElementById("addRow");
