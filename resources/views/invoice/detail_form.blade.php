@@ -311,16 +311,16 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-                window.open('/sales/cetakNota/semua/' + noNota, '_blank');
-                // printDirectNota('semua', noNota);
+                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+                printDirectNota('semua', noNota);
             });
             $('#btnCetakCust').on('click', function() {
-                window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
-                //printDirectNota('hargacust', noNota);
+                //window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
+                printDirectNota('hargacust', noNota);
             });
             $('#btnCetakKosong').on('click', function() {
-                window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
-                //printDirectNota('kosong', noNota);
+                //window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
+                printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
                 //window.open('/sales/cetakBarcode/' + noNota, '_blank');

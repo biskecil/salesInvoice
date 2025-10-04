@@ -59,7 +59,7 @@
 </head>
 
 <body>
-    <table style="width:100%;  padding-top: 1mm;padding-left: 12mm;padding-right: 9mm;" border="0">
+    <table style="width:100%;  padding-top: 1mm;padding-left: 10.5mm;padding-right: 9mm;" border="0">
         <tr>
             <td style="text-align:left;vertical-align:top">
                 <div class="kode">LG {{ $data->carat }} &nbsp;{{ $data->Grosir }}</div>
