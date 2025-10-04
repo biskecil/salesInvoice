@@ -10,9 +10,9 @@ class MasterController extends Controller
 {
     public function __construct()
     {
-       $this->middleware(['auth', 'cekrole']);
+        $this->middleware(['auth', 'cekrole']);
     }
-    
+
 
     private function SetReturn($success, $message, $data, $error)
     {
@@ -23,6 +23,18 @@ class MasterController extends Controller
             "error" => $error
         ];
         return $data_return;
+    }
+    private function getContrastYIQ($hexcolor)
+    {
+        $hexcolor = ltrim($hexcolor, '#'); // hapus '#' jika ada
+
+        $r = hexdec(substr($hexcolor, 0, 2));
+        $g = hexdec(substr($hexcolor, 2, 2));
+        $b = hexdec(substr($hexcolor, 4, 2));
+
+        $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+        return ($yiq >= 128) ? '#000' : '#fff';
     }
     function parseNumeric($value)
     {
@@ -43,8 +55,9 @@ class MasterController extends Controller
     public function create_pricelist()
     {
         $caratCustom = [1, 3, 13, 4, 5, 6];
+        $descCustom = ['PGP', 'PCT', 'PAT', 'PCC', 'PGL', 'PLT', 'PST', 'PRB', 'PRT', 'PAV', 'PRV', 'PMN', 'PKP', 'PKR', 'PKL'];
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
-        $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
+        $desc = DB::table('product')->select('ID', 'SW', 'Description')->whereIN('SW', $descCustom)->orderByRaw("FIELD(SW, '" . implode("','", $descCustom) . "')")->get();
         $kadar = DB::table('carat')->select(
             'ID',
             'SW',
@@ -62,7 +75,12 @@ class MasterController extends Controller
         END as color")
         )
             ->whereIN('ID', $caratCustom)
-            ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get();
+            ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get()
+            ->map(function ($item) {
+                $item->textColor = $this->getContrastYIQ($item->color);
+                return $item;
+            });
+
         return view('pricelist.create', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust]);
     }
     public function edit_grosir($id)
