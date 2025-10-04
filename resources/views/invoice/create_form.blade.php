@@ -42,12 +42,12 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Customer*</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
-                                        <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#scanQRModal">
+                                        <button type="button" class="text-sm btn btn-primary d-none" id="qrButton"
+                                            data-bs-toggle="modal" data-bs-target="#scanQRModal">
                                             <i class="fa-solid fa-qrcode"></i>
                                         </button>
                                         <input type="text" class="form-control" id="customer" name="customer"
-                                            style="flex:1">
+                                            placeholder="Nama Customer" style="flex:1">
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -632,6 +632,11 @@
             $('#grosir').on('change', async function() {
                 let id = this.value;
                 if (id) {
+                    if (id == 1246 || id == 991 || id == 1012 || id == 1013) {
+                        $("#qrButton").removeClass("d-none");
+                    } else {
+                        $("#qrButton").addClass("d-none");
+                    }
                     let btn = document.getElementById("btnSubmitCreate");
                     let oldText = btn.innerHTML;
                     btn.disabled = true;
@@ -704,7 +709,15 @@
             });
 
             $('#carat').on('change', function() {
+
                 let newCarat = this.value;
+
+                if (carat === '') {
+                    updateCarat(newCarat, $('#carat'));
+                    carat = newCarat; 
+                    return; 
+                }
+
                 if (newCarat === carat) return;
                 Swal.fire({
                     title: "Konfirmasi Perubahan",
@@ -1399,16 +1412,34 @@
                 if (e.key === "Enter") {
                     e.preventDefault();
                     try {
+                        // let data = JSON.parse(qrInput.value);
+                        // document.getElementById("sub_grosir").value = data.pt;
+                        // document.getElementById("alamat").value = data.at;
+                        // document.getElementById("customer").value = data.nt;
+                        // document.getElementById("linkid").value = data.it;
+                        // let modalEl = document.getElementById('scanQRModal');
+                        // let modal = bootstrap.Modal.getInstance(modalEl);
+                        // modal.hide();
+                        // $('#grosir').val(1246).trigger('change');
+                        // setGrosir = 1246;
+
+
                         let data = JSON.parse(qrInput.value);
-                        document.getElementById("sub_grosir").value = data.pt;
-                        document.getElementById("alamat").value = data.at;
-                        document.getElementById("customer").value = data.nt;
-                        document.getElementById("linkid").value = data.it;
+                        if (setGrosir == 1246) {
+                            document.getElementById("sub_grosir").value = data.pt ?? '';
+                            document.getElementById("alamat").value = data.at ?? '';
+                            document.getElementById("customer").value = data.nt ?? '';
+                            document.getElementById("linkid").value = data.it ?? '';
+                        } else {
+                            document.getElementById("sub_grosir").value = data.ps ?? '';
+                            document.getElementById("customer").value = data.nm ?? '';
+                            document.getElementById("linkid").value = data.id ?? '';
+                        }
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
-                        $('#grosir').val(1246).trigger('change');
-                        setGrosir = 1246;
+                        // $('#grosir').val(1246).trigger('change');
+                        // setGrosir = 1246;
                     } catch (e) {
                         Swal.fire({
                             title: "Info",
