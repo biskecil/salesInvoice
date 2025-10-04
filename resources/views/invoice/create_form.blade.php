@@ -15,7 +15,6 @@
         .card-main {
             overflow: hidden;
         }
-        
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -578,7 +577,7 @@
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
             };
-            
+
             AutoNumeric.multiple('.autonumDec2', optionsDec2);
             AutoNumeric.multiple('.autonumDec3', optionsDec3);
             const addRowBtn = document.getElementById("addRow");
@@ -704,10 +703,31 @@
                 }
             });
 
+            $('#carat').on('change', function() {
+                let newCarat = this.value;
+                if (newCarat === carat) return;
+                Swal.fire({
+                    title: "Konfirmasi Perubahan",
+                    html: "Kadar diubah ke <b>" + newCarat +
+                        "</b>,<br>Lanjutkan perubahan?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        updateCarat(newCarat, $('#carat'));
+                        carat = newCarat;
+                    } else {
+                        $('#carat').val(carat).trigger('change');
+                    }
+                });
 
-            $('#carat').on('change', async function() {
-                carat = this.value;
-                carat_bgcolor = $(this).find(':selected').data('color');
+            });
+
+            async function updateCarat(carat, $select) {
+
+                carat_bgcolor = $select.find(':selected').data('color');
                 carat_textcolor = getContrastYIQ(carat_bgcolor);
                 document.querySelectorAll(".cadar_item").forEach(el => {
                     el.value = carat;
@@ -724,7 +744,6 @@
                 btn.disabled = true;
                 btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
                 let promises = [];
-
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
                     let categorySelect = row.querySelector("select[name='category[]']");
@@ -773,16 +792,94 @@
                             const an = AutoNumeric.getAutoNumericElement(el);
                             totalnwall += an.getNumber() || 0;
                         });
-
                         antotalnwallInput.set(totalnwall);
                     });
                     promises.push(p);
                 });
                 await Promise.all(promises);
-
                 btn.disabled = false;
                 btn.innerHTML = oldText;
-            });
+            }
+
+
+            // $('#carat').on('change', async function() {
+            //     carat = this.value;
+            //     carat_bgcolor = $(this).find(':selected').data('color');
+            //     carat_textcolor = getContrastYIQ(carat_bgcolor);
+            //     document.querySelectorAll(".cadar_item").forEach(el => {
+            //         el.value = carat;
+            //         el.textContent = carat;
+            //     })
+            //     document.querySelectorAll(".cadar_text").forEach(el => {
+            //         el.style.backgroundColor = carat_bgcolor
+            //         el.style.color = carat_textcolor
+            //         el.textContent = carat;
+            //     })
+
+            //     let btn = document.getElementById("btnSubmitCreate");
+            //     let oldText = btn.innerHTML;
+            //     btn.disabled = true;
+            //     btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
+            //     let promises = [];
+
+
+            //     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+            //         let categorySelect = row.querySelector("select[name='category[]']");
+            //         let priceInput = row.querySelector(".price");
+            //         let priceCustInput = row.querySelector(".pricecust");
+            //         let brutoInput = row.querySelector(".wbruto");
+            //         let netInput = row.querySelector(".wnet");
+            //         let netInputCust = row.querySelector('.wnetocust');
+
+            //         let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+            //         let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+            //         let anNet = AutoNumeric.getAutoNumericElement(netInput);
+            //         let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+            //         let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+
+            //         if (!categorySelect) return;
+
+            //         let selectedCat = categorySelect.value;
+
+
+            //         let p = fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
+            //             if (priceInput) anPrice.set(hasil.price);
+            //             if (priceCustInput) {
+            //                 let newVal = hasil.priceCust || 0;
+            //                 if (newVal !== 0) {
+            //                     anPriceCust.set(newVal);
+            //                 }
+            //             }
+
+            //             if (brutoInput && priceCustInput) {
+            //                 let bruto = anBruto.getNumber() || 0;
+            //                 let priceCust = anPriceCust.getNumber() || 0;
+            //                 let netCust = new Decimal(bruto).times(priceCust);
+            //                 anNetCust.set(netCust);
+            //             }
+
+            //             if (brutoInput && priceInput && netInput) {
+            //                 let bruto = anBruto.getNumber() || 0;
+            //                 let price = anPrice.getNumber() || 0;
+            //                 let net = new Decimal(bruto).times(price);
+            //                 anNet.set(net);
+            //             }
+            //             let totalnwall = 0;
+            //             document.querySelectorAll(".wnet").forEach(el => {
+            //                 const an = AutoNumeric.getAutoNumericElement(el);
+            //                 totalnwall += an.getNumber() || 0;
+            //             });
+
+            //             antotalnwallInput.set(totalnwall);
+            //         });
+            //         promises.push(p);
+            //     });
+            //     await Promise.all(promises);
+
+            //     btn.disabled = false;
+            //     btn.innerHTML = oldText;
+            // });
 
 
             isHargaCheck.addEventListener("change", function() {

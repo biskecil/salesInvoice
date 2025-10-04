@@ -323,8 +323,8 @@
                 //printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-                window.open('/sales/cetakBarcode/' + noNota, '_blank');
-                //printDirectBarcode(noNota)
+                //window.open('/sales/cetakBarcode/' + noNota, '_blank');
+               printDirectBarcode(noNota)
             });
 
             $('#cariDataNota').on('keydown', function(e) {
