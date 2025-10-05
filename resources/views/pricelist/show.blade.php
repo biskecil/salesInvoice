@@ -38,8 +38,8 @@
                     <h5 class="mb-0 text-center fw-bold ">List Harga</h5>
                 </div>
                 <div class="card-body">
-                    <a type="button" class="btn btn-primary btn-sm" href="/pricelist/create"><i class="fa-solid fa-plus"></i>
-                        Baru</a>
+                    <a type="button" class="btn btn-primary btn-sm" href="/pricelist/create"><i class="fa-solid fa-refresh"></i>
+                        Update Semua Harga</a>
                     <div id="priceTable" class="myGrid">
                     </div>
                 </div>

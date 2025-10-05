@@ -49,7 +49,7 @@
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-0">
-                    <h5 class="mb-0 text-center fw-bold ">Form Harga - Tambah</h5>
+                    <h5 class="mb-0 text-center fw-bold ">Form Harga - Edit</h5>
                 </div>
                 <div class="card-body">
                     <div class="card card-main shadow-sm " id="formCard">
@@ -64,11 +64,12 @@
                                         <div class="mb-2 row align-items-center">
                                             <label class="form-label col-sm-4 text-end">Grosir</label>
                                             <div class="col-sm-8">
-                                                <select class="form-control select2" name="customer">
+                                                <select class="form-control select2" name="grosir" id="grosir">
                                                     <option value="">Pilih Data</option>
                                                     @foreach ($cust as $d)
                                                         <option value="{{ $d->ID }}">{{ $d->SW }}
-                                                            ({{ $d->Description }})</option>
+                                                            ({{ $d->Description }})
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -80,13 +81,13 @@
 
 
                                 <div class="card mt-1 shadow-sm mx-4 ">
-                                    <div class="loading-overlay ">
+                                    <div class="loading-overlay d-none ">
                                         <div class="spinner-border text-primary" role="status">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
                                     </div>
                                     <div class="card-body p-0">
-                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;  ">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;overflow-x: auto; ">
                                             <table class="table table-bordered mb-0 itemsTable" id="itemsTable"
                                                 style="font-size: 11px;">
                                                 <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
@@ -121,13 +122,15 @@
                                                                     @if ($d->SW == 'PRT' || $d->SW == 'PRV') style="background-color: #cce5ff;" @endif>
                                                                     <input type="text" class="form-control autonumDec3"
                                                                         style="padding: 2px 4px; height: 26px;"
-                                                                        id="input_{{ $d->SW }}_{{ $k->SW }}">
+                                                                        id="input_{{ $d->SW }}_{{ $k->SW }}"
+                                                                        name="input_{{ $d->ID }}_{{ $k->ID }}">
                                                                 </td>
                                                                 <td
                                                                     @if ($d->SW == 'PRT' || $d->SW == 'PRV') style="background-color: #cce5ff;" @endif>
                                                                     <input type="text" class="form-control autonumDec3"
                                                                         style="padding: 2px 4px; height: 26px;"
-                                                                        id="inputCust_{{ $d->SW }}_{{ $k->SW }}">
+                                                                        id="inputCust_{{ $d->SW }}_{{ $k->SW }}"
+                                                                        name="inputCust_{{ $d->ID }}_{{ $k->ID }}">
                                                                 </td>
                                                             @endforeach
                                                         </tr>
@@ -164,6 +167,65 @@
                         AutoNumeric.multiple('.autonumDec3', optionsDec3);
                         loadSelect2();
 
+                        async function fetchPrice(grosirId) {
+                            try {
+                                let res = await fetch(
+                                    `/pricelist/getDataAll?grosir=${grosirId}`
+                                );
+                                let data = await res.json();
+
+                                return data ?? 0;
+                            } catch (err) {
+                                console.error("Fetch gagal");
+                                return 0;
+                            }
+                        }
+
+                        $('#grosir').on('change', async function() {
+                            let id = this.value;
+                            if (id) {
+                                let btn = document.getElementById("btnSubmitCreate");
+                                let oldText = btn.innerHTML;
+                                btn.disabled = true;
+                                btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading...`;
+                                $('.loading-overlay').removeClass('d-none');
+                                try {
+                                    $('.autonumDec3').each(function() {
+                                        const an = AutoNumeric.getAutoNumericElement(this);
+                                        if (an) an.set('');
+                                    });
+
+                                    const hasil = await fetchPrice(id);
+                                    console.log(hasil);
+
+                                    Object.keys(hasil).forEach(key => {
+                                        if (key.endsWith('_Cust')) {
+                                            const baseKey = key.replace('_Cust', '');
+                                            el = $('#inputCust_' + baseKey);
+                                        } else {
+                                            el = $('#input_' + key);
+                                        }
+
+                                        if (!el.length) return;
+
+                                        const anInput = AutoNumeric.getAutoNumericElement(el[0]);
+                                        const value = hasil[key];
+
+                                        if (anInput) {
+                                            anInput.set(value ?? '');
+                                        } else {
+                                            el.val(value ?? '');
+                                        }
+                                    });
+                                } catch (error) {
+                                    console.error('Gagal update harga:', error);
+                                } finally {
+                                    $('.loading-overlay').addClass('d-none');
+                                    btn.disabled = false;
+                                    btn.innerHTML = oldText;
+                                }
+                            }
+                        });
 
                         // $(document).on('input', 'table input.autonumDec3', function() {
                         //     const anElement = AutoNumeric.getAutoNumericElement(this);
@@ -187,8 +249,10 @@
                             // hanya kalau input di baris pertama
                             if (rowIndex === 0) {
                                 $('#itemsTable tbody tr').each(function() {
-                                    const input = $(this).find('td').eq(colIndex).find('input.autonumDec3');
-                                    const anInput = AutoNumeric.getAutoNumericElement(input[0]);
+                                    const input = $(this).find('td').eq(colIndex).find(
+                                        'input.autonumDec3');
+                                    const anInput = AutoNumeric.getAutoNumericElement(input[
+                                        0]);
                                     let id = input.attr('id') || '';
                                     const match = id.match(/^(?:input|inputCust)_(\w+)_/);
 
@@ -203,7 +267,8 @@
                                             targetVal += 0.5;
                                         }
 
-                                        anInput.set(targetVal); // set nilai dengan AutoNumeric
+                                        anInput.set(
+                                            targetVal); // set nilai dengan AutoNumeric
                                     }
                                 });
                             }
@@ -227,7 +292,11 @@
                                     confirmButtonText: "OK"
                                 }).then((result) => {
                                     if (result.isConfirmed || result.isDismissed) {
-                                        // window.location.href = '/sales/detail/' + response.data;
+                                        let btn = document.getElementById("btnSubmitCreate");
+                                        let oldText = btn.innerHTML;
+                                        btn.disabled = true;
+                                        btn.innerHTML =
+                                            `<span class="spinner-border spinner-border-sm"></span> Loading...`;
                                         window.location.reload();
                                     }
                                 });
@@ -270,50 +339,7 @@
                         $('.select2').select2({
                             theme: 'bootstrap-5',
                             width: '100%',
-                            templateResult: function(data) {
-                                if (!data.id) return data.text;
-
-                                var color = $(data.element).data('color');
-                                var $result = $('<span></span>').text(data.text);
-
-                                if (color) {
-                                    var textColor = getContrastYIQ(color);
-                                    $result.css({
-                                        'background-color': color,
-                                        'color': textColor,
-                                        'padding': '2px 6px',
-                                        'border-radius': '4px'
-                                    });
-                                }
-                                return $result;
-                            },
-                            templateSelection: function(data) {
-                                if (!data.id) return data.text;
-
-                                var color = $(data.element).data('color');
-                                var $result = $('<span></span>').text(data.text);
-
-                                if (color) {
-                                    var textColor = getContrastYIQ(color);
-                                    $result.css({
-                                        'background-color': color,
-                                        'color': textColor,
-                                        'padding': '2px 6px',
-                                        'border-radius': '4px'
-                                    });
-                                }
-                                return $result;
-                            }
                         });
-                    }
-
-                    function getContrastYIQ(hexcolor) {
-                        hexcolor = hexcolor.replace('#', '');
-                        var r = parseInt(hexcolor.substr(0, 2), 16);
-                        var g = parseInt(hexcolor.substr(2, 2), 16);
-                        var b = parseInt(hexcolor.substr(4, 2), 16);
-                        var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-                        return (yiq >= 128) ? '#000' : '#fff';
                     }
                 </script>
             @endsection

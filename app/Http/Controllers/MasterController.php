@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
 class MasterController extends Controller
 {
     public function __construct()
@@ -209,15 +209,12 @@ class MasterController extends Controller
     }
     public function store_pricelist(Request $request)
     {
+       
         try {
             //code...
             DB::beginTransaction();
             $validated = Validator::make($request->all(), [
-                'carat'    => 'required',
-                'category' => 'required',
-                'customer' => 'required',
-                'pricecust' => 'required',
-                'price' => 'required',
+                'grosir' => 'required',
             ]);
 
 
@@ -226,29 +223,58 @@ class MasterController extends Controller
                 return response()->json($data, 422);
             }
 
+            
+            $customer = $request->grosir;
+            foreach ($request->all() as $key => $value) {     
+                      
+                if (Str::startsWith($key, 'input_') && !Str::startsWith($key, 'inputCust_')) {
+                    [, $category, $carat] = explode('_', $key);
+                   
 
-            $cekPrice = DB::table('pricelist')
-                ->where([
-                    'Customer' =>  $request->customer,
-                    'Category' =>  $request->category,
-                    'Carat' =>  $request->carat,
-                    'Currency' =>  40,
-                ])->count();
-
-            if ($cekPrice > 0) {
-                $data = $this->SetReturn(true, 'Pricelist sudah ada', null, null);
-                return response()->json($data, 422);
+                    // ambil pasangan inputCust_61_1 kalau ada
+                    $nocustKey = 'input_' . $category . '_' . $carat;
+                    $custKey = 'inputCust_' . $category . '_' . $carat;
+                    $priceCust = $request->input($custKey);
+                    $price = $request->input($nocustKey);
+ 
+                    // insert/update ke DB
+                    DB::table('pricelist')->updateOrInsert(
+                        [
+                            'Customer' => $customer,
+                            'Category' => $category,
+                            'Carat'    => $carat,
+                            'Currency' => 40
+                        ],
+                        [
+                            'Price'      =>  $this->parseNumeric($price),
+                            'PriceCust'  => $priceCust !== null ?  $this->parseNumeric($priceCust) : null,
+                        ]
+                    );
+                }
             }
 
+            // $cekPrice = DB::table('pricelist')
+            //     ->where([
+            //         'Customer' =>  $request->customer,
+            //         'Category' =>  $request->category,
+            //         'Carat' =>  $request->carat,
+            //         'Currency' =>  40,
+            //     ])->count();
 
-            DB::table('pricelist')->insert([
-                'Customer' => $request->customer,
-                'Category' => $request->category,
-                'Carat' => $request->carat,
-                'Currency' => 40,
-                'Price' =>  $this->parseNumeric($request->price),
-                'PriceCust' => $this->parseNumeric($request->pricecust),
-            ]);
+            // if ($cekPrice > 0) {
+            //     $data = $this->SetReturn(true, 'Pricelist sudah ada', null, null);
+            //     return response()->json($data, 422);
+            // }
+
+
+            // DB::table('pricelist')->insert([
+            //     'Customer' => $request->customer,
+            //     'Category' => $request->category,
+            //     'Carat' => $request->carat,
+            //     'Currency' => 40,
+            //     'Price' =>  $this->parseNumeric($request->price),
+            //     'PriceCust' => $this->parseNumeric($request->pricecust),
+            // ]);
 
 
             DB::commit();
@@ -301,6 +327,42 @@ class MasterController extends Controller
             return response()->json($data, 500);
         }
     }
+    public function show_pricelist_grosir_data(Request $request)
+    {
+        $caratCustom = [1, 3, 13, 4, 5, 6];
+        $data = DB::table('pricelist')
+            ->select(
+                'pricelist.*',
+                'customer.Description as nama_customer',
+                'product.SW as nama_produk',
+                'carat.SW as nama_kadar',
+            )
+            ->join('customer', 'customer.ID', '=', 'pricelist.Customer')
+            ->join('product', 'product.ID', '=', 'pricelist.Category')
+            ->join('carat', 'carat.ID', '=', 'pricelist.Carat')
+            ->where('Currency', 40)
+            ->where('Customer', $request->grosir)
+            ->whereIN('carat', $caratCustom)
+            ->orderBy('customer.Description', 'ASC')
+            ->get();
+        // ->map(function ($item, $index) {
+        //     $item->ID = $index + 1;
+        //     $item->price_format = number_format($item->Price, 2, '.', ',');
+        //     $item->priceCust_format = number_format($item->PriceCust, 2, '.', ',');
+        //     return $item;
+        // });
+
+
+        $result = [];
+        foreach ($data as $item) {
+            $key = $item->nama_produk . '_' . $item->nama_kadar;
+            $result[$key] = $item->Price;
+            $result[$key . '_Cust'] = $item->PriceCust;
+        }
+
+        return response()->json($result);
+    }
+
     public function show_pricelist_data()
     {
         $caratCustom = [1, 3, 13, 4, 5, 6];
@@ -309,7 +371,7 @@ class MasterController extends Controller
                 'pricelist.*',
                 'customer.Description as nama_customer',
                 'product.Description as nama_produk',
-                'carat.Description as nama_kadar',
+                'carat.SW as nama_kadar',
             )
             ->join('customer', 'customer.ID', '=', 'pricelist.Customer')
             ->join('product', 'product.ID', '=', 'pricelist.Category')
