@@ -505,7 +505,7 @@
                         }
                     });
                 },
-                minLength: 2
+                minLength: 1
             });
 
             $("#btnSubmitCreate").on("click", function(e) {

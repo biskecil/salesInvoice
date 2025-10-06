@@ -28,7 +28,7 @@
         }
 
         .kode {
-            font-size: 21px;
+            font-size: 19px;
             font-weight: bold;
         }
 
@@ -69,7 +69,7 @@
                 <div>{{ $data->invoice_number }} / {{ $data->TransDate }}</div>
                 <div>{{ $data->totalgw }} / {{ $data->totalnw }}</div>
             </td>
-            @if ($data->Grosir == 'SA')
+            @if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS')
             <td style="text-align:center; width:95px;">
               
                     <img src="{{ storage_path('app/public/qrcode/' . $data->invoice_number . '.png') }}" width="80"
