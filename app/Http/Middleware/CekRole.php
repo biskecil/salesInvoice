@@ -23,7 +23,7 @@ class CekRole
         }
 
         // Cek role user
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->Role !== 'administrator') {
             return redirect('/');
         }
 

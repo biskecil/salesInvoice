@@ -60,5 +60,6 @@ Route::prefix('sales')->group(function () {
     Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
 });
 
-Auth::routes();
+// Auth::routes();
+Auth::routes(['register' => false]);
 

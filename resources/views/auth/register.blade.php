@@ -15,17 +15,7 @@
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
-                    {{-- Email --}}
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nama</label>
-                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
-                            name="name" value="{{ old('name') }}" required autofocus
-                            placeholder="Masukkan name">
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
+        
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input id="username" type="text" class="form-control @error('username') is-invalid @enderror"
@@ -36,15 +26,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                            name="email" value="{{ old('email') }}" required autofocus
-                            placeholder="Masukkan email">
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+      
 
                     {{-- Password --}}
                     <div class="mb-3">
