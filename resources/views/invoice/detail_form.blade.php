@@ -311,7 +311,7 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+               //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
                 printDirectNota('semua', noNota);
             });
             $('#btnCetakCust').on('click', function() {

@@ -634,7 +634,8 @@ class SalesInvController extends Controller
         $data->carat = $data_item->caratSW;
         $data->TransDate = Carbon::parse($data->TransDate)->format('d.m.y');
 
-        if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
+        // if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
+        if ($data->Grosir == 'SA') {
 
             $qrValue =  $this->Qrformat(
                 $data->subgrosir,
@@ -674,7 +675,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-         //return $pdf->stream('filename.pdf');
+       //  return $pdf->stream('filename.pdf');
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         return response()->json([

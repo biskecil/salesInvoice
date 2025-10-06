@@ -10,7 +10,7 @@ class MasterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'cekrole']);
+        $this->middleware(['auth']);
     }
 
 
@@ -133,6 +133,11 @@ class MasterController extends Controller
                 'description' => 'required',
             ]);
 
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
             $getSW =   DB::table('customer')
                 ->where('ID', $request->id)->first();
 
@@ -181,6 +186,10 @@ class MasterController extends Controller
                 'description' => 'required',
             ]);
 
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
 
             if ($validated->fails()) {
                 $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
@@ -220,6 +229,11 @@ class MasterController extends Controller
 
             if ($validated->fails()) {
                 $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
                 return response()->json($data, 422);
             }
 
@@ -300,6 +314,10 @@ class MasterController extends Controller
                 'price' => 'required',
             ]);
 
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
 
             if ($validated->fails()) {
                 $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);

@@ -87,7 +87,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-0">
-                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;overflow-x: auto; ">
+                                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;overflow-x: auto; ">
                                             <table class="table table-bordered mb-0 itemsTable" id="itemsTable"
                                                 style="font-size: 11px;">
                                                 <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">

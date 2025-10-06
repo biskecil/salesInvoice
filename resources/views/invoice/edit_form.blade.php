@@ -522,7 +522,8 @@
             });
 
             $("#btnSubmitCreate").on("click", function(e) {
-                e.preventDefault(); // prevent normal form submit
+                e.preventDefault(); 
+                $('.buttonForm').prop('disabled', true);
                 $.ajax({
                     url: $("#salesForm").attr("action"),
                     type: "POST",
@@ -556,7 +557,7 @@
                                 confirmButtonText: "OK"
                             });
                         }
-
+                        $('.buttonForm').prop('disabled', false);
                     }
                 });
             });

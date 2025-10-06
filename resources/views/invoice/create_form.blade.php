@@ -42,7 +42,7 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Customer*</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
-                                        <button type="button" class="text-sm btn btn-primary d-none" id="qrButton"
+                                        <button type="button" class="text-sm btn btn-primary " id="qrButton"
                                             data-bs-toggle="modal" data-bs-target="#scanQRModal">
                                             <i class="fa-solid fa-qrcode"></i>
                                         </button>
@@ -509,8 +509,8 @@
             });
 
             $("#btnSubmitCreate").on("click", function(e) {
-                e.preventDefault(); // prevent normal form submit
-
+                e.preventDefault();
+                $('.buttonForm').prop('disabled', true);
                 $.ajax({
                     url: $("#salesForm").attr("action"),
                     type: "POST",
@@ -543,7 +543,7 @@
                                 confirmButtonText: "OK"
                             });
                         }
-
+                        $('.buttonForm').prop('disabled', false);
                     }
                 });
             });
@@ -714,8 +714,8 @@
 
                 if (carat === '') {
                     updateCarat(newCarat, $('#carat'));
-                    carat = newCarat; 
-                    return; 
+                    carat = newCarat;
+                    return;
                 }
 
                 if (newCarat === carat) return;
@@ -1412,34 +1412,37 @@
                 if (e.key === "Enter") {
                     e.preventDefault();
                     try {
-                        // let data = JSON.parse(qrInput.value);
+                        let data = JSON.parse(qrInput.value);
                         // document.getElementById("sub_grosir").value = data.pt;
                         // document.getElementById("alamat").value = data.at;
                         // document.getElementById("customer").value = data.nt;
                         // document.getElementById("linkid").value = data.it;
-                        // let modalEl = document.getElementById('scanQRModal');
-                        // let modal = bootstrap.Modal.getInstance(modalEl);
-                        // modal.hide();
-                        // $('#grosir').val(1246).trigger('change');
-                        // setGrosir = 1246;
-
-
-                        let data = JSON.parse(qrInput.value);
-                        if (setGrosir == 1246) {
-                            document.getElementById("sub_grosir").value = data.pt ?? '';
-                            document.getElementById("alamat").value = data.at ?? '';
-                            document.getElementById("customer").value = data.nt ?? '';
-                            document.getElementById("linkid").value = data.it ?? '';
-                        } else {
-                            document.getElementById("sub_grosir").value = data.ps ?? '';
-                            document.getElementById("customer").value = data.nm ?? '';
-                            document.getElementById("linkid").value = data.id ?? '';
-                        }
+                        document.getElementById("sub_grosir").value = data.pt ?? '';
+                        document.getElementById("alamat").value = data.at ?? '';
+                        document.getElementById("customer").value = data.nt ?? '';
+                        document.getElementById("linkid").value = data.it ?? '';
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
-                        // $('#grosir').val(1246).trigger('change');
-                        // setGrosir = 1246;
+                        $('#grosir').val(1246).trigger('change');
+                        setGrosir = 1246;
+
+
+                        // let data = JSON.parse(qrInput.value);
+                        // if (setGrosir == 1246) {
+                        //     document.getElementById("sub_grosir").value = data.pt ?? '';
+                        //     document.getElementById("alamat").value = data.at ?? '';
+                        //     document.getElementById("customer").value = data.nt ?? '';
+                        //     document.getElementById("linkid").value = data.it ?? '';
+                        // } else {
+                        //     document.getElementById("sub_grosir").value = data.ps ?? '';
+                        //     document.getElementById("customer").value = data.nm ?? '';
+                        //     document.getElementById("linkid").value = data.id ?? '';
+                        // }
+                        // let modalEl = document.getElementById('scanQRModal');
+                        // let modal = bootstrap.Modal.getInstance(modalEl);
+                        // modal.hide();
+
                     } catch (e) {
                         Swal.fire({
                             title: "Info",
