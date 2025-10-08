@@ -109,7 +109,6 @@
                 @endif
             </div>
         </div>
-
         {{-- Navbar menu --}}
         @auth
             <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
