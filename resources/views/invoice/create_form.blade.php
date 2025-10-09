@@ -67,7 +67,8 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Phone</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Phone" name="phone">
+                                        <input type="text" class="form-control" placeholder="Phone" name="phone"
+                                            id="phone">
                                     </div>
                                 </div>
 
@@ -632,11 +633,11 @@
             $('#grosir').on('change', async function() {
                 let id = this.value;
                 if (id) {
-                    if (id == 1246 || id == 991 || id == 1012 || id == 1013) {
-                        $("#qrButton").removeClass("d-none");
-                    } else {
-                        $("#qrButton").addClass("d-none");
-                    }
+                    // if (id == 1246 || id == 991 || id == 1012 || id == 1013) {
+                    //     $("#qrButton").removeClass("d-none");
+                    // } else {
+                    //     $("#qrButton").addClass("d-none");
+                    // }
                     let btn = document.getElementById("btnSubmitCreate");
                     let oldText = btn.innerHTML;
                     btn.disabled = true;
@@ -702,10 +703,7 @@
                     btn.disabled = false;
                     btn.innerHTML = oldText;
 
-                } else {
-                    document.getElementById("customer").value = "";
-                    setGrosir = '';
-                }
+                } 
             });
 
             $('#carat').on('change', function() {
@@ -1421,11 +1419,20 @@
                         document.getElementById("alamat").value = data.at ?? '';
                         document.getElementById("customer").value = data.nt ?? '';
                         document.getElementById("linkid").value = data.it ?? '';
+                        document.getElementById("phone").value = data.np ?? '';
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
-                        $('#grosir').val(1246).trigger('change');
-                        setGrosir = 1246;
+                        console.log(data.nt)
+
+                        if (data.ws) {
+                            $('#grosir').val('').trigger('change');
+                            setGrosir = '';
+                        } else {
+                            $('#grosir').val(1246).trigger('change');
+                            setGrosir = 1246;
+                        }
+
 
 
                         // let data = JSON.parse(qrInput.value);

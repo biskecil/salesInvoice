@@ -687,6 +687,14 @@ class SalesInvController extends Controller
         ]);
    
         //SAVE STORAGE
+        // Storage::disk('pameran_nota')->put($nota . '.pdf', $hasilpdf);
+        // return response()->json([
+        //     'status' => 200,
+        //     'html' => $returnHTML,
+        //     'id' => $nota,
+        //     'url' =>  Storage::disk('pameran_nota')->url($nota . '.pdf'),
+        //     // 'url' => asset('storage/nota/' . $nota . '.pdf'),
+        // ]);
         // $hasilpdf = $pdf->output();
         // Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         // return response()->json([
@@ -1086,7 +1094,7 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
-
+       
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',
