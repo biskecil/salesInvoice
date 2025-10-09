@@ -90,13 +90,48 @@
                             fileName: "Penerimaan Barang",
                             allowExportSelectedData: true
                         },
+                        toolbar: {
+                            items: [{
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        icon: "refresh",
+                                        text: "Refresh Data",
+                                        onClick: function() {
+                                            $.ajax({
+                                                url: '/sales/getData/NotaAll',
+                                                method: "GET",
+                                                success: function(data) {
+                                                    let grid = $(
+                                                            "#invTable")
+                                                        .dxDataGrid(
+                                                            "instance");
+                                                    grid.option(
+                                                        "dataSource",
+                                                        data.data
+                                                    ); 
+                                                },
+                                                error: function(err) {
+                                                    console.error(
+                                                        "Failed to fetch data:",
+                                                        err);
+                                                }
+                                            });
+                                        }
+                                    }
+                                },
+                                "searchPanel",
+                                "exportButton"
+                            ]
+                        },
                         columns: [{
                                 dataField: "TransDate",
                                 dataType: "date",
                                 caption: "Tanggal",
                                 cssClass: "cls",
                                 format: "dd/MM/yyyy",
-                                width: "6%"
+                                width: "6%",
+                                groupIndex: 0
                             },
                             {
                                 dataField: "IDM",
