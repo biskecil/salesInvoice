@@ -365,9 +365,11 @@
                     fetch('/sales/cetakNota/' + jenis + '/' + data)
                         .then(res => res.json())
                         .then(res => {
+                            const cleanBase64 = res.url.replace(/^data:application\/pdf;base64,/, '');
                             printService.submit({
-                                type: 'Nota',
-                                url: res.url
+                                'type': 'Nota',
+                                'url': 'file.pdf',
+                                'file_content': cleanBase64
                             });
                         });
                     console.log("Berhasil");

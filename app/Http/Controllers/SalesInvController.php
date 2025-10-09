@@ -677,15 +677,24 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-        //  return $pdf->stream('filename.pdf');
-        $hasilpdf = $pdf->output();
-        Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
+         //return $pdf->stream('filename.pdf');
+
+        $pdfContent = $pdf->output();
+        $pdfBase64 = base64_encode($pdfContent);
+
         return response()->json([
-            'status' => 200,
-            'html' => $returnHTML,
-            'id' => $nota,
-            'url' => asset('storage/nota/' . $nota . '.pdf'),
+            'url' => 'data:application/pdf;base64,' . $pdfBase64
         ]);
+   
+        //SAVE STORAGE
+        // $hasilpdf = $pdf->output();
+        // Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
+        // return response()->json([
+        //     'status' => 200,
+        //     'html' => $returnHTML,
+        //     'id' => $nota,
+        //     'url' => asset('storage/nota/' . $nota . '.pdf'),
+        // ]);
     }
     public function cetakDataNotaPack(Request $request)
     {
@@ -795,18 +804,18 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-         //PREVIEW
-        return $pdf->stream();
-      
+        //PREVIEW
+        // return $pdf->stream();
 
 
-        $pdfContent = $pdf->output(); 
+
+        $pdfContent = $pdf->output();
         $pdfBase64 = base64_encode($pdfContent);
 
         return response()->json([
             'url' => 'data:application/pdf;base64,' . $pdfBase64
         ]);
-        
+
 
         //SAVE STORAGE
         // Storage::disk('pameran_label')->put($nota . '.pdf', $hasilpdf);
