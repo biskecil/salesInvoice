@@ -8,7 +8,7 @@
         @page {
             size: 81mm 30mm;
             margin: 0;
-            
+
         }
 
         body {
@@ -69,17 +69,19 @@
                 <div>{{ $data->invoice_number }} / {{ $data->TransDate }}</div>
                 <div>{{ $data->totalgw }} / {{ $data->totalnw }}</div>
             </td>
-            @if ($data->Grosir == 'SA')
-            {{-- @if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') --}}
-            <td style="text-align:center; width:95px;">
-              
+            @if ($qr)
+                {{-- @if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') --}}
+                <td style="text-align:center; width:95px;">
+
+                    <img src="{{ $qr }}" width="80" height="80">
+                    {{--               
                     <img src="{{ storage_path('app/public/qrcode/' . $data->invoice_number . '.png') }}" width="80"
-                        height="80">
+                        height="80"> --}}
                     {{-- <div class="kode2">{{ $data->Grosir }}</div> --}}
                 @else
-                <div style="height:60px"></div>
-              
-            </td>
+                    <div style="height:60px"></div>
+
+                </td>
             @endif
         </tr>
     </table>

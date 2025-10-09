@@ -311,7 +311,7 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-               //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
                 printDirectNota('semua', noNota);
             });
             $('#btnCetakCust').on('click', function() {
@@ -323,8 +323,8 @@
                 printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-              //  window.open('/sales/cetakBarcode/' + noNota, '_blank');
-               printDirectBarcode(noNota)
+                //window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                printDirectBarcode(noNota)
             });
 
             $('#cariDataNota').on('keydown', function(e) {
@@ -343,9 +343,11 @@
                     fetch('/sales/cetakBarcode/' + data)
                         .then(res => res.json())
                         .then(res => {
+                            const cleanBase64 = res.url.replace(/^data:application\/pdf;base64,/, '');
                             printService.submit({
-                                type: 'Barcode',
-                                url: res.url
+                                'type': 'Barcode',
+                                'url': 'file.pdf',
+                                'file_content': cleanBase64
                             });
                         });
                     console.log("Berhasil");

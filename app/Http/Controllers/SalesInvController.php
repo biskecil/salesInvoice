@@ -655,13 +655,15 @@ class SalesInvController extends Controller
                 ->size(200)
                 ->generate($qrValue);
 
-            $fileName =  $data->noNota . '.png';
-
-            Storage::put('public/qrcode/' . $fileName, $qrCode);
+            $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCode);
+            //$fileName =  $data->noNota . '.png';
+            // Storage::put('public/qrcode/' . $fileName, $qrCode);
+            //Storage::disk('pameran_qr')->put($fileName, $qrCode);
         }
 
         $html = view('invoice.cetakBarcode', [
             'data' => $data,
+            'qr' => $qrCodeBase64 ?? null
         ])->render();
 
         return $this->cetakBarcodeDirectPrinting($html, $data->noNota);
@@ -675,7 +677,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-       //  return $pdf->stream('filename.pdf');
+        //  return $pdf->stream('filename.pdf');
         $hasilpdf = $pdf->output();
         Storage::disk('public')->put('nota/' . $nota . '.pdf', $hasilpdf);
         return response()->json([
@@ -793,15 +795,35 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-       // return $pdf->stream();
-        $hasilpdf = $pdf->output();
-        Storage::disk('public')->put('label/' . $nota . '.pdf', $hasilpdf);
+         //PREVIEW
+        return $pdf->stream();
+      
+
+
+        $pdfContent = $pdf->output(); 
+        $pdfBase64 = base64_encode($pdfContent);
+
         return response()->json([
-            'status' => 200,
-            'html' => $returnHTML,
-            'id' => $nota,
-            'url' => asset('storage/label/' . $nota . '.pdf'),
+            'url' => 'data:application/pdf;base64,' . $pdfBase64
         ]);
+        
+
+        //SAVE STORAGE
+        // Storage::disk('pameran_label')->put($nota . '.pdf', $hasilpdf);
+        // return response()->json([
+        //     'status' => 200,
+        //     'html' => $returnHTML,
+        //     'id' => $nota,
+        //     'url' =>  Storage::disk('pameran_label')->url($nota . '.pdf'),
+
+        // $hasilpdf = $pdf->output();
+        // Storage::disk('public')->put('label/' . $nota . '.pdf', $hasilpdf);
+        // return response()->json([
+        //     'status' => 200,
+        //     'html' => $returnHTML,
+        //     'id' => $nota,
+        //     'url' => asset('storage/label/' . $nota . '.pdf'),
+        // ]);
     }
     public function Qrformat($subgrosir, $tempat, $pelanggan, $id, $tgl, $nota, $gw, $nw, $nwcust, $carat, $grosir)
     {
@@ -828,10 +850,10 @@ class SalesInvController extends Controller
         // $QRvalue->ds =  '';
         // $QRvalue->te =  '';
         $QRvalue->dc =  $grosir;
-      
-      
-    
-     
+
+
+
+
 
         return json_encode($QRvalue);
     }
