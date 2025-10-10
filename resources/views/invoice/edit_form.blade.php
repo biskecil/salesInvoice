@@ -1391,30 +1391,50 @@
                 if (e.key === "Enter") {
                     e.preventDefault();
                     try {
-                        // let data = JSON.parse(qrInput.value);
+                        let data = JSON.parse(qrInput.value);
                         // document.getElementById("sub_grosir").value = data.pt;
                         // document.getElementById("alamat").value = data.at;
                         // document.getElementById("customer").value = data.nt;
                         // document.getElementById("linkid").value = data.it;
-                        // let modalEl = document.getElementById('scanQRModal');
-                        // let modal = bootstrap.Modal.getInstance(modalEl);
-                        // modal.hide();
-                        // $('#grosir').val(1246).trigger('change');
-                        // setGrosir = 1246;
-                        let data = JSON.parse(qrInput.value);
-                        if (setGrosir == 1246) {
-                            document.getElementById("sub_grosir").value = data.pt ?? '';
-                            document.getElementById("alamat").value = data.at ?? '';
-                            document.getElementById("customer").value = data.nt ?? '';
-                            document.getElementById("linkid").value = data.it ?? '';
-                        } else {
-                            document.getElementById("sub_grosir").value = data.ps ?? '';
-                            document.getElementById("customer").value = data.nm ?? '';
-                            document.getElementById("linkid").value = data.id ?? '';
-                        }
+                        document.getElementById("sub_grosir").value = data.pt ?? '';
+                        document.getElementById("alamat").value = data.at ?? '';
+                        document.getElementById("customer").value = data.nt ?? '';
+                        document.getElementById("linkid").value = data.it ?? '';
+                        document.getElementById("phone").value = data.np ?? '';
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
+                    
+                        if (data.ws) {
+                            if (data.ws == 'BT JKT') {
+                                $('#grosir').val(991).trigger('change');
+                                setGrosir = 991;
+                            } else if (data.ws == 'BT SBY') {
+                                $('#grosir').val(1013).trigger('change');
+                                setGrosir = 1013;
+                            } else {
+                                $('#grosir').val(1012).trigger('change');
+                                setGrosir = 1012;
+                            }
+                        } else {
+                            $('#grosir').val(1246).trigger('change');
+                            setGrosir = 1246;
+                        }
+                        
+                        // let data = JSON.parse(qrInput.value);
+                        // if (setGrosir == 1246) {
+                        //     document.getElementById("sub_grosir").value = data.pt ?? '';
+                        //     document.getElementById("alamat").value = data.at ?? '';
+                        //     document.getElementById("customer").value = data.nt ?? '';
+                        //     document.getElementById("linkid").value = data.it ?? '';
+                        // } else {
+                        //     document.getElementById("sub_grosir").value = data.ps ?? '';
+                        //     document.getElementById("customer").value = data.nm ?? '';
+                        //     document.getElementById("linkid").value = data.id ?? '';
+                        // }
+                        // let modalEl = document.getElementById('scanQRModal');
+                        // let modal = bootstrap.Modal.getInstance(modalEl);
+                        // modal.hide();
                     } catch (e) {
                         Swal.fire({
                             title: "Info",

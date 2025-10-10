@@ -703,7 +703,7 @@
                     btn.disabled = false;
                     btn.innerHTML = oldText;
 
-                } 
+                }
             });
 
             $('#carat').on('change', function() {
@@ -1423,18 +1423,23 @@
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
-                        console.log(data.nt)
-
+                    
                         if (data.ws) {
-                            $('#grosir').val('').trigger('change');
-                            setGrosir = '';
+                            if (data.ws == 'BT JKT') {
+                                $('#grosir').val(991).trigger('change');
+                                setGrosir = 991;
+                            } else if (data.ws == 'BT SBY') {
+                                $('#grosir').val(1013).trigger('change');
+                                setGrosir = 1013;
+                            } else {
+                                $('#grosir').val(1012).trigger('change');
+                                setGrosir = 1012;
+                            }
                         } else {
                             $('#grosir').val(1246).trigger('change');
                             setGrosir = 1246;
                         }
-
-
-
+                        
                         // let data = JSON.parse(qrInput.value);
                         // if (setGrosir == 1246) {
                         //     document.getElementById("sub_grosir").value = data.pt ?? '';
