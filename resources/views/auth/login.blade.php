@@ -4,12 +4,12 @@
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
         <div class="card shadow-sm" style="width: 400px;">
             <div class="card-body">
-                
+
 
                 <div class="text-center">
                     <img src="{!! asset('assets/images/favicon.png') !!}" class="w-px-40 h-auto rounded-circle me-2"
                         style="opacity:.9; width:100px; height:100px; object-fit:cover;">
-                  
+
                 </div>
 
                 <form method="POST" action="{{ route('login') }}">
@@ -34,6 +34,25 @@
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Event</label>
+                        <select id="listEvent" type="text" class="form-control select2" name="event">
+                        </select>
+                        @error('event')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                         @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Tempat</label>
+                        <select id="listVenue" type="text" class="form-control select2" name="venue">
+                        </select>
+                        @error('venue')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                     </div>
 
 

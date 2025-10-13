@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\SalesInvController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SalesInvController::class, 'form'])->name('sales.form');
 
+Route::get('/getData/Venue/search', [LoginController::class, 'getDataVenueSearch']);
 Route::prefix('pack')->group(function () {
     Route::get('/show', [SalesInvController::class, 'show_pack']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNotaPack']);

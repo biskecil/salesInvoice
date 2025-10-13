@@ -92,16 +92,30 @@
             <div id="datetime" class="me-3"></div>
             @auth
                 <div class="dropdown">
-                    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#"
-                        role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-4 me-1"></i>
-                        <span>{{ Auth::user()->UserName ?? 'User' }}</span>
+                    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2 py-1 rounded-2 bg-dark bg-opacity-25 hover-bg-dark"
+                        href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-4 me-2 text-warning"></i>
+                        <div class="d-flex flex-column lh-sm">
+                            <span class="fw-semibold">
+                                {{ Auth::user()->UserName ?? 'User' }}
+                            </span>
+                            @if (session('event') != '' || session('venue') != '')
+                                <small class="text-light text-opacity-75">
+                                    {{ session('event') ? session('event') . ' :' : '' }}
+                                    {{ session('venue') ?? '-' }}
+                                </small>
+                            @endif
+                        </div>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-0 rounded-3"
+                        aria-labelledby="userDropdown">
                         <li>
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="dropdown-item">Logout</button>
+                                <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
                             </form>
                         </li>
                     </ul>
@@ -159,11 +173,55 @@
                 @yield('content')
             </main>
             <script src="{{ mix('js/app.js') }}"></script>
+            <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+            <script src="{{ asset('select2/select2.min.js') }}"></script>
             <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
             <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
             <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
             <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
             <script>
+                $("#listVenue").select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    placeholder: "Pilih Tempat",
+                    allowClear: true,
+                    ajax: {
+                        url: "/getData/Venue/search",
+                        dataType: "json",
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: params.term
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: data.map(item => ({
+                                    id: item.Description,
+                                    text: item.Description
+                                }))
+                            };
+                        },
+                        cache: true
+                    },
+                });
+                $("#listEvent").select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    placeholder: "Pilih Event",
+                    allowClear: true,
+                    data: [{
+                            'id': 'Pameran',
+                            'text': 'Pameran'
+                        },
+                        {
+                            'id': 'In House',
+                            'text': 'In House'
+                        }
+                    ]
+                });
+                $("#listEvent").val(null).trigger('change');
+
                 function updateDateTime() {
                     const now = new Date();
                     const options = {

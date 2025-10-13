@@ -86,8 +86,8 @@
                                     <div class="col-sm-8">
                                         <select class="form-control select2" name="event">
                                             <option value="">Pilih Data</option>
-                                            <option value="Pameran">Pameran</option>
-                                            <option value="In House">In House</option>
+                                            <option value="Pameran" @if( session('event') == 'Pameran') selected @endif>Pameran</option>
+                                            <option value="In House"  @if( session('event') == 'In House') selected @endif>In House</option>
                                         </select>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                         <select class="form-control select2" name="tempat">
                                             <option value="">Pilih Data</option>
                                             @foreach ($venue as $p)
-                                                <option value="{{ $p->Description }}">{{ $p->Description }}</option>
+                                                <option value="{{ $p->Description }}" @if( session('venue') ==  $p->Description)  selected @endif>{{ $p->Description }}</option>
                                             @endforeach
                                         </select>
                                     </div>
