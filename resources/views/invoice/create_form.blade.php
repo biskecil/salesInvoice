@@ -86,8 +86,10 @@
                                     <div class="col-sm-8">
                                         <select class="form-control select2" name="event">
                                             <option value="">Pilih Data</option>
-                                            <option value="Pameran" @if( session('event') == 'Pameran') selected @endif>Pameran</option>
-                                            <option value="In House"  @if( session('event') == 'In House') selected @endif>In House</option>
+                                            <option value="Pameran" @if (session('event') == 'Pameran') selected @endif>
+                                                Pameran</option>
+                                            <option value="In House" @if (session('event') == 'In House') selected @endif>In
+                                                House</option>
                                         </select>
                                     </div>
                                 </div>
@@ -106,7 +108,7 @@
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            name="sub_grosir" id="sub_grosir">
+                                            autocomplete="off" name="sub_grosir" id="sub_grosir">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -115,7 +117,9 @@
                                         <select class="form-control select2" name="tempat">
                                             <option value="">Pilih Data</option>
                                             @foreach ($venue as $p)
-                                                <option value="{{ $p->Description }}" @if( session('venue') ==  $p->Description)  selected @endif>{{ $p->Description }}</option>
+                                                <option value="{{ $p->Description }}"
+                                                    @if (session('venue') == $p->Description) selected @endif>{{ $p->Description }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -246,6 +250,7 @@
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
+    <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);
@@ -492,22 +497,22 @@
             });
 
 
-            $("#sub_grosir").autocomplete({
-                source: function(request, response) {
-                    $.ajax({
-                        url: "/sales/getData/subGros/",
-                        data: {
-                            search: request.term
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            response(data.map(item => item
-                                .SubGrosir)); // pakai field sesuai API
-                        }
-                    });
-                },
-                minLength: 1
-            });
+            // $("#sub_grosir").autocomplete({
+            //     source: function(request, response) {
+            //         $.ajax({
+            //             url: "/sales/getData/subGros/",
+            //             data: {
+            //                 search: request.term
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 response(data.map(item => item
+            //                     .SubGrosir)); // pakai field sesuai API
+            //             }
+            //         });
+            //     },
+            //     minLength: 1
+            // });
 
             $("#btnSubmitCreate").on("click", function(e) {
                 e.preventDefault();
@@ -629,6 +634,15 @@
                     row.cells[0].innerText = index + 1; // nomor otomatis
                 });
             }
+
+            $('#customer').on('input', function() {
+                let value = $(this).val();
+                // Capitalize first letter of each word, lowercase the rest
+                value = value.replace(/\b\w+/g, function(word) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                });
+                $(this).val(value);
+            });
 
             $('#grosir').on('change', async function() {
                 let id = this.value;
@@ -1423,7 +1437,7 @@
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
-                    
+
                         if (data.ws) {
                             if (data.ws == 'BT JKT') {
                                 $('#grosir').val(991).trigger('change');
@@ -1439,7 +1453,7 @@
                             $('#grosir').val(1246).trigger('change');
                             setGrosir = 1246;
                         }
-                        
+
                         // let data = JSON.parse(qrInput.value);
                         // if (setGrosir == 1246) {
                         //     document.getElementById("sub_grosir").value = data.pt ?? '';
