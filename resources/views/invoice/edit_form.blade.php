@@ -146,24 +146,28 @@
                                     <label class="form-label col-sm-4">Total Berat</label>
                                     <div class="col-sm-8">
                                         <div class="row g-2 align-items-center">
-                                            <div
-                                                class="col-md-6 d-flex align-items-center justify-content-between border-end pe-3">
-                                                <div>
-                                                    <span class="fw-semibold">Kotor</span>
-                                                    <span class="fw-bold cadar_item font-">{{ $data->Carat }}</span>
-                                                    <span class="fw-bold">:</span>
+
+                                            <div class="col-md-6 d-flex flex-column border-end pe-3">
+                                                <div class="d-flex align-items-center justify-content-between small  mb-1">
+                                                    <div>
+                                                        <span class="fw-semibold me-1">Kotor</span>
+                                                        <span class="fw-bold cadar_item">{{ $data->Carat }}</span>
+                                                    </div>
                                                 </div>
                                                 <span id="totalgwall"
-                                                    class="fw-bold text-primary text-end">{{ $data->Weight }}</span>
+                                                    class="fw-bold text-primary text-end fs-6">{{ $data->Weight }}</span>
                                             </div>
-                                            <div class="col-md-6 d-flex align-items-center justify-content-between ps-3">
-                                                <div>
-                                                    <span class="fw-semibold">Bersih</span>
-                                                    <span class="fw-bold cadar_item">{{ $data->Carat }}</span>
-                                                    <span class="fw-bold">:</span>
+
+
+                                            <div class="col-md-6 d-flex flex-column">
+                                                <div class="d-flex align-items-center justify-content-between small  mb-1">
+                                                    <div>
+                                                        <span class="fw-semibold me-1">Bersih</span>
+                                                        <span class="fw-bold cadar_item">{{ $data->Carat }}</span>
+                                                    </div>
                                                 </div>
                                                 <span id="totalnwall"
-                                                    class="fw-bold text-primary text-end">{{ $data->NetWeight }}</span>
+                                                    class="fw-bold text-danger text-end fs-6">{{ $data->NetWeight }}</span>
                                             </div>
                                         </div>
                                     </div>
