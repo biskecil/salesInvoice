@@ -114,7 +114,7 @@
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            name="sub_grosir" value="{{ $data->SubGrosir }}" id="sub_grosir">
+                                            name="sub_grosir" value="{{ $data->SubGrosir }}" id="sub_grosir" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -504,22 +504,22 @@
             });
 
 
-            $("#sub_grosir").autocomplete({
-                source: function(request, response) {
-                    $.ajax({
-                        url: "/sales/getData/subGros/",
-                        data: {
-                            search: request.term
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            response(data.map(item => item
-                                .SubGrosir)); // pakai field sesuai API
-                        }
-                    });
-                },
-                minLength: 2
-            });
+            // $("#sub_grosir").autocomplete({
+            //     source: function(request, response) {
+            //         $.ajax({
+            //             url: "/sales/getData/subGros/",
+            //             data: {
+            //                 search: request.term
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 response(data.map(item => item
+            //                     .SubGrosir)); // pakai field sesuai API
+            //             }
+            //         });
+            //     },
+            //     minLength: 2
+            // });
 
             $("#btnSubmitCreate").on("click", function(e) {
                 e.preventDefault(); 
@@ -696,6 +696,14 @@
                     row.cells[0].innerText = index + 1; // nomor otomatis
                 });
             }
+            $('#customer').on('input change', function() {
+                let value = $(this).val();
+                // Capitalize first letter of each word, lowercase the rest
+                value = value.replace(/\b\w+/g, function(word) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                });
+                $(this).val(value);
+            });
 
 
             $('#grosir').on('change', async function() {

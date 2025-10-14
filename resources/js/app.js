@@ -73,11 +73,15 @@ function cariSubGros() {
         },
         events: {
             input: {
+                // selection: (event) => {
+                //     const selection = event.detail.selection.value;
+                //     const input = document.querySelector("#sub_grosir");
+                //     input.value = selection.name || selection;
+                //     input.style.color = "black"; // force black text
+                // },
                 selection: (event) => {
                     const selection = event.detail.selection.value;
-                    const input = document.querySelector("#sub_grosir");
-                    input.value = selection.name || selection;
-                    input.style.color = "black"; // force black text
+                    autoCompleteJS.input.value = selection;
                 },
             },
         },

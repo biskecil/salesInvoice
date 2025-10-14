@@ -561,7 +561,7 @@ class SalesInvController extends Controller
             $invoice->ID = $data->ID;
             $invoice->SW = $data->noNota;
             $invoice->TransDate = Carbon::parse($data->TransDate)->format('d/m/Y');
-            $invoice->Customer = $data->Customer;
+            $invoice->Customer = ucwords(strtolower($data->Customer));
             $invoice->Grosir = $getGrosirID[0]->Description;
             $invoice->Person = $data->Person;
             $invoice->Address = $data->Address;
@@ -633,6 +633,7 @@ class SalesInvController extends Controller
         $data->totalnwcust = number_format($data->totalnwcust, 3, '.', ',');
         $data->carat = $data_item->caratSW;
         $data->TransDate = Carbon::parse($data->TransDate)->format('d.m.y');
+        $data->pelanggan =  ucwords(strtolower($data->pelanggan));
 
         // if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
         if ($data->Grosir == 'SA') {
@@ -677,7 +678,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-         //return $pdf->stream('filename.pdf');
+        // return $pdf->stream('filename.pdf');
 
         $pdfContent = $pdf->output();
         $pdfBase64 = base64_encode($pdfContent);
@@ -685,7 +686,7 @@ class SalesInvController extends Controller
         return response()->json([
             'url' => 'data:application/pdf;base64,' . $pdfBase64
         ]);
-   
+
         //SAVE STORAGE
         // Storage::disk('pameran_nota')->put($nota . '.pdf', $hasilpdf);
         // return response()->json([
@@ -813,7 +814,7 @@ class SalesInvController extends Controller
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
         //PREVIEW
-        // return $pdf->stream();
+        //return $pdf->stream();
 
 
 
@@ -1094,7 +1095,7 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
-       
+
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',

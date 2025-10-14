@@ -74,6 +74,10 @@
             font-size: 17px;
             /* ubah angka sesuai kebutuhan */
         }
+
+        .autoComplete_wrapper>ul>li mark {
+            color: #000;
+        }
     </style>
 </head>
 

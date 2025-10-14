@@ -15,6 +15,18 @@
         .card-main {
             overflow: hidden;
         }
+
+        .autoComplete_wrapper>input {
+            width: 100% !important;
+            max-width: 100% !important;
+            color: #000;
+        }
+
+
+        .autoComplete_wrapper {
+            width: 100% !important;
+            display: block !important;
+        }
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -105,8 +117,8 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Sub Grosir</label>
-                                    <div class="col-sm-8">
+                                    <label class="form-label col-12 col-sm-4">Sub Grosir</label>
+                                    <div class="col-12 col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
                                             autocomplete="off" name="sub_grosir" id="sub_grosir">
                                     </div>
@@ -125,11 +137,34 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total</label>
+                                    <label class="form-label col-sm-4">Total Berat</label>
+                                    <div class="col-sm-8">
+                                      <div class="row g-2 align-items-center">
+                                        <div class="col-md-6 d-flex align-items-center justify-content-between border-end pe-3">
+                                          <div>
+                                            <span class="fw-semibold">Kotor</span>
+                                            <span class="fw-bold cadar_item"></span>
+                                            <span class="fw-bold">:</span>
+                                          </div>
+                                          <span id="totalgwall" class="fw-bold text-primary text-end">0.00</span>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-center justify-content-between ps-3">
+                                          <div>
+                                            <span class="fw-semibold">Bersih</span>
+                                            <span class="fw-bold cadar_item"></span>
+                                            <span class="fw-bold">:</span>
+                                          </div>
+                                          <span id="totalnwall" class="fw-bold text-primary text-end">0.00</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                {{-- <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">Total Berat</label>
                                     <div class="col-sm-8">
                                         <div class="row g-2">
                                             <div class="col-md-6">
-                                                <label for="totalgwall" class="small mb-1">Berat
+                                                <label for="totalgwall" class="small mb-1">
                                                     Kotor <span class="fw-bold cadar_item"></span></label>
                                                 <span id="totalgwall"
                                                     class="form-control fw-bold text-end text-primary d-block">
@@ -137,7 +172,7 @@
                                                 </span>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="totalnwall" class="small mb-1">Berat
+                                                <label for="totalnwall" class="small mb-1">
                                                     Bersih <span class="fw-bold cadar_item"></span></label>
                                                 <span id="totalnwall"
                                                     class="form-control fw-bold text-end text-danger d-block">
@@ -146,7 +181,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
 
 
@@ -186,7 +221,8 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">LinkID</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" rows="2" name="linkid" id="linkid">
+                                        <input class="form-control" rows="2" name="linkid" id="linkid"
+                                            placeholder="Link ID">
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +286,6 @@
     <script src="{{ asset('jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('select2/select2.min.js') }}"></script>
     <script src="{!! asset('timbangan/timbangan.js') !!}"></script>
-    <script src="{!! asset('autocomplete/autocomplete.js') !!}"></script>
     <script>
         window.addEventListener("load", () => {
             connectSerial(true);
@@ -635,7 +670,7 @@
                 });
             }
 
-            $('#customer').on('input', function() {
+            $('#customer').on('input change', function() {
                 let value = $(this).val();
                 // Capitalize first letter of each word, lowercase the rest
                 value = value.replace(/\b\w+/g, function(word) {
