@@ -22,7 +22,6 @@
             color: #000;
         }
 
-
         .autoComplete_wrapper {
             width: 100% !important;
             display: block !important;
@@ -139,26 +138,27 @@
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Total Berat</label>
                                     <div class="col-sm-8">
-                                      <div class="row g-2 align-items-center">
-                                        <div class="col-md-6 d-flex align-items-center justify-content-between border-end pe-3">
-                                          <div>
-                                            <span class="fw-semibold">Kotor</span>
-                                            <span class="fw-bold cadar_item"></span>
-                                            <span class="fw-bold">:</span>
-                                          </div>
-                                          <span id="totalgwall" class="fw-bold text-primary text-end">0.00</span>
+                                        <div class="row g-2 align-items-center">
+                                            <div
+                                                class="col-md-6 d-flex align-items-center justify-content-between border-end pe-3">
+                                                <div>
+                                                    <span class="fw-semibold">Kotor</span>
+                                                    <span class="fw-bold cadar_item"></span>
+                                                    <span class="fw-bold">:</span>
+                                                </div>
+                                                <span id="totalgwall" class="fw-bold text-primary text-end">0.00</span>
+                                            </div>
+                                            <div class="col-md-6 d-flex align-items-center justify-content-between ps-3">
+                                                <div>
+                                                    <span class="fw-semibold">Bersih</span>
+                                                    <span class="fw-bold cadar_item"></span>
+                                                    <span class="fw-bold">:</span>
+                                                </div>
+                                                <span id="totalnwall" class="fw-bold text-primary text-end">0.00</span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 d-flex align-items-center justify-content-between ps-3">
-                                          <div>
-                                            <span class="fw-semibold">Bersih</span>
-                                            <span class="fw-bold cadar_item"></span>
-                                            <span class="fw-bold">:</span>
-                                          </div>
-                                          <span id="totalnwall" class="fw-bold text-primary text-end">0.00</span>
-                                        </div>
-                                      </div>
                                     </div>
-                                  </div>
+                                </div>
                                 {{-- <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Total Berat</label>
                                     <div class="col-sm-8">
@@ -182,9 +182,6 @@
                                         </div>
                                     </div>
                                 </div> --}}
-
-
-
                             </div>
 
                             <!-- RIGHT -->

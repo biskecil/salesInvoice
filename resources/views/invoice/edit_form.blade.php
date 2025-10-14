@@ -15,6 +15,17 @@
         .card-main {
             overflow: hidden;
         }
+
+        .autoComplete_wrapper>input {
+            width: 100% !important;
+            max-width: 100% !important;
+            color: #000;
+        }
+
+        .autoComplete_wrapper {
+            width: 100% !important;
+            display: block !important;
+        }
     </style>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -46,12 +57,12 @@
                                     <div class="col-sm-8 d-flex gap-2 ">
 
                                         <button type="button"
-                                            class="text-sm btn btn-primary     {{ in_array($data->Grosir, [1246, 991, 1012, 1013]) ? '' : 'd-none' }}"
+                                            class="text-sm btn btn-primary"
                                             data-bs-toggle="modal" data-bs-target="#scanQRModal" id="qrButton">
                                             <i class="fa-solid fa-qrcode"></i>
                                         </button>
-                                        <input type="text" class="form-control" id="customer" name="customer" placeholder="Nama Customer"
-                                            style="flex:1" value="{{ $data->Customer }}">
+                                        <input type="text" class="form-control" id="customer" name="customer"
+                                            placeholder="Nama Customer" style="flex:1" value="{{ $data->Customer }}">
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -71,7 +82,7 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Phone</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Phone" name="phone"
+                                        <input type="text" class="form-control" placeholder="Phone" name="phone" id="phone"
                                             value="{{ $data->Phone }}">
                                     </div>
                                 </div>
@@ -114,7 +125,8 @@
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            name="sub_grosir" value="{{ $data->SubGrosir }}" id="sub_grosir" autocomplete="off">
+                                            name="sub_grosir" value="{{ $data->SubGrosir }}" id="sub_grosir"
+                                            autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -131,28 +143,27 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total</label>
+                                    <label class="form-label col-sm-4">Total Berat</label>
                                     <div class="col-sm-8">
-                                        <div class="row g-2">
-
-                                            <div class="col-md-6">
-                                                <label for="totalgwall" class="small mb-1">Berat
-                                                    Kotor<span class="fw-bold cadar_item">
-                                                        {{ $data->Carat }}</span></label>
+                                        <div class="row g-2 align-items-center">
+                                            <div
+                                                class="col-md-6 d-flex align-items-center justify-content-between border-end pe-3">
+                                                <div>
+                                                    <span class="fw-semibold">Kotor</span>
+                                                    <span class="fw-bold cadar_item font-">{{ $data->Carat }}</span>
+                                                    <span class="fw-bold">:</span>
+                                                </div>
                                                 <span id="totalgwall"
-                                                    class="form-control fw-bold text-end text-primary d-block">
-                                                    {{ $data->Weight }}
-                                                </span>
+                                                    class="fw-bold text-primary text-end">{{ $data->Weight }}</span>
                                             </div>
-
-                                            <div class="col-md-6">
-                                                <label for="totalnwall" class="small mb-1">Berat
-                                                    Bersih <span
-                                                        class="fw-bold cadar_item">{{ $data->Carat }}</span></label>
+                                            <div class="col-md-6 d-flex align-items-center justify-content-between ps-3">
+                                                <div>
+                                                    <span class="fw-semibold">Bersih</span>
+                                                    <span class="fw-bold cadar_item">{{ $data->Carat }}</span>
+                                                    <span class="fw-bold">:</span>
+                                                </div>
                                                 <span id="totalnwall"
-                                                    class="form-control fw-bold text-end text-danger d-block">
-                                                    {{ $data->NetWeight }}
-                                                </span>
+                                                    class="fw-bold text-primary text-end">{{ $data->NetWeight }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -522,7 +533,7 @@
             // });
 
             $("#btnSubmitCreate").on("click", function(e) {
-                e.preventDefault(); 
+                e.preventDefault();
                 $('.buttonForm').prop('disabled', true);
                 $.ajax({
                     url: $("#salesForm").attr("action"),
@@ -1412,7 +1423,7 @@
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
-                    
+
                         if (data.ws) {
                             if (data.ws == 'BT JKT') {
                                 $('#grosir').val(991).trigger('change');
@@ -1428,7 +1439,7 @@
                             $('#grosir').val(1246).trigger('change');
                             setGrosir = 1246;
                         }
-                        
+
                         // let data = JSON.parse(qrInput.value);
                         // if (setGrosir == 1246) {
                         //     document.getElementById("sub_grosir").value = data.pt ?? '';
@@ -1451,7 +1462,6 @@
                             confirmButtonText: "OK"
                         })
                         qrInput.value = '';
-
                     }
 
                 }

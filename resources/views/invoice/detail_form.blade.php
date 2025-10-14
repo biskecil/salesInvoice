@@ -101,7 +101,7 @@
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            name="sub_grosir" readonly value="{{ $data->SubGrosir }}" id="sub_grosir">
+                                            name="sub_grosir" readonly value="{{ $data->SubGrosir }}" >
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -112,7 +112,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                {{-- <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Total</label>
                                     <div class="col-sm-8">
                                         <div class="row g-2">
@@ -131,6 +131,30 @@
                                                 <input class="form-control fw-bold text-end text-danger" id="totalnwall"
                                                     type="text" value="{{ $data->NetWeight }}"
                                                     name="total_berat_bersih" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                                <div class="mb-3 row">
+                                    <label class="form-label col-sm-4">Total Berat</label>
+                                    <div class="col-sm-8">
+                                        <div class="row g-2 align-items-center">
+                                            <div
+                                                class="col-md-6 d-flex align-items-center justify-content-between border-end pe-3">
+                                                <div>
+                                                    <span class="fw-semibold">Kotor</span>
+                                                    <span class="fw-bold cadar_item">{{ $data->Carat }}</span>
+                                                    <span class="fw-bold">:</span>
+                                                </div>
+                                                <span id="totalgwall" class="fw-bold text-primary text-end">{{ $data->Weight }}</span>
+                                            </div>
+                                            <div class="col-md-6 d-flex align-items-center justify-content-between ps-3">
+                                                <div>
+                                                    <span class="fw-semibold">Bersih</span>
+                                                    <span class="fw-bold cadar_item">{{ $data->Carat }}</span>
+                                                    <span class="fw-bold">:</span>
+                                                </div>
+                                                <span id="totalnwall" class="fw-bold text-primary text-end">{{ $data->NetWeight }}</span>
                                             </div>
                                         </div>
                                     </div>
