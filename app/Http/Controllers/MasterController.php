@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
 class MasterController extends Controller
 {
     public function __construct()
@@ -48,9 +49,17 @@ class MasterController extends Controller
     {
         return view('grosir.show');
     }
+    public function show_venue()
+    {
+        return view('venue.show');
+    }
     public function create_grosir()
     {
         return view('grosir.create');
+    }
+    public function create_venue()
+    {
+        return view('venue.create');
     }
     public function create_pricelist()
     {
@@ -87,6 +96,11 @@ class MasterController extends Controller
     {
         $data = DB::table('customer')->where('ID', $id)->first();
         return view('grosir.edit', ['data' => $data]);
+    }
+    public function edit_venue($id)
+    {
+        $data = DB::table('venue')->where('ID', $id)->first();
+        return view('venue.edit', ['data' => $data]);
     }
     public function edit_pricelist($customer, $category, $carat)
     {
@@ -176,6 +190,44 @@ class MasterController extends Controller
             return response()->json($data, 500);
         }
     }
+    public function update_venue(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+            $validated = Validator::make($request->all(), [
+                'description'    => 'required|unique:venue,Description,' . $request->id . ',ID',
+                'description' => 'required',
+            ]);
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
+            if ($validated->fails()) {
+                $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+
+            DB::table('venue')
+                ->where('ID', $request->id)
+                ->update([
+                    'Description' => $request->description,
+                ]);
+
+
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
+        }
+    }
     public function store_grosir(Request $request)
     {
         try {
@@ -216,9 +268,47 @@ class MasterController extends Controller
             return response()->json($data, 500);
         }
     }
+    public function store_venue(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+            $validated = Validator::make($request->all(), [
+                'description' => 'required|unique:venue,Description',
+            ]);
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
+            if ($validated->fails()) {
+                $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+            $getLastID = DB::table('venue')
+                ->max('ID') + 1;
+
+            DB::table('venue')->insert([
+                'ID' => $getLastID,
+                'Description' => $request->description,
+            ]);
+
+
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
+        }
+    }
     public function store_pricelist(Request $request)
     {
-       
+
         try {
             //code...
             DB::beginTransaction();
@@ -237,20 +327,20 @@ class MasterController extends Controller
                 return response()->json($data, 422);
             }
 
-            
+
             $customer = $request->grosir;
-            foreach ($request->all() as $key => $value) {     
-                      
+            foreach ($request->all() as $key => $value) {
+
                 if (Str::startsWith($key, 'input_') && !Str::startsWith($key, 'inputCust_')) {
                     [, $category, $carat] = explode('_', $key);
-                   
+
 
                     // ambil pasangan inputCust_61_1 kalau ada
                     $nocustKey = 'input_' . $category . '_' . $carat;
                     $custKey = 'inputCust_' . $category . '_' . $carat;
                     $priceCust = $request->input($custKey);
                     $price = $request->input($nocustKey);
- 
+
                     // insert/update ke DB
                     DB::table('pricelist')->updateOrInsert(
                         [
@@ -411,6 +501,15 @@ class MasterController extends Controller
     public function show_grosir_data()
     {
         $data = DB::table('customer')->get()
+            ->map(function ($item, $index) {
+                $item->no = $index + 1;
+                return $item;
+            });
+        return response()->json(['data' => $data]);
+    }
+    public function show_venue_data()
+    {
+        $data = DB::table('venue')->get()
             ->map(function ($item, $index) {
                 $item->no = $index + 1;
                 return $item;

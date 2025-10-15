@@ -44,7 +44,14 @@ Route::prefix('grosir')->group(function () {
     Route::post('/update', [MasterController::class, 'update_grosir']);
     Route::get('/show_data', [MasterController::class, 'show_grosir_data']);
 });
-
+Route::prefix('venue')->group(function () {
+    Route::get('/show', [MasterController::class, 'show_venue']);
+    Route::get('/create', [MasterController::class, 'create_venue']);
+    Route::get('/edit/{id}', [MasterController::class, 'edit_venue']);
+    Route::post('/store', [MasterController::class, 'store_venue']);
+    Route::post('/update', [MasterController::class, 'update_venue']);
+    Route::get('/show_data', [MasterController::class, 'show_venue_data']);
+});
 Route::prefix('sales')->group(function () {
     Route::get('/getData/Nota/search', [SalesInvController::class, 'getDataNotaSearch']);
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
@@ -62,6 +69,6 @@ Route::prefix('sales')->group(function () {
     Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
 });
 
- Auth::routes();
-//Auth::routes(['register' => false]);
+// Auth::routes();
+Auth::routes(['register' => false]);
 
