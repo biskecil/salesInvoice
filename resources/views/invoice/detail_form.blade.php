@@ -353,7 +353,7 @@
                 printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-                window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                //window.open('/sales/cetakBarcode/' + noNota, '_blank');
                 printDirectBarcode(noNota)
             });
 
