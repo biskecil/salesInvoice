@@ -759,9 +759,10 @@
                             if (priceInput) anPrice.set(hasil.price);
                             if (priceCustInput) {
                                 let newVal = hasil.priceCust || 0;
-                                if (newVal !== 0) {
-                                    anPriceCust.set(newVal);
-                                }
+                               
+                                anPriceCust.set(newVal);
+                                // if (newVal !== 0) {
+                                // }
                             }
 
                             if (brutoInput && priceCustInput) {
@@ -845,9 +846,9 @@
                         if (priceInput) anPrice.set(hasil.price);
                         if (priceCustInput) {
                             let newVal = hasil.priceCust || 0;
-                            if (newVal !== 0) {
-                                anPriceCust.set(newVal);
-                            }
+                            // if (newVal !== 0) {
+                            // }
+                            anPriceCust.set(newVal);
                         }
 
                         if (brutoInput && priceCustInput) {
@@ -1165,9 +1166,9 @@
 
                     if (priceCustInput) {
                         let newVal = hasil.priceCust || 0;
-                        if (newVal !== 0) {
-                            anPriceCust.set(newVal);
-                        }
+                        // if (newVal !== 0) {
+                        // }
+                        anPriceCust.set(newVal);
                     }
 
                     if (brutoInput && priceCustInput) {
