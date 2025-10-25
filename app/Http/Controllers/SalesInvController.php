@@ -635,9 +635,8 @@ class SalesInvController extends Controller
         $data->TransDate = Carbon::parse($data->TransDate)->format('d.m.y');
         $data->pelanggan =  ucwords(strtolower($data->pelanggan));
 
-        // if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
-        if ($data->Grosir == 'SA') {
-
+         if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
+       // if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BM'   ) {
             $qrValue =  $this->Qrformat(
                 $data->subgrosir,
                 $data->tempat,
@@ -678,7 +677,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-        // return $pdf->stream('filename.pdf');
+      // return $pdf->stream('filename.pdf');
 
         $pdfContent = $pdf->output();
         $pdfBase64 = base64_encode($pdfContent);

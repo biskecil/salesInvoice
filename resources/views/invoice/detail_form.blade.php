@@ -341,7 +341,7 @@
                 });
             });
             $('#btnCetak').on('click', function() {
-                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+             //   window.open('/sales/cetakNota/semua/' + noNota, '_blank');
                 printDirectNota('semua', noNota);
             });
             $('#btnCetakCust').on('click', function() {
@@ -353,7 +353,7 @@
                 printDirectNota('kosong', noNota);
             });
             $('#btnCetakBarcode').on('click', function() {
-                //window.open('/sales/cetakBarcode/' + noNota, '_blank');
+               // window.open('/sales/cetakBarcode/' + noNota, '_blank');
                 printDirectBarcode(noNota)
             });
 
