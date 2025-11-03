@@ -954,6 +954,8 @@ class SalesInvController extends Controller
                 'invoice.SW',
                 'invoice.ID',
                 'invoice.Customer',
+                'invoice.SubGrosir',
+                'invoice.Person',
                 'invoice.Address',
                 'invoice.Phone',
                 'invoice.Venue',

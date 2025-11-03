@@ -47,6 +47,292 @@
         <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
         <script>
             $(document).ready(function() {
+                // $.ajax({
+                //     url: '/sales/getData/NotaAll',
+                //     type: 'GET',
+                //     success: function(data) {
+                //         let dataGrid = $("#invTable").dxDataGrid({
+                //             dataSource: data.data,
+                //             keyExpr: "IDM",
+                //             scrollX: true,
+                //             height: 600,
+                //             allowColumnReordering: true,
+                //             allowColumnResizing: true,
+                //             scrolling: {
+                //                 mode: "standard",
+                //                 columnRenderingMode: "virtual",
+                //                 useNative: true,
+                //                 scrollByContent: true,
+                //                 scrollByThumb: true,
+                //                 showScrollbar: "always"
+                //             },
+                //             showBorders: true,
+                //             headerFilter: {
+                //                 visible: true
+                //             },
+                //             rowAlternationEnabled: true,
+                //             searchPanel: {
+                //                 visible: true
+                //             },
+                //             paging: {
+                //                 enabled: true,
+                //                 pageSize: 90,
+                //             },
+                //             grouping: {
+                //                 autoExpandAll: false,
+                //                 allowCollapsing: true
+                //             },
+                //             filterRow: {
+                //                 visible: true
+                //             },
+                //             groupPanel: {
+                //                 visible: true,
+                //                 emptyPanelText: "Drag kolom disini untuk grouping"
+                //             },
+                //             "export": {
+                //                 enabled: true,
+                //                 fileName: "Penerimaan Barang",
+                //                 allowExportSelectedData: true
+                //             },
+                //             onToolbarPreparing: function(e) {
+                //                 e.toolbarOptions.items.unshift({
+                //                     location: "after",
+                //                     widget: "dxButton",
+                //                     options: {
+                //                         icon: "refresh",
+                //                         text: "Refresh Data",
+                //                         onClick: function() {
+                //                             $.ajax({
+                //                                 url: '/sales/getData/NotaAll',
+                //                                 method: "GET",
+                //                                 success: function(data) {
+                //                                     let grid = $(
+                //                                             "#invTable")
+                //                                         .dxDataGrid(
+                //                                             "instance");
+                //                                     grid.option(
+                //                                         "dataSource",
+                //                                         data.data);
+                //                                 },
+                //                                 error: function(err) {
+                //                                     console.error(
+                //                                         "Failed to fetch data:",
+                //                                         err);
+                //                                 }
+                //                             });
+                //                         }
+                //                     }
+                //                 });
+                //             },
+                //             columns: [{
+                //                     dataField: "TransDate",
+                //                     dataType: "date",
+                //                     caption: "Tanggal",
+                //                     cssClass: "cls",
+                //                     format: "dd/MM/yyyy",
+                //                     width: "6%",
+                //                     groupIndex: 0,
+                //                     sortOrder: "desc"
+                //                 },
+                //                 {
+                //                     dataField: "IDM",
+                //                     dataType: "string",
+                //                     caption: "ID",
+                //                     width: "4%",
+                //                     cssClass: "cls"
+                //                 },
+                //                 {
+                //                     dataField: "invoice_number",
+                //                     dataType: "string",
+                //                     caption: "No Nota",
+                //                     width: "7%",
+                //                     cssClass: "cls"
+                //                 },
+                //                 {
+                //                     dataField: "Grosir",
+                //                     dataType: "string",
+                //                     caption: "Grosir",
+                //                     cssClass: "cls",
+                //                     width: "4%"
+                //                 },
+                //                 {
+                //                     dataField: "Customer",
+                //                     dataType: "string",
+                //                     caption: "Customer",
+                //                     cssClass: "cls",
+                //                     width: "10%"
+                //                 },
+                //                 {
+                //                     dataField: "Person",
+                //                     dataType: "string",
+                //                     caption: "Pembeli",
+                //                     cssClass: "cls",
+                //                     width: "10%"
+                //                 },
+                //                 {
+                //                     dataField: "Address",
+                //                     dataType: "string",
+                //                     caption: "Address",
+                //                     cssClass: "cls",
+                //                     width: "12%"
+                //                 },
+                //                 {
+                //                     dataField: "Phone",
+                //                     dataType: "string",
+                //                     caption: "Phone",
+                //                     cssClass: "cls",
+                //                     width: "10%"
+                //                 },
+                //                 {
+                //                     dataField: "productSW",
+                //                     dataType: "string",
+                //                     caption: "Kategori",
+                //                     cssClass: "cls",
+                //                     width: "4%"
+                //                 },
+                //                 {
+                //                     dataField: "caratSW",
+                //                     dataType: "string",
+                //                     caption: "Kadar",
+                //                     cssClass: "cls",
+                //                     width: "4%"
+                //                 },
+                //                 {
+                //                     dataField: "Weight",
+                //                     dataType: "number",
+                //                     caption: "Brt Kotor",
+                //                     cssClass: "cls",
+                //                     width: "8%",
+                //                     format: {
+                //                         type: "fixedPoint",
+                //                         precision: 2
+                //                     },
+                //                     customizeText: function(cellInfo) {
+                //                         if (cellInfo.value == null) return "";
+                //                         return cellInfo.value.toLocaleString('en-US', {
+                //                             minimumFractionDigits: 2,
+                //                             maximumFractionDigits: 2
+                //                         });
+                //                     }
+                //                 },
+                //                 {
+                //                     dataField: "Price",
+                //                     dataType: "number",
+                //                     caption: "Harga",
+                //                     cssClass: "cls",
+                //                     width: "8%",
+                //                     format: {
+                //                         type: "fixedPoint",
+                //                         precision: 3
+                //                     },
+                //                     customizeText: function(cellInfo) {
+                //                         if (cellInfo.value == null) return "";
+                //                         return cellInfo.value.toLocaleString('en-US', {
+                //                             minimumFractionDigits: 3,
+                //                             maximumFractionDigits: 3
+                //                         });
+                //                     }
+                //                 },
+                //                 {
+                //                     dataField: "Netto",
+                //                     dataType: "number",
+                //                     caption: "Brt Bersih",
+                //                     cssClass: "cls",
+                //                     width: "8%",
+                //                     format: {
+                //                         type: "fixedPoint",
+                //                         precision: 3
+                //                     },
+                //                     customizeText: function(cellInfo) {
+                //                         if (cellInfo.value == null) return "";
+                //                         return cellInfo.value.toLocaleString('en-US', {
+                //                             minimumFractionDigits: 3,
+                //                             maximumFractionDigits: 3
+                //                         });
+                //                     }
+                //                 },
+                //                 {
+                //                     dataField: "PriceCust",
+                //                     dataType: "number",
+                //                     caption: "Harga Cust",
+                //                     cssClass: "cls",
+                //                     width: "8%",
+                //                     format: {
+                //                         type: "fixedPoint",
+                //                         precision: 3
+                //                     },
+                //                     customizeText: function(cellInfo) {
+                //                         if (cellInfo.value == null) return "";
+                //                         return cellInfo.value.toLocaleString('en-US', {
+                //                             minimumFractionDigits: 3,
+                //                             maximumFractionDigits: 3
+                //                         });
+                //                     }
+                //                 },
+                //                 {
+                //                     dataField: "NettoCust",
+                //                     dataType: "number",
+                //                     caption: "Brt Bersih Cust",
+                //                     cssClass: "cls",
+                //                     width: "8%",
+                //                     format: {
+                //                         type: "fixedPoint",
+                //                         precision: 3
+                //                     },
+                //                     customizeText: function(cellInfo) {
+                //                         if (cellInfo.value == null) return "";
+                //                         return cellInfo.value.toLocaleString('en-US', {
+                //                             minimumFractionDigits: 3,
+                //                             maximumFractionDigits: 3
+                //                         });
+                //                     }
+                //                 },
+                //                 {
+                //                     dataField: "Event",
+                //                     dataType: "string",
+                //                     caption: "Event",
+                //                     cssClass: "cls",
+                //                     width: "5%"
+                //                 },
+                //                 {
+                //                     dataField: "SubGrosir",
+                //                     dataType: "string",
+                //                     caption: "SubGrosir",
+                //                     cssClass: "cls",
+                //                     width: "10%"
+                //                 },
+                //                 {
+                //                     dataField: "Venue",
+                //                     dataType: "string",
+                //                     caption: "Tempat",
+                //                     cssClass: "cls",
+                //                     width: "4%"
+                //                 }
+                //             ],
+                //             summary: {
+                //                 groupItems: [{
+                //                     column: 'Weight',
+                //                     summaryType: 'sum',
+                //                     valueFormat: {
+                //                         type: "fixedPoint",
+                //                         precision: 2
+                //                     },
+                //                     displayFormat: "{0}"
+                //                 }],
+                //                 totalItems: [{
+                //                     column: "Weight",
+                //                     summaryType: "sum",
+                //                     valueFormat: {
+                //                         type: "fixedPoint",
+                //                         precision: 2
+                //                     },
+                //                     displayFormat: "{0}",
+                //                     cssClass: "summary-weight"
+                //                 }]
+                //             }
+                //         }).dxDataGrid("instance");
+                //     }
+                // });
                 $.ajax({
                     url: '/sales/getData/NotaAll',
                     type: 'GET',
@@ -54,21 +340,23 @@
                         let dataGrid = $("#invTable").dxDataGrid({
                             dataSource: data.data,
                             keyExpr: "IDM",
-                            //  columnsAutoWidth: true,
-                            scrollX: true,
-                            // columnMinWidth: 90,
                             height: 600,
                             allowColumnReordering: true,
+                            allowColumnResizing: true,
+                            columnAutoWidth: false, // Penting: set false agar bisa scroll horizontal
                             scrolling: {
                                 mode: "standard",
-                                columnRenderingMode: "virtual"
+                                columnRenderingMode: "virtual",
+                                useNative: true, // Gunakan native browser scrolling
+                                scrollByContent: true, // Bisa scroll dengan drag content
+                                scrollByThumb: true, // Bisa scroll dengan scrollbar
+                                showScrollbar: "always" // Selalu tampilkan scrollbar
                             },
                             showBorders: true,
                             headerFilter: {
                                 visible: true
                             },
                             rowAlternationEnabled: true,
-                            allowColumnResizing: true,
                             searchPanel: {
                                 visible: true
                             },
@@ -77,52 +365,50 @@
                                 pageSize: 90,
                             },
                             grouping: {
-                                autoExpandAll: false
+                                autoExpandAll: false,
+                                allowCollapsing: true
                             },
                             filterRow: {
                                 visible: true
                             },
                             groupPanel: {
-                                visible: true
+                                visible: true,
+                                emptyPanelText: "Drag kolom disini untuk grouping"
                             },
                             "export": {
                                 enabled: true,
                                 fileName: "Penerimaan Barang",
                                 allowExportSelectedData: true
                             },
-                            toolbar: {
-                                items: [{
-                                        location: "after",
-                                        widget: "dxButton",
-                                        options: {
-                                            icon: "refresh",
-                                            text: "Refresh Data",
-                                            onClick: function() {
-                                                $.ajax({
-                                                    url: '/sales/getData/NotaAll',
-                                                    method: "GET",
-                                                    success: function(data) {
-                                                        let grid = $(
-                                                                "#invTable")
-                                                            .dxDataGrid(
-                                                                "instance");
-                                                        grid.option(
-                                                            "dataSource",
-                                                            data.data
-                                                        ); 
-                                                    },
-                                                    error: function(err) {
-                                                        console.error(
-                                                            "Failed to fetch data:",
-                                                            err);
-                                                    }
-                                                });
-                                            }
+                            onToolbarPreparing: function(e) {
+                                e.toolbarOptions.items.unshift({
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        icon: "refresh",
+                                        text: "Refresh Data",
+                                        onClick: function() {
+                                            $.ajax({
+                                                url: '/sales/getData/NotaAll',
+                                                method: "GET",
+                                                success: function(data) {
+                                                    let grid = $(
+                                                            "#invTable")
+                                                        .dxDataGrid(
+                                                            "instance");
+                                                    grid.option(
+                                                        "dataSource",
+                                                        data.data);
+                                                },
+                                                error: function(err) {
+                                                    console.error(
+                                                        "Failed to fetch data:",
+                                                        err);
+                                                }
+                                            });
                                         }
-                                    },
-                                    "searchPanel",
-                                    "exportButton"
-                                ]
+                                    }
+                                });
                             },
                             columns: [{
                                     dataField: "TransDate",
@@ -130,23 +416,22 @@
                                     caption: "Tanggal",
                                     cssClass: "cls",
                                     format: "dd/MM/yyyy",
-                                    width: "6%",
+                                    width: 120, // Ubah dari "6%" ke pixel
                                     groupIndex: 0,
                                     sortOrder: "desc"
-
                                 },
                                 {
                                     dataField: "IDM",
                                     dataType: "string",
                                     caption: "ID",
-                                    width: "4%",
+                                    width: 80,
                                     cssClass: "cls"
                                 },
                                 {
                                     dataField: "invoice_number",
                                     dataType: "string",
                                     caption: "No Nota",
-                                    width: "7%",
+                                    width: 120,
                                     cssClass: "cls"
                                 },
                                 {
@@ -154,71 +439,161 @@
                                     dataType: "string",
                                     caption: "Grosir",
                                     cssClass: "cls",
-                                    width: "4%",
+                                    width: 100
                                 },
                                 {
                                     dataField: "Customer",
                                     dataType: "string",
                                     caption: "Customer",
                                     cssClass: "cls",
-                                    width: "18%",
+                                    width: 150
+                                },
+                                {
+                                    dataField: "Person",
+                                    dataType: "string",
+                                    caption: "Pembeli",
+                                    cssClass: "cls",
+                                    width: 150
                                 },
                                 {
                                     dataField: "Address",
                                     dataType: "string",
                                     caption: "Address",
                                     cssClass: "cls",
-                                    width: "12%",
+                                    width: 200
                                 },
                                 {
                                     dataField: "Phone",
                                     dataType: "string",
                                     caption: "Phone",
                                     cssClass: "cls",
-                                    width: "10%",
+                                    width: 120
                                 },
                                 {
                                     dataField: "productSW",
                                     dataType: "string",
                                     caption: "Kategori",
                                     cssClass: "cls",
-                                    width: "4%",
+                                    width: 100
                                 },
                                 {
                                     dataField: "caratSW",
                                     dataType: "string",
                                     caption: "Kadar",
                                     cssClass: "cls",
-                                    width: "4%",
+                                    width: 80
                                 },
                                 {
                                     dataField: "Weight",
                                     dataType: "number",
-                                    caption: "Berat",
+                                    caption: "Brt Kotor",
                                     cssClass: "cls",
-                                    width: "8%",
+                                    width: 120,
+                                    format: {
+                                        type: "fixedPoint",
+                                        precision: 2
+                                    },
+                                    customizeText: function(cellInfo) {
+                                        if (cellInfo.value == null) return "";
+                                        return cellInfo.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        });
+                                    }
+                                },
+                                {
+                                    dataField: "Price",
+                                    dataType: "number",
+                                    caption: "Harga",
+                                    cssClass: "cls",
+                                    width: 120,
+                                    format: {
+                                        type: "fixedPoint",
+                                        precision: 3
+                                    },
+                                    customizeText: function(cellInfo) {
+                                        if (cellInfo.value == null) return "";
+                                        return cellInfo.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 3,
+                                            maximumFractionDigits: 3
+                                        });
+                                    }
+                                },
+                                {
+                                    dataField: "Netto",
+                                    dataType: "number",
+                                    caption: "Brt Bersih",
+                                    cssClass: "cls",
+                                    width: 120,
+                                    format: {
+                                        type: "fixedPoint",
+                                        precision: 3
+                                    },
+                                    customizeText: function(cellInfo) {
+                                        if (cellInfo.value == null) return "";
+                                        return cellInfo.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 3,
+                                            maximumFractionDigits: 3
+                                        });
+                                    }
+                                },
+                                {
+                                    dataField: "PriceCust",
+                                    dataType: "number",
+                                    caption: "Harga Cust",
+                                    cssClass: "cls",
+                                    width: 120,
+                                    format: {
+                                        type: "fixedPoint",
+                                        precision: 3
+                                    },
+                                    customizeText: function(cellInfo) {
+                                        if (cellInfo.value == null) return "";
+                                        return cellInfo.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 3,
+                                            maximumFractionDigits: 3
+                                        });
+                                    }
+                                },
+                                {
+                                    dataField: "NettoCust",
+                                    dataType: "number",
+                                    caption: "Brt Bersih Cust",
+                                    cssClass: "cls",
+                                    width: 150,
+                                    format: {
+                                        type: "fixedPoint",
+                                        precision: 3
+                                    },
+                                    customizeText: function(cellInfo) {
+                                        if (cellInfo.value == null) return "";
+                                        return cellInfo.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 3,
+                                            maximumFractionDigits: 3
+                                        });
+                                    }
                                 },
                                 {
                                     dataField: "Event",
                                     dataType: "string",
                                     caption: "Event",
                                     cssClass: "cls",
-                                    width: "5%",
+                                    width: 100
                                 },
                                 {
                                     dataField: "SubGrosir",
                                     dataType: "string",
                                     caption: "SubGrosir",
                                     cssClass: "cls",
-                                    width: "14%",
+                                    width: 150
                                 },
                                 {
                                     dataField: "Venue",
                                     dataType: "string",
                                     caption: "Tempat",
                                     cssClass: "cls",
-                                    width: "4%",
-                                },
+                                    width: 100
+                                }
                             ],
                             summary: {
                                 groupItems: [{
@@ -228,7 +603,13 @@
                                         type: "fixedPoint",
                                         precision: 2
                                     },
-                                    displayFormat: "{0}"
+                                    displayFormat: "{0}",
+                                    customizeText: function(data) {
+                                        return data.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        });
+                                    }
                                 }],
                                 totalItems: [{
                                     column: "Weight",
@@ -238,13 +619,18 @@
                                         precision: 2
                                     },
                                     displayFormat: "{0}",
-                                    cssClass: "summary-weight"
-                                }, ]
-                            },
+                                    cssClass: "summary-weight",
+                                    customizeText: function(data) {
+                                        return data.value.toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        });
+                                    }
+                                }]
+                            }
                         }).dxDataGrid("instance");
                     }
-
-                })
+                });
             });
         </script>
     @endsection
