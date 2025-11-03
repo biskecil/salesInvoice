@@ -250,7 +250,7 @@
                         minute: '2-digit',
                         second: '2-digit'
                     };
-                    const formatted = now.toLocaleDateString('en-US', options);
+                    const formatted = now.toLocaleDateString('id-ID', options);
                     document.getElementById('datetime').textContent = formatted;
                 }
 
