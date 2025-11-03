@@ -609,6 +609,13 @@
                                     caption: "Tempat",
                                     cssClass: "cls",
                                     width: 100
+                                },
+                                {
+                                    dataField: "UserName",
+                                    dataType: "string",
+                                    caption: "Created By",
+                                    cssClass: "cls",
+                                    width: 100
                                 }
                             ],
                             summary: {

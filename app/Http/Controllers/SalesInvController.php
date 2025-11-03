@@ -959,6 +959,7 @@ class SalesInvController extends Controller
                 'invoice.Address',
                 'invoice.Phone',
                 'invoice.Venue',
+                'invoice.UserName',
                 'product.SW as productSW',
                 'product.Description as productDesc',
                 'carat.Description as caratDesc',
