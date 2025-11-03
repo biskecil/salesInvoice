@@ -67,7 +67,8 @@
                 <div class="area">{{ $data->tempat }}</div>
                 <div>{{ $data->subgrosir }}</div>
                 <div>{{ $data->invoice_number }} / {{ $data->TransDate }}</div>
-                <div>{{ $data->totalgw }} / {{ $data->totalnw }}</div>
+                <div>{{ $data->totalgw }}</div>
+                {{-- <div>{{ $data->totalgw }} / {{ $data->totalnw }}</div> --}}
             </td>
             @if ($qr)
                 {{-- @if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') --}}

@@ -481,7 +481,23 @@
                                     dataType: "string",
                                     caption: "Kadar",
                                     cssClass: "cls",
-                                    width: 80
+                                    width: 80,
+                                    cellTemplate: function(container, options) {
+                                        let bgColor = options.data.color || '#ffffff';
+                                        let textColor = options.data.textColor ||
+                                            '#000000';
+
+                                        $('<div>')
+                                            .css({
+                                                'background-color': bgColor,
+                                                'color': textColor,
+                                                'padding': '5px',
+                                                'border-radius': '4px',
+                                                'text-align': 'center'
+                                            })
+                                            .text(options.value)
+                                            .appendTo(container);
+                                    }
                                 },
                                 {
                                     dataField: "Weight",

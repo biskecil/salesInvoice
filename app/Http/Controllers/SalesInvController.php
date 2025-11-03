@@ -635,8 +635,8 @@ class SalesInvController extends Controller
         $data->TransDate = Carbon::parse($data->TransDate)->format('d.m.y');
         $data->pelanggan =  ucwords(strtolower($data->pelanggan));
 
-         if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
-       // if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BM'   ) {
+        if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BMJ' || $data->Grosir == 'BMS') {
+            // if ($data->Grosir == 'SA' || $data->Grosir == 'BM' || $data->Grosir == 'BM'   ) {
             $qrValue =  $this->Qrformat(
                 $data->subgrosir,
                 $data->tempat,
@@ -677,7 +677,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-      // return $pdf->stream('filename.pdf');
+        // return $pdf->stream('filename.pdf');
 
         $pdfContent = $pdf->output();
         $pdfBase64 = base64_encode($pdfContent);
@@ -962,7 +962,19 @@ class SalesInvController extends Controller
                 'product.SW as productSW',
                 'product.Description as productDesc',
                 'carat.Description as caratDesc',
-                'carat.SW as caratSW'
+                'carat.SW as caratSW',
+                DB::raw("CASE
+                WHEN carat.SW = '6K' THEN '#0000FF'
+                WHEN carat.SW = '8K' THEN '#00FF00'
+                WHEN carat.SW = '8KP' THEN '#CFB370'
+                WHEN carat.SW = '10K' THEN '#FFFF00'
+                WHEN carat.SW = '16K' THEN '#FF0000'
+                WHEN carat.SW = '17K' THEN '#FF6E01'
+                WHEN carat.SW = '17KP' THEN '#FF00FF'
+                WHEN carat.SW = '19K' THEN '#5F2987'
+                WHEN carat.SW = '20K' THEN '#FFC0CB'
+                ELSE '#808080'
+            END as color")
             )
             ->leftJoin('invoice', 'invoiceitem.IDM', '=', 'invoice.ID')
             ->leftJoin('product', 'product.ID', '=', 'invoiceitem.Product')
@@ -971,7 +983,7 @@ class SalesInvController extends Controller
             ->orderBy('ID', 'DESC')
             ->get()
             ->map(function ($row) {
-
+                $row->textColor = $this->getContrastYIQ($row->color);
                 $row->invoice_number =   $this->noNotaFormat($row->Event, $row->Grosir, $row->TransDate, $row->SW);
                 return $row;
             });
