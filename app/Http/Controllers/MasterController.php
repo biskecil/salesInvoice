@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -41,6 +42,10 @@ class MasterController extends Controller
     {
         return  str_replace(',', '', $value);
     }
+    public function show_user()
+    {
+        return view('user.show');
+    }
     public function show_pricelist()
     {
         return view('pricelist.show');
@@ -60,6 +65,10 @@ class MasterController extends Controller
     public function create_venue()
     {
         return view('venue.create');
+    }
+    public function create_user()
+    {
+        return view('user.create');
     }
     public function create_pricelist()
     {
@@ -101,6 +110,11 @@ class MasterController extends Controller
     {
         $data = DB::table('venue')->where('ID', $id)->first();
         return view('venue.edit', ['data' => $data]);
+    }
+    public function edit_user($user)
+    {
+        $data = DB::table('user')->where('UserName', $user)->first();
+        return view('user.edit', ['data' => $data]);
     }
     public function edit_pricelist($customer, $category, $carat)
     {
@@ -265,6 +279,88 @@ class MasterController extends Controller
             //throw $th;
             DB::rollBack();
             $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
+        }
+    }
+    public function store_user(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+            $validated = Validator::make($request->all(), [
+                'username' => 'required|unique:user,UserName',
+                'password' => 'required|confirmed|string',
+                'role' => 'required',
+            ]);
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
+            if ($validated->fails()) {
+                $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+
+            DB::table('user')->insert([
+                'UserName' => $request->username,
+                'password' =>   Hash::make($request->password),
+                'Role' =>   $request->role,
+            ]);
+
+
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, $th->getMessage(), null, null);
+            return response()->json($data, 500);
+        }
+    }
+    public function update_user(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+            $validated = Validator::make($request->all(), [
+                'password' => 'nullable|confirmed|string',
+                'role' => 'required',
+            ]);
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
+            if ($validated->fails()) {
+                $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+
+            $updateData = [
+                'Role' => $request->role,
+            ];
+
+            if (!empty($request->password)) {
+                $updateData['password'] = Hash::make($request->password);
+            }
+
+            DB::table('user')
+                ->where('userName', $request->username)
+                ->update($updateData);
+
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, $th->getMessage(), null, null);
             return response()->json($data, 500);
         }
     }
@@ -510,6 +606,15 @@ class MasterController extends Controller
     public function show_venue_data()
     {
         $data = DB::table('venue')->get()
+            ->map(function ($item, $index) {
+                $item->no = $index + 1;
+                return $item;
+            });
+        return response()->json(['data' => $data]);
+    }
+    public function show_user_data()
+    {
+        $data = DB::table('user')->get()
             ->map(function ($item, $index) {
                 $item->no = $index + 1;
                 return $item;

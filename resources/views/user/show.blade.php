@@ -112,12 +112,12 @@
                                 width: "7%",
                                 alignment: "center",
                                 cellTemplate: function(container, options) {
-                                    let id = options.data.ID;
+                                    let id = options.data.UserName;
 
                                     // Tombol Edit (pencil)
                                     $("<a>")
                                         .addClass("btn btn-sm btn-primary me-1")
-                                        .attr("href", "/venue/edit/" + id)
+                                        .attr("href", "/user/edit/" + id)
                                         .attr("title", "Edit")
                                         .html('<i class="fa-solid fa-pencil"></i>')
                                         .appendTo(container);

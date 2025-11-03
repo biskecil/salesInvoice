@@ -52,6 +52,14 @@ Route::prefix('venue')->group(function () {
     Route::post('/update', [MasterController::class, 'update_venue']);
     Route::get('/show_data', [MasterController::class, 'show_venue_data']);
 });
+Route::prefix('user')->group(function () {
+    Route::get('/show', [MasterController::class, 'show_user']);
+    Route::get('/create', [MasterController::class, 'create_user']);
+    Route::get('/edit/{id}', [MasterController::class, 'edit_user']);
+    Route::post('/store', [MasterController::class, 'store_user']);
+    Route::post('/update', [MasterController::class, 'update_user']);
+    Route::get('/show_data', [MasterController::class, 'show_user_data']);
+});
 Route::prefix('sales')->group(function () {
     Route::get('/getData/Nota/search', [SalesInvController::class, 'getDataNotaSearch']);
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
@@ -71,4 +79,3 @@ Route::prefix('sales')->group(function () {
 
 // Auth::routes();
 Auth::routes(['register' => false]);
-

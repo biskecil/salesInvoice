@@ -42,7 +42,7 @@
                         @include('user.action')
                         <div class="card-body pt-0">
                             <!-- FORM UTAMA -->
-                            <form action="/user/store" method="post" id="salesForm" class="mt-4">
+                            <form action="/user/update" method="post" id="salesForm" class="mt-4">
                                 @csrf
                                 <div class="row">
                                     <!-- LEFT -->
@@ -50,14 +50,14 @@
                                         <div class="mb-2 row">
                                             <label class="form-label col-sm-4">Username</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" name="username"
-                                                    placeholder="Username">
+                                                <input type="text" class="form-control" name="username" readonly
+                                                    placeholder="Username" value="{{ $data->UserName }}">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <div class="mb-2 row">
-                                            <label class="form-label col-sm-4">Password</label>
+                                            <label class="form-label col-sm-4">New Password</label>
                                             <div class="col-sm-8">
                                                 <input type="password" class="form-control" name="password"
                                                     placeholder="Password">
@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <div class="mb-2 row">
-                                            <label class="form-label col-sm-4">Password Confirm</label>
+                                            <label class="form-label col-sm-4">New Password Confirm</label>
                                             <div class="col-sm-8">
                                                 <input type="password" class="form-control" name="password_confirmation"
                                                     placeholder="Password Confirmation">
@@ -79,12 +79,16 @@
                                             <div class="col-sm-8">
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="role"
-                                                        id="role_admin" value="administrator" required>
+                                                        id="role_admin" value="administrator"
+                                                        {{ old('role', $data->Role ?? '') == 'administrator' ? 'checked' : '' }}
+                                                        required>
                                                     <label class="form-check-label" for="role_admin">Admin</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="role"
-                                                        id="role_staff" value="staff" required>
+                                                        id="role_staff" value="staff" 
+                                                        {{ old('role', $data->Role ?? '') == 'staff' ? 'checked' : '' }}
+                                                        required>
                                                     <label class="form-check-label" for="role_staff">Staff</label>
                                                 </div>
                                             </div>
