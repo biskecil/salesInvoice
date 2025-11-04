@@ -985,6 +985,10 @@ class SalesInvController extends Controller
             ->get()
             ->map(function ($row) {
                 $row->textColor = $this->getContrastYIQ($row->color);
+                $row->Person = ucwords(strtolower($row->Person));
+                $row->Customer = ucwords(strtolower($row->Customer));
+                $row->SubGrosir = ucwords(strtolower($row->SubGrosir));
+                $row->Address = ucwords(strtolower($row->Address));
                 $row->invoice_number =   $this->noNotaFormat($row->Event, $row->Grosir, $row->TransDate, $row->SW);
                 return $row;
             });

@@ -69,7 +69,7 @@
                                     <label class="form-label col-sm-4">Nama Pembeli</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
-                                            value="{{ $data->Person }}">
+                                            value="{{ $data->Person }}" id="pembeli">
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -712,6 +712,30 @@
                 });
             }
             $('#customer').on('input change', function() {
+                let value = $(this).val();
+                // Capitalize first letter of each word, lowercase the rest
+                value = value.replace(/\b\w+/g, function(word) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                });
+                $(this).val(value);
+            });
+            $('#pembeli').on('input change', function() {
+                let value = $(this).val();
+                // Capitalize first letter of each word, lowercase the rest
+                value = value.replace(/\b\w+/g, function(word) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                });
+                $(this).val(value);
+            });
+            $('#alamat').on('input change', function() {
+                let value = $(this).val();
+                // Capitalize first letter of each word, lowercase the rest
+                value = value.replace(/\b\w+/g, function(word) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                });
+                $(this).val(value);
+            });
+            $('#sub_grosir').on('input change', function() {
                 let value = $(this).val();
                 // Capitalize first letter of each word, lowercase the rest
                 value = value.replace(/\b\w+/g, function(word) {

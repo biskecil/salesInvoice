@@ -48,8 +48,6 @@
             font-size: 10px;
             margin-top: 3px;
         }
-
-
         .kode2 {
             font-size: 21px;
             font-weight: bold;
