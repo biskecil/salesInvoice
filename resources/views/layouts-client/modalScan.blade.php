@@ -14,7 +14,7 @@ data-bs-backdrop="static" data-bs-keyboard="false">
             <h6 class="mt-3">Pilih Kategori</h6>
             <select class="form-control select2Scan" id="descItem">
                 <option value="">Pilih Data</option>
-                @foreach ($desc as $d)
+                @foreach ($desc_filter as $d)
                     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
                 @endforeach
             </select>

@@ -256,6 +256,7 @@ class SalesInvController extends Controller
             $caratCustom = [1, 3, 13, 4, 5, 6];
             $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
             $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
+            $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5629, 5667, 5731, 5732, 5725])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
                 'SW',
@@ -276,7 +277,7 @@ class SalesInvController extends Controller
                 ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get();
             $venue = DB::table('venue')->orderBy('Description')->get();
 
-            return view('invoice.edit_form', ['desc' => $desc, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust, 'invoice_list' => $invoice_list]);
+            return view('invoice.edit_form', ['desc' => $desc, 'desc_filter' => $desc_filter, 'venue' => $venue, 'kadar' => $kadar, 'data' => $invoice, 'cust' => $cust, 'invoice_list' => $invoice_list]);
 
             // return response()->json([
             //     'html' => $html,
@@ -410,6 +411,7 @@ class SalesInvController extends Controller
 
             $cust = DB::table('customer')->orderBy('Description')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
+            $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5629, 5667, 5731, 5732, 5725])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
                 'SW',
@@ -428,7 +430,7 @@ class SalesInvController extends Controller
             )
                 ->orderBy('SW')->get();
 
-            return view('invoice.detail_form', ['desc' => $desc, 'kadar' => $kadar, 'data' => $invoice, 'invoice_list' => $invoice_list, 'cust' => $cust]);
+            return view('invoice.detail_form', ['desc' => $desc, 'desc_filter' => $desc_filter, 'kadar' => $kadar, 'data' => $invoice, 'invoice_list' => $invoice_list, 'cust' => $cust]);
         } else {
             return response()->json(['status' => 'Data kosong'], 500);
         }
@@ -897,6 +899,7 @@ class SalesInvController extends Controller
         $venue = DB::table('venue')->orderBy('Description')->get();
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
         $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
+        $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5629, 5667, 5731, 5732, 5725])->orderBy('Description', 'ASC')->get();
         $kadar = DB::table('carat')->select(
             'ID',
             'SW',
@@ -915,7 +918,7 @@ class SalesInvController extends Controller
         )
             ->whereIN('ID', $caratCustom)
             ->orderByRaw("FIELD(ID, " . implode(',', $caratCustom) . ")")->get();
-        return view('invoice.create_form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue, 'data' => $invoice]);
+        return view('invoice.create_form', ['desc' => $desc, 'desc_filter' => $desc_filter, 'kadar' => $kadar, 'cust' => $cust, 'venue' =>  $venue, 'data' => $invoice]);
     }
     public function getDataNotaPack(Request $request)
     {
