@@ -628,6 +628,34 @@
                                     width: 100
                                 }
                             ],
+                            onExporting(e) {
+                                e.component.beginUpdate();
+                            },
+                            onExported(e) {
+                                e.component.endUpdate();
+                            },
+                            customizeExcelCell: function(options) {
+                                const {
+                                    gridCell,
+                                    excelCell
+                                } = options;
+                                if (gridCell && gridCell.column.dataField === "caratSW") {
+                                    const bgColor = gridCell.data?.color || '#ffffff';
+                                    const textColor = gridCell.data?.textColor || '#000000';
+                                    excelCell.fill = {
+                                        type: 'pattern',
+                                        patternType: 'solid',
+                                        fgColor: {
+                                            argb: bgColor.replace('#', '')
+                                        }
+                                    };
+                                    excelCell.font = {
+                                        color: {
+                                            argb: textColor.replace('#', '')
+                                        }
+                                    };
+                                }
+                            },
                             summary: {
                                 groupItems: [{
                                     column: 'Weight',

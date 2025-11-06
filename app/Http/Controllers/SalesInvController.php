@@ -256,7 +256,7 @@ class SalesInvController extends Controller
             $caratCustom = [1, 3, 13, 4, 5, 6];
             $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
             $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
-            $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5629, 5667, 5731, 5732, 5725])->orderBy('Description', 'ASC')->get();
+            $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
                 'SW',
@@ -411,7 +411,7 @@ class SalesInvController extends Controller
 
             $cust = DB::table('customer')->orderBy('Description')->get();
             $desc = DB::table('product')->select('ID', 'Description')->get();
-            $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5629, 5667, 5731, 5732, 5725])->orderBy('Description', 'ASC')->get();
+            $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
                 'SW',
@@ -899,7 +899,7 @@ class SalesInvController extends Controller
         $venue = DB::table('venue')->orderBy('Description')->get();
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
         $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
-        $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5629, 5667, 5731, 5732, 5725])->orderBy('Description', 'ASC')->get();
+        $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
         $kadar = DB::table('carat')->select(
             'ID',
             'SW',
