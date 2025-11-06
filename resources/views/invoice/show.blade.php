@@ -337,6 +337,16 @@
                     url: '/sales/getData/NotaAll',
                     type: 'GET',
                     success: function(data) {
+                        const now = new Date();
+                        const formattedDate = now.toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        }).replace(/\//g, '-');
+
                         let dataGrid = $("#invTable").dxDataGrid({
                             dataSource: data.data,
                             keyExpr: "IDM",
@@ -377,8 +387,8 @@
                             },
                             "export": {
                                 enabled: true,
-                                fileName: "Penerimaan Barang",
-                                allowExportSelectedData: true
+                                fileName: `Daftar Invoice ${formattedDate}`,
+                                allowExportSelectedData: false
                             },
                             onToolbarPreparing: function(e) {
                                 e.toolbarOptions.items.unshift({
