@@ -174,13 +174,15 @@
                                 Pricelist
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                                href="/user/show">
-                                <i class="bi bi-receipt me-2"></i>
-                                Manajemen User
-                            </a>
-                        </li>
+                        @if (Auth::user() && Auth::user()->Role === 'administrator')
+                            <li class="nav-item">
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                    href="/user/show">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Manajemen User
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
             </nav>
