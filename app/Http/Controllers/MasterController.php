@@ -596,7 +596,7 @@ class MasterController extends Controller
     }
     public function show_grosir_data()
     {
-        $data = DB::table('customer')->get()
+        $data = DB::table('customer')->orderBy('Description')->get()
             ->map(function ($item, $index) {
                 $item->no = $index + 1;
                 return $item;
@@ -605,7 +605,7 @@ class MasterController extends Controller
     }
     public function show_venue_data()
     {
-        $data = DB::table('venue')->get()
+        $data = DB::table('venue')->orderBy('Description')->get()
             ->map(function ($item, $index) {
                 $item->no = $index + 1;
                 return $item;
