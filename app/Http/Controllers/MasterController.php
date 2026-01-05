@@ -73,7 +73,7 @@ class MasterController extends Controller
     public function create_pricelist()
     {
         $caratCustom = [1, 3, 13, 4, 5, 6];
-        $descCustom = ['PGP', 'PCT', 'PAT', 'PCC', 'PGL', 'PLT', 'PST', 'PRB', 'PRT', 'PAV', 'PRV', 'PMN', 'PKP', 'PKR', 'PKL'];
+        $descCustom = ['PGP', 'PCT', 'PAT', 'PCC', 'PGL', 'PLT', 'PST', 'PRB', 'PRT', 'PAV', 'PRV', 'PMN', 'PKP', 'PKR', 'PKL','PG1'];
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
         $desc = DB::table('product')->select('ID', 'SW', 'Description')->whereIN('SW', $descCustom)->orderByRaw("FIELD(SW, '" . implode("','", $descCustom) . "')")->get();
         $kadar = DB::table('carat')->select(
