@@ -630,23 +630,45 @@
                             ],
                             summary: {
                                 groupItems: [{
-                                    column: 'Weight',
-                                    summaryType: 'sum',
-                                    valueFormat: {
-                                        type: "fixedPoint",
-                                        precision: 2
+                                        column: 'Weight',
+                                        summaryType: 'sum',
+                                        showInColumn: 'Weight',
+                                        alignByColumn: true,
+                                        valueFormat: {
+                                            type: "fixedPoint",
+                                            precision: 2
+                                        },
+                                        displayFormat: "{0}",
+                                        customizeText: function(data) {
+                                            return data.value.toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                        }
                                     },
-                                    displayFormat: "{0}",
-                                    customizeText: function(data) {
-                                        return data.value.toLocaleString('en-US', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        });
+                                    {
+                                        column: 'Netto',
+                                        summaryType: 'sum',
+                                        showInColumn: 'Netto',
+                                        alignByColumn: true,
+                                        valueFormat: {
+                                            type: "fixedPoint",
+                                            precision: 2
+                                        },
+                                        displayFormat: "{0}",
+                                        customizeText: function(data) {
+                                            return data.value.toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                        }
                                     }
-                                }],
+
+                                ],
                                 totalItems: [{
                                     column: "Weight",
                                     summaryType: "sum",
+                                    showInColumn: 'Weight',
                                     valueFormat: {
                                         type: "fixedPoint",
                                         precision: 2
