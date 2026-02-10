@@ -290,6 +290,14 @@
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', false);
+            $('#btnCetakBarcode')
+                .closest('.btn-group')
+                .find('.dropdown-toggle')
+                .prop('disabled', true);
+            $('#btnCetakParent')
+                .closest('.btn-group')
+                .find('.dropdown-toggle')
+                .prop('disabled', true);
 
             $('#cariDataNota').on('keydown', function(e) {
                 if (e.key === 'Enter') {

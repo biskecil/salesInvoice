@@ -340,8 +340,12 @@
                     }
                 });
             });
+            $('#btnCetakParent').on('click', function() {
+                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+                printDirectNota('semua', noNota);
+            });
             $('#btnCetak').on('click', function() {
-             //   window.open('/sales/cetakNota/semua/' + noNota, '_blank');
+                //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
                 printDirectNota('semua', noNota);
             });
             $('#btnCetakCust').on('click', function() {
@@ -352,9 +356,21 @@
                 //window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
                 printDirectNota('kosong', noNota);
             });
+            $('#btnCetakCust2').on('click', function() {
+                //window.open('/sales/cetakNota/hargacust2/' + noNota, '_blank');
+                printDirectNota('hargacust2', noNota);
+            });
             $('#btnCetakBarcode').on('click', function() {
-               // window.open('/sales/cetakBarcode/' + noNota, '_blank');
-                printDirectBarcode(noNota)
+                //window.open('/sales/cetakBarcode/' + noNota +'/2', '_blank');
+                printDirectBarcode(noNota, 1)
+            });
+            $('#btnCetakBarcode1').on('click', function() {
+                //window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                printDirectBarcode(noNota, 1)
+            });
+            $('#btnCetakBarcode2').on('click', function() {
+                //window.open('/sales/cetakBarcode/' + noNota, '_blank');
+                printDirectBarcode(noNota, 2)
             });
 
             $('#cariDataNota').on('keydown', function(e) {
@@ -364,13 +380,13 @@
                 }
             });
 
-            function printDirectBarcode(data) {
+            function printDirectBarcode(data, page) {
                 if (!printService.isConnected()) {
                     console.error("Printer WebSocket tidak aktif");
                     return;
                 }
                 try {
-                    fetch('/sales/cetakBarcode/' + data)
+                    fetch('/sales/cetakBarcode/' + data + '/' + page)
                         .then(res => res.json())
                         .then(res => {
                             const cleanBase64 = res.url.replace(/^data:application\/pdf;base64,/, '');

@@ -459,17 +459,17 @@ class SalesInvController extends Controller
         $kadar = DB::table('carat')->select('ID', 'SW')->orderBy('SW')->get();
         return view('invoice.form', ['desc' => $desc, 'kadar' => $kadar, 'cust' => $cust, 'data' => $invoice]);
     }
-    public function cetakNota($jenis, $noNota)
+    public function buildNota($jenis, $noNota)
     {
         $data = DB::table('invoice')
             ->select(
                 'invoice.*',
                 DB::raw("CONCAT(
-            CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
-            Grosir,
-            DATE_FORMAT(TransDate, '%y%m'),
-            LPAD(SW, 4, '0')
-        ) as noNota")
+        CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+        Grosir,
+        DATE_FORMAT(TransDate, '%y%m'),
+        LPAD(SW, 4, '0')
+    ) as noNota")
             )
             ->selectRaw('SubGrosir as subgrosir')
             ->selectRaw('Address as tempat')
@@ -489,11 +489,11 @@ class SalesInvController extends Controller
                     ->limit(1)
             ])
             ->whereRaw("CONCAT(
-                CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
-                Grosir,
-                DATE_FORMAT(TransDate, '%y%m'),
-                LPAD(SW, 4, '0')
-            ) = ?", [$noNota])
+            CASE WHEN Event = 'Pameran' THEN 'P' ELSE 'I' END,
+            Grosir,
+            DATE_FORMAT(TransDate, '%y%m'),
+            LPAD(SW, 4, '0')
+        ) = ?", [$noNota])
             ->first();
         if ($data) {
             $getGrosirID = DB::select("SELECT ID,Description FROM customer WHERE SW = ?", [$data->Grosir]);
@@ -556,10 +556,6 @@ class SalesInvController extends Controller
                 $invoice->isCustomer = false;
             }
 
-
-
-
-
             $invoice->ID = $data->ID;
             $invoice->SW = $data->noNota;
             $invoice->TransDate = Carbon::parse($data->TransDate)->format('d/m/Y');
@@ -572,19 +568,34 @@ class SalesInvController extends Controller
             $invoice->Phone = $data->Phone;
             $invoice->Remarks = $data->Remarks;
             $invoice->totalgw = number_format($data->totalgw, 2, '.', ',');
-
             $invoice->Carat = $data_item->first()->caratSW;
             $invoice->ItemList = $data_list;
+
+            return $invoice;
+        }
+    }
+    public function cetakNota($jenis, $noNota)
+    {
+
+        $list_invoice = [];
+
+        if ($jenis == 'hargacust2') {
+            $list_invoice[] = $this->buildNota('harga', $noNota);
+            $list_invoice[] = $this->buildNota('hargacust', $noNota);
+        } else {
+
+            $list_invoice[] = $this->buildNota($jenis, $noNota);
         }
 
+
         $html = view('invoice.cetakNota', [
-            'data' => $invoice,
+            'data' => $list_invoice,
         ])->render();
 
-        return $this->cetakNotaDirectPrinting($html, $data->noNota);
+        return $this->cetakNotaDirectPrinting($html);
         // return view('invoice.cetakNota', ['data' => $invoice]);
     }
-    public function cetakBarcode($noNota)
+    public function cetakBarcode($noNota, $page)
     {
         $data = DB::table('invoice')
             ->select(
@@ -665,13 +676,14 @@ class SalesInvController extends Controller
 
         $html = view('invoice.cetakBarcode', [
             'data' => $data,
+            'page' => $page,
             'qr' => $qrCodeBase64 ?? null
         ])->render();
 
         return $this->cetakBarcodeDirectPrinting($html, $data->noNota);
     }
 
-    public function cetakNotaDirectPrinting($returnHTML, $nota)
+    public function cetakNotaDirectPrinting($returnHTML)
     {
 
         $width = 130 / 25.4 * 72;
@@ -679,7 +691,7 @@ class SalesInvController extends Controller
         $pdf = PDF::loadHtml($returnHTML);
         $customPaper = array(0, 0, $height, $width);
         $pdf->setPaper($customPaper, 'landscape');
-        // return $pdf->stream('filename.pdf');
+        //return $pdf->stream('filename.pdf');
 
         $pdfContent = $pdf->output();
         $pdfBase64 = base64_encode($pdfContent);

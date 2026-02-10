@@ -18,6 +18,16 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('assets/images/favicon.png') !!}">
 
     <style>
+        .btn-info-dark {
+            background-color: #0bb5d8;
+            border-color: #0bb5d8;
+        }
+
+        .btn-info-dark:hover {
+            background-color: #0891b2;
+            border-color: #0891b2;
+        }
+
         .bg-primary-color {
             background-color: #913030 !important;
         }

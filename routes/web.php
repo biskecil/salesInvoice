@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\SalesInvController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,7 +75,7 @@ Route::prefix('sales')->group(function () {
     Route::get('/detail/{Nota}', [SalesInvController::class, 'detail']);
     Route::put('/update/{ID}', [SalesInvController::class, 'update']);
     Route::get('/cetakNota/{style}/{ID}', [SalesInvController::class, 'cetakNota']);
-    Route::get('/cetakBarcode/{Nota}', [SalesInvController::class, 'cetakBarcode']);
+    Route::get('/cetakBarcode/{Nota}/{Page}', [SalesInvController::class, 'cetakBarcode']);
 });
 
 // Auth::routes();

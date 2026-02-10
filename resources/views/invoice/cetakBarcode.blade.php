@@ -57,6 +57,7 @@
 </head>
 
 <body>
+    @for($i = 1; $i <= $page; $i++)
     <table style="width:100%;  padding-top: 1mm;padding-left: 10.5mm;padding-right: 9mm;" border="0">
         <tr>
             <td style="text-align:left;vertical-align:top">
@@ -84,6 +85,11 @@
             @endif
         </tr>
     </table>
+    @if($i < $page)
+    <div style="page-break-after: always;"></div>
+@endif
+
+@endfor
 </body>
 
 

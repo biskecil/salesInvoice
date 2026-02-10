@@ -90,139 +90,121 @@
 </head>
 
 <body>
+
     <div class="container">
-        <table style=" width: 100%;" border="0" class="header-tab">
-            <tr>
-                <td width="60%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
-                <td width="10%" style="text-align: right;">Customer :</td>
-                <td> {{ $data->Customer }}</td>
-            </tr>
-            <tr>
-                <td>Nota No : {{ $data->SW }}</td>
-                <td></td>
-                <td> {{ $data->Address }}
-                </td>
-            </tr>
-            <tr>
-                <td>Tanggal : {{ $data->TransDate }}</td>
-                <td></td>
-                <td> {{ $data->Phone }}</td>
-            </tr>
-            @if ($data->Grosir != '')
+        @for ($j = 0; $j < count($data); $j++)
+            <table style=" width: 100%;" border="0" class="header-tab">
                 <tr>
+                    <td width="60%" style="font-size: 17px;"><b><u>NOTA CT</u></b></td>
+                    <td width="10%" style="text-align: right;">Customer :</td>
+                    <td> {{ $data[$j]->Customer }}</td>
+                </tr>
+                <tr>
+                    <td>Nota No : {{ $data[$j]->SW }}</td>
                     <td></td>
-                    <td style="text-align: right;vertical-align:top"><b>Grosir:</b></td>
-                    <td>
-                        @if ($data->SubGrosir)
-                            {{ $data->SubGrosir }} -
-                        @endif
-                        {{ $data->Grosir }}
+                    <td> {{ $data[$j]->Address }}
                     </td>
                 </tr>
-            @endif
-
-        </table>
-        {{-- <table style=" width: 100%;" border="1">
-            <tr>
-                <td style="text-align: left" rowspan="2"  width="70%">
-                    <div style="font-size: 17px; margin-bottom: 8px;"><b><u>NOTA CT</u></b></div>
-                    <div style="margin-bottom: 4px;">Nota No : {{ $data->SW }}</div>
-                    <div>Tanggal : {{ $data->TransDate }}</div>
-                </td>
-                <td style="text-align: right; vertical-align: center;" width="10%">
-                    Customer :
-                </td>
-                <td style="text-align: left; vertical-align: center;" width="20%">
-                    {{ $data->Customer }}<br>
-                    {{ $data->Address }}
-
-                </td>
-            </tr>
-            <td  style="text-align: right; vertical-align: center;" >
-                <b>Grosir:</b>
-            </td>
-            <td  style="text-align: left; vertical-align: center;">
-                {{ $data->Grosir }}
-                
-
-            </td>
-            <tr>
-
-            </tr>
-        </table> --}}
-
-        <table class="items-list" style="margin-top:2px">
-            <thead>
                 <tr>
-                    <th>Kadar</th>
-                    <th>Kategori</th>
-                    <th>Bruto</th>
-                    <th>%</th>
-                    <th>24K</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($data->ItemList as $item)
-                    <tr>
-                        <td style="text-align: center;">{{ $item->caratDesc }}</td>
-                        <td style="text-align: left;padding-left:10px">{{ $item->productDesc }}</td>
-                        <td style="text-align: right;padding-right:10px">{{ $item->gw }}</td>
-                        <td>{{ $item->price }}</td>
-                        <td style="text-align: right;padding-right:10px">{{ $item->nw }}</td>
-                    </tr>
-                @endforeach
-                @for ($i = count($data->ItemList); $i < 10; $i++)
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                @endfor
-            </tbody>
-            <tfoot>
-                <tr class="totals">
-                    <td colspan="2">Total</td>
-                    <td style="text-align: right;padding-right:10px">{{ $data->totalgw }}</td>
+                    <td>Tanggal : {{ $data[$j]->TransDate }}</td>
                     <td></td>
-                    <td style="text-align: right;padding-right:10px">{{ $data->totalnw }}</td>
+                    <td> {{ $data[$j]->Phone }}</td>
                 </tr>
-            </tfoot>
-        </table>
-        <table style="width: 101%" border="0">
-            <tr>
-                <td style="vertical-align: bottom; text-align: center; height: 70px;">
-                    Customer<br><br><br><br><br><br>
-                    ( _____________________ )<br>
-                </td>
-                <td style="vertical-align: bottom; text-align: center; height: 70px;">
-                    Sales<br><br><br><br><br><br>
-                    ( _____________________ )<br>
-                </td>
-                <td style="text-align: left; vertical-align: top; width: 270px; border-top: 1px solid black; border-left: 1px solid black;border-right: 1px solid black; border-bottom: 1px solid black;"
-                    rowspan="2">
-                    {{-- <div class="box" style="height: 120px;">
+                @if ($data[$j]->Grosir != '')
+                    <tr>
+                        <td></td>
+                        <td style="text-align: right;vertical-align:top"><b>Grosir:</b></td>
+                        <td>
+                            @if ($data[$j]->SubGrosir)
+                                {{ $data[$j]->SubGrosir }} -
+                            @endif
+                            {{ $data[$j]->Grosir }}
+                        </td>
+                    </tr>
+                @endif
+            </table>
+            <table class="items-list" style="margin-top:2px">
+                <thead>
+                    <tr>
+                        <th>Kadar</th>
+                        <th>Kategori</th>
+                        <th>Bruto</th>
+                        <th>%</th>
+                        <th>24K</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($data[$j]->ItemList as $item)
+                        <tr>
+                            <td style="text-align: center;">{{ $item->caratDesc }}</td>
+                            <td style="text-align: left;padding-left:10px">{{ $item->productDesc }}</td>
+                            <td style="text-align: right;padding-right:10px">{{ $item->gw }}</td>
+                            <td>{{ $item->price }}</td>
+                            <td style="text-align: right;padding-right:10px">{{ $item->nw }}</td>
+                        </tr>
+                    @endforeach
+                    @for ($i = count($data[$j]->ItemList); $i < 10; $i++)
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    @endfor
+                </tbody>
+                <tfoot>
+                    <tr class="totals">
+                        <td colspan="2">Total</td>
+                        <td style="text-align: right;padding-right:10px">{{ $data[$j]->totalgw }}</td>
+                        <td></td>
+                        <td style="text-align: right;padding-right:10px">{{ $data[$j]->totalnw }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <table style="width: 101%" border="0">
+                <tr>
+                    <td style="vertical-align: bottom; text-align: center; height: 70px;">
+                        Customer<br><br><br><br><br><br>
+                        ( _____________________ )<br>
+                    </td>
+                    <td style="vertical-align: bottom; text-align: center; height: 70px;">
+                        Sales<br><br><br><br><br><br>
+                        ( _____________________ )<br>
+                    </td>
+                    <td style="text-align: left; vertical-align: top; width: 270px; border-top: 1px solid black; border-left: 1px solid black;border-right: 1px solid black; border-bottom: 1px solid black;"
+                        rowspan="2">
+                        {{-- <div class="box" style="height: 120px;">
                         Keterangan : {{ $data->Remarks }}
                     </div> --}}
-                    Keterangan : {{ $data->Venue }}
+                        Keterangan : {{ $data[$j]->Venue }}
 
-                    @if ($data->isCustomer)
-                        <div style="position: absolute; bottom: 30px; right: 150;">
-                            CUSTOMER
-                        </div>
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2"
-                    style="text-align: left; vertical-align: top; padding: 0; font-size: 10px; line-height: 1;padding-top:5px">
-                    <u>*Pastikan Berat Barang yang Anda Terima sesuai dengan Nota</u>
-                </td>
-                <td style="border: none;"></td> <!-- empty to align with remarks column -->
-            </tr>
-        </table>
+                        @if ($data[$j]->isCustomer)
+                            <div style="position: absolute; bottom: 30px; right: 150;">
+                                CUSTOMER
+                            </div>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"
+                        style="text-align: left; vertical-align: top; padding: 0; font-size: 10px; line-height: 1;padding-top:5px">
+                        <u>*Pastikan Berat Barang yang Anda Terima sesuai dengan Nota</u>
+                    </td>
+                    <td style="border: none;"></td> <!-- empty to align with remarks column -->
+                </tr>
+            </table>
+
+            
+
+           
+            @if ($j < count($data) - 1)
+                <div style="page-break-after: always;"></div>
+            @endif
+
+        @endfor
     </div>
+
 </body>
 
 </html>

@@ -64,8 +64,8 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Nama Pembeli</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Nama pembeli"
-                                            name="pembeli" id="pembeli">
+                                        <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
+                                            id="pembeli">
                                     </div>
                                 </div>
                                 <div class="mb-2 row">
@@ -309,7 +309,14 @@
             $('#btnCetakBarcode').prop('disabled', true);
             $('#btnEdit').prop('disabled', true);
             $('.buttonForm').prop('disabled', false);
-
+            $('#btnCetakBarcode')
+                .closest('.btn-group')
+                .find('.dropdown-toggle')
+                .prop('disabled', true);
+            $('#btnCetakParent')
+                .closest('.btn-group')
+                .find('.dropdown-toggle')
+                .prop('disabled', true);
 
             $('#cariDataNota').on('keydown', function(e) {
                 if (e.key === 'Enter') {
@@ -745,7 +752,7 @@
                             if (priceCustInput) {
                                 let newVal = hasil.priceCust || 0;
                                 anPriceCust.set(newVal);
-                               
+
                             }
 
                             if (brutoInput && priceCustInput) {
@@ -856,7 +863,7 @@
                         if (priceCustInput) {
                             let newVal = hasil.priceCust || 0;
                             anPriceCust.set(newVal);
-                            
+
                             // if (newVal !== 0) {
                             // }
                         }
@@ -1496,11 +1503,11 @@
                         document.getElementById("customer").value = data.nt ?? '';
                         document.getElementById("linkid").value = data.it ?? '';
                         document.getElementById("phone").value = data.np ?? '';
-                       
-                        $('#sub_grosir').trigger('input'); 
-                        $('#alamat').trigger('input'); 
-                        $('#customer').trigger('input'); 
-                        $('#phone').trigger('input'); 
+
+                        $('#sub_grosir').trigger('input');
+                        $('#alamat').trigger('input');
+                        $('#customer').trigger('input');
+                        $('#phone').trigger('input');
 
 
                         let modalEl = document.getElementById('scanQRModal');
