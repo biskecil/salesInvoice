@@ -302,6 +302,7 @@
 
 
 
+
             let dataNota = '';
             $('#btnTambah').prop('disabled', true);
             $('#btnBatal').prop('disabled', false);
@@ -324,6 +325,8 @@
                     $('#btnCari').click();
                 }
             });
+
+
 
             $('#btnCari').on('click', function() {
                 dataNota = $('#cariDataNota').val();
@@ -351,10 +354,20 @@
             });
 
 
+
+
             $('#btnBatal').on('click', function() {
                 window.location.href = '/';
             });
         });
+
+
+        function invalidate(row) {
+            grosirLocked = false;
+            row.find('.category').val('');
+            row.find('.category_desc').val('');
+            alert('Produk tidak valid');
+        }
 
         function DateNow() {
             let today = new Date();
@@ -443,6 +456,8 @@
                 }
             });
         }
+
+
 
         function loadSelect2Scan() {
             $('.select2Scan').val('').trigger('change');
@@ -671,6 +686,14 @@
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
 `;
+            let productLocked = false;
+            const productData = @json($desc);
+            const productBySW = new Map();
+            const productByDesc = new Map();
+            productData.forEach(item => {
+                productBySW.set((item.SW || '').toLowerCase(), item);
+                productByDesc.set((item.Description || '').toLowerCase(), item);
+            });
 
             // transDateinput.value = `${yyyy}-${mm}-${dd}`;
 
@@ -711,6 +734,104 @@
                     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
                 });
                 $(this).val(value);
+            });
+
+            $(document).on('blur', '.category_desc', function() {
+
+                const input = $(this);
+                const rawVal = input.val().trim();
+                const row = input.closest('tr');
+                const categoryField = row.find('.category');
+
+
+                if (!rawVal) {
+                    categoryField.val('')
+                    return;
+                }
+
+                const val = rawVal.toLowerCase();
+
+                let found = productBySW.get(val) || productByDesc.get(val);
+
+                if (found) {
+                    input.val(found.Description);
+                    categoryField.val(found.SW);
+
+                    let cadarInput = row.find('.cadar_item');
+                    let brutoInput = row.find('.wbruto')[0];
+                    let priceInput = row.find('.price')[0];
+                    let priceCustInput = row.find(".pricecust")[0];
+                    let netInput = row.find('.wnet')[0];
+                    let netInputCust = row.find('.wnetocust')[0];
+
+                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+                    fetchPrice(setGrosir, found.SW, cadarInput.val(), 0).then(hasil => {
+                        if (anPrice) {
+                            anPrice.set(hasil.price);
+                        } else {
+                            console.warn('AutoNumeric belum terpasang di', priceInput);
+                        }
+
+
+
+                        if (priceCustInput) {
+                            let newVal = hasil.priceCust || 0;
+                            anPriceCust.set(newVal);
+                            // if (newVal !== 0) {
+                            // }
+                        }
+
+                        if (brutoInput && priceCustInput) {
+                            let bruto = anBruto.getNumber() || 0;
+                            let priceCust = anPriceCust.getNumber() || 0;
+                            let netCust = new Decimal(bruto).times(priceCust);
+                            anNetCust.set(netCust);
+
+                        }
+                        if (brutoInput && priceInput && netInput) {
+                            let bruto = anBruto.getNumber() || 0;
+                            let price = anPrice.getNumber() || 0;
+                            let net = new Decimal(bruto).times(price);
+                            anNet.set(net);
+                        }
+                        let totalnwall = 0;
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnwall += an.getNumber() || 0;
+                        });
+
+                        antotalnwallInput.set(totalnwall);
+
+                    });
+
+                } else {
+                    invalidate(row);
+                }
+
+
+            });
+
+
+            $(document).on('keydown', '.category_desc', function(e) {
+
+                const input = $(this);
+                const row = input.closest('tr');
+                const categoryField = row.find('.category');
+
+
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                    e.preventDefault();
+
+                    input.val('');
+                    categoryField.val('');
+
+                    input.data('locked', false);
+                }
             });
 
             $('#grosir').on('change', async function() {
@@ -1050,22 +1171,25 @@
                 }
 
 
-                if (setGrosir == '' || carat == '') {
+                // if (setGrosir == '' || carat == '') {
 
-                    Swal.fire({
-                        title: "Info",
-                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
+                //     Swal.fire({
+                //         title: "Info",
+                //         text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                //         icon: "warning",
+                //         confirmButtonText: "OK"
+                //     });
 
-                    return false;
-                }
+                //     return false;
+                // }
 
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
                 <td class="text-center"></td>
-            <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
+            <td>
+                <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%">
+                <input type="hidden" name="category[]" class="category" style="max-width:100%">
+                </td>
             <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
             </td>
@@ -1126,6 +1250,8 @@
                 // });
                 reindexRows()
                 loadSelect2();
+
+
 
 
                 newRow.querySelectorAll('.autonumDec2').forEach(el => {
@@ -1214,64 +1340,64 @@
 
 
             });
-            $('#itemsTable tbody').on('change', 'select[name="category[]"]', function() {
+            // $('#itemsTable tbody').on('change', 'select[name="category[]"]', function() {
 
-                let tr = $(this).closest('tr');
-                let selectedCat = $(this).val();
+            //     let tr = $(this).closest('tr');
+            //     let selectedCat = $(this).val();
 
-                let cadarInput = tr.find('.cadar_item');
-                let brutoInput = tr.find('.wbruto')[0];
-                let priceInput = tr.find('.price')[0];
-                let priceCustInput = tr.find(".pricecust")[0];
-                let netInput = tr.find('.wnet')[0];
-                let netInputCust = tr.find('.wnetocust')[0];
+            //     let cadarInput = tr.find('.cadar_item');
+            //     let brutoInput = tr.find('.wbruto')[0];
+            //     let priceInput = tr.find('.price')[0];
+            //     let priceCustInput = tr.find(".pricecust")[0];
+            //     let netInput = tr.find('.wnet')[0];
+            //     let netInputCust = tr.find('.wnetocust')[0];
 
-                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
-
-
-                fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
-                    if (anPrice) {
-                        anPrice.set(hasil.price);
-                    } else {
-                        console.warn('AutoNumeric belum terpasang di', priceInput);
-                    }
+            //     let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+            //     let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+            //     let anNet = AutoNumeric.getAutoNumericElement(netInput);
+            //     let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+            //     let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
 
 
+            //     fetchPrice(setGrosir, selectedCat, cadarInput.val(), 0).then(hasil => {
+            //         if (anPrice) {
+            //             anPrice.set(hasil.price);
+            //         } else {
+            //             console.warn('AutoNumeric belum terpasang di', priceInput);
+            //         }
 
-                    if (priceCustInput) {
-                        let newVal = hasil.priceCust || 0;
-                        anPriceCust.set(newVal);
-                        // if (newVal !== 0) {
-                        // }
-                    }
 
-                    if (brutoInput && priceCustInput) {
-                        let bruto = anBruto.getNumber() || 0;
-                        let priceCust = anPriceCust.getNumber() || 0;
-                        let netCust = new Decimal(bruto).times(priceCust);
-                        anNetCust.set(netCust);
 
-                    }
-                    if (brutoInput && priceInput && netInput) {
-                        let bruto = anBruto.getNumber() || 0;
-                        let price = anPrice.getNumber() || 0;
-                        let net = new Decimal(bruto).times(price);
-                        anNet.set(net);
-                    }
-                    let totalnwall = 0;
-                    document.querySelectorAll(".wnet").forEach(el => {
-                        const an = AutoNumeric.getAutoNumericElement(el);
-                        totalnwall += an.getNumber() || 0;
-                    });
+            //         if (priceCustInput) {
+            //             let newVal = hasil.priceCust || 0;
+            //             anPriceCust.set(newVal);
+            //             // if (newVal !== 0) {
+            //             // }
+            //         }
 
-                    antotalnwallInput.set(totalnwall);
+            //         if (brutoInput && priceCustInput) {
+            //             let bruto = anBruto.getNumber() || 0;
+            //             let priceCust = anPriceCust.getNumber() || 0;
+            //             let netCust = new Decimal(bruto).times(priceCust);
+            //             anNetCust.set(netCust);
 
-                });
-            });
+            //         }
+            //         if (brutoInput && priceInput && netInput) {
+            //             let bruto = anBruto.getNumber() || 0;
+            //             let price = anPrice.getNumber() || 0;
+            //             let net = new Decimal(bruto).times(price);
+            //             anNet.set(net);
+            //         }
+            //         let totalnwall = 0;
+            //         document.querySelectorAll(".wnet").forEach(el => {
+            //             const an = AutoNumeric.getAutoNumericElement(el);
+            //             totalnwall += an.getNumber() || 0;
+            //         });
+
+            //         antotalnwallInput.set(totalnwall);
+
+            //     });
+            // });
 
             //AUTO CLEAR
             // itemsTable.addEventListener("focus", function(e) {
