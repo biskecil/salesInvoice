@@ -366,7 +366,13 @@
             grosirLocked = false;
             row.find('.category').val('');
             row.find('.category_desc').val('');
-            alert('Produk tidak valid');
+            Swal.fire({
+                icon: 'warning',
+                text: "Item tidak ditemukan",
+                customClass: {
+                    popup: 'text-sm'
+                }
+            });
         }
 
         function DateNow() {
@@ -386,7 +392,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 2,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -396,7 +402,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 3,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -420,6 +426,12 @@
                 if (e.altKey && e.key === "ArrowDown") {
                     e.preventDefault();
                     document.getElementById("addRow").click();
+                    setTimeout(() => {
+                        const lastRow = $('#itemsTable tr:last');
+                        const input = lastRow.find('.category_desc');
+
+                        input.focus();
+                    }, 0);
                 }
                 if (e.altKey && e.key.toLowerCase() === "q") {
                     e.preventDefault();
@@ -476,7 +488,13 @@
                 } else {
                     input.val('');
                     categoryField.val('');
-                    alert('Produk tidak valid');
+                    Swal.fire({
+                        icon: 'warning',
+                        text: "Item tidak ditemukan",
+                        customClass: {
+                            popup: 'text-sm'
+                        }
+                    });
                 }
             });
 
@@ -657,7 +675,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 2,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -667,7 +685,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 3,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -1251,7 +1269,7 @@
                 <td class="text-center"></td>
             <td>
                 <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%">
-                <input type="text" name="category[]" class="category" style="max-width:100%">
+                <input type="hidden" name="category[]" class="category" style="max-width:100%">
                 </td>
             <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
@@ -1396,7 +1414,7 @@
                  <td class="text-center"></td>
                <td>
                    <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%" >
-               <input type="text" name="category[]" class="category" style="max-width:100%">
+               <input type="hidden" name="category[]" class="category" style="max-width:100%">
                 <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
             </td>
@@ -1418,7 +1436,7 @@
                             `;
                 itemsTable.appendChild(newRow);
                 const input = $(newRow).find('.category_desc');
-               
+
 
                 newRow.querySelectorAll('.autonumDec2').forEach(el => {
                     new AutoNumeric(el, optionsDec2);

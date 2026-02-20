@@ -1193,7 +1193,7 @@ class SalesInvController extends Controller
                     $total_weight +=  $this->parseNumeric($request->wbruto[$i]);
                     $descCat = $request->category[$i];
                     $descCarat = $request->cadar[$i];
-                    $getProductSW = DB::select("SELECT ID FROM product WHERE Description = ?", [$descCat]);
+                    $getProductSW = DB::select("SELECT ID FROM product WHERE SW = ?", [$descCat]);
                     $getCarat = DB::select("SELECT ID FROM carat  WHERE SW  = ?", [$descCarat]);
 
                     DB::table('invoiceitem')->insertGetId([
