@@ -658,8 +658,8 @@
                                         displayFormat: "{0}",
                                         customizeText: function(data) {
                                             return data.value.toLocaleString('en-US', {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2
+                                                minimumFractionDigits: 3,
+                                                maximumFractionDigits: 3
                                             });
                                         }
                                     }

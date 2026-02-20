@@ -363,7 +363,6 @@
 
 
         function invalidate(row) {
-            grosirLocked = false;
             row.find('.category').val('');
             row.find('.category_desc').val('');
             Swal.fire({
@@ -510,7 +509,6 @@
                     input.val('');
                     categoryField.val('');
 
-                    input.data('locked', false);
                 }
             });
         }
@@ -741,7 +739,6 @@
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
 `;
-            let productLocked = false;
             const productData = @json($desc);
             const productBySW = new Map();
             const productByDesc = new Map();
@@ -910,7 +907,7 @@
                     input.val('');
                     categoryField.val('');
 
-                    input.data('locked', false);
+                  
                 }
             });
 
@@ -1217,15 +1214,15 @@
             }
 
             document.getElementById("btnScan").addEventListener("click", function() {
-                // if (setGrosir == '' || carat == '') {
-                //     Swal.fire({
-                //         title: "Info",
-                //         text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
-                //         icon: "warning",
-                //         confirmButtonText: "OK"
-                //     });
-                //     return;
-                // }
+                if (setGrosir == '' || carat == '') {
+                    Swal.fire({
+                        title: "Info",
+                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return;
+                }
 
                 let myModal = new bootstrap.Modal(document.getElementById("scanModal"));
                 myModal.show();
@@ -1252,17 +1249,17 @@
                 }
 
 
-                // if (setGrosir == '' || carat == '') {
+                if (setGrosir == '' || carat == '') {
 
-                //     Swal.fire({
-                //         title: "Info",
-                //         text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
-                //         icon: "warning",
-                //         confirmButtonText: "OK"
-                //     });
+                    Swal.fire({
+                        title: "Info",
+                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
 
-                //     return false;
-                // }
+                    return false;
+                }
 
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
