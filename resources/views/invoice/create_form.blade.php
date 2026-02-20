@@ -458,6 +458,44 @@
         }
 
 
+        function loadCategoryScan(productBySW, productByDesc) {
+            $(document).on('change', '#descItemKat', function() {
+                const input = $(this);
+                const rawVal = input.val().trim();
+                const categoryField = $('#descItem');
+                const val = rawVal.toLowerCase();
+                let found = productBySW.get(val) || productByDesc.get(val);
+                if (!rawVal) {
+                    categoryField.val('')
+                    return;
+                }
+
+                if (found) {
+                    input.val(found.Description);
+                    categoryField.val(found.SW);
+                } else {
+                    input.val('');
+                    categoryField.val('');
+                    alert('Produk tidak valid');
+                }
+            });
+
+            $(document).on('keydown', '#descItemKat', function(e) {
+
+                const input = $(this);
+                const categoryField = $('#descItem');
+
+
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                    e.preventDefault();
+
+                    input.val('');
+                    categoryField.val('');
+
+                    input.data('locked', false);
+                }
+            });
+        }
 
         function loadSelect2Scan() {
             $('.select2Scan').val('').trigger('change');
@@ -657,7 +695,7 @@
             const totalnwallInput = document.getElementById("totalnwall");
             const antotalgwallInput = new AutoNumeric('#totalgwall', optionsDec2);
             const antotalnwallInput = new AutoNumeric('#totalnwall', optionsDec3Default);
-            const descInput = document.getElementById("descItem");
+            const descInput = document.getElementById("descItemKat");
             const itemScantableBody = document.querySelector("#itemScantable tbody");
             const totalItem = document.getElementById("total_item");
             const total_gw = document.getElementById("total_gw");
@@ -675,7 +713,6 @@
             let carat = '';
             let carat_textcolor = '';
             let carat_bgcolor = '';
-            let desc_item = '';
             let default_cat = '{{ $desc[0]->Description }}';
             let itemScan = [];
             let itemScanBcd = [];
@@ -736,7 +773,7 @@
                 $(this).val(value);
             });
 
-            $(document).on('blur', '.category_desc', function() {
+            $(document).on('change', '.category_desc', function() {
 
                 const input = $(this);
                 const rawVal = input.val().trim();
@@ -752,23 +789,24 @@
                 const val = rawVal.toLowerCase();
 
                 let found = productBySW.get(val) || productByDesc.get(val);
+                let cadarInput = row.find('.cadar_item');
+                let brutoInput = row.find('.wbruto')[0];
+                let priceInput = row.find('.price')[0];
+                let priceCustInput = row.find(".pricecust")[0];
+                let netInput = row.find('.wnet')[0];
+                let netInputCust = row.find('.wnetocust')[0];
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
 
                 if (found) {
                     input.val(found.Description);
                     categoryField.val(found.SW);
 
-                    let cadarInput = row.find('.cadar_item');
-                    let brutoInput = row.find('.wbruto')[0];
-                    let priceInput = row.find('.price')[0];
-                    let priceCustInput = row.find(".pricecust")[0];
-                    let netInput = row.find('.wnet')[0];
-                    let netInputCust = row.find('.wnetocust')[0];
-
-                    let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
-                    let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
-                    let anNet = AutoNumeric.getAutoNumericElement(netInput);
-                    let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
-                    let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
 
                     fetchPrice(setGrosir, found.SW, cadarInput.val(), 0).then(hasil => {
                         if (anPrice) {
@@ -811,6 +849,30 @@
 
                 } else {
                     invalidate(row);
+                    anPrice.set(0);
+                    anPriceCust.set(0);
+
+
+                    if (brutoInput && priceCustInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let priceCust = anPriceCust.getNumber() || 0;
+                        let netCust = new Decimal(bruto).times(priceCust);
+                        anNetCust.set(netCust);
+
+                    }
+                    if (brutoInput && priceInput && netInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let price = anPrice.getNumber() || 0;
+                        let net = new Decimal(bruto).times(price);
+                        anNet.set(net);
+                    }
+                    let totalnwall = 0;
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnwall += an.getNumber() || 0;
+                    });
+
+                    antotalnwallInput.set(totalnwall);
                 }
 
 
@@ -850,7 +912,7 @@
 
                     setGrosir = id;
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                        let categorySelect = row.querySelector("select[name='category[]']");
+                        let categorySelect = row.querySelector(".category");
                         let priceInput = row.querySelector(".price");
                         let brutoInput = row.querySelector(".wbruto");
                         let netInput = row.querySelector(".wnet");
@@ -866,6 +928,7 @@
                         if (!categorySelect) return;
 
                         let selectedCat = categorySelect.value;
+
 
 
                         let p = fetchPrice(setGrosir, selectedCat, carat, 0).then(hasil => {
@@ -960,7 +1023,7 @@
                 let promises = [];
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                    let categorySelect = row.querySelector("select[name='category[]']");
+                    let categorySelect = row.querySelector(".category");
                     let priceInput = row.querySelector(".price");
                     let priceCustInput = row.querySelector(".pricecust");
                     let brutoInput = row.querySelector(".wbruto");
@@ -1136,15 +1199,15 @@
             }
 
             document.getElementById("btnScan").addEventListener("click", function() {
-                if (setGrosir == '' || carat == '') {
-                    Swal.fire({
-                        title: "Info",
-                        text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
-                    return;
-                }
+                // if (setGrosir == '' || carat == '') {
+                //     Swal.fire({
+                //         title: "Info",
+                //         text: "Silakan pilih Grosir dan Kadar terlebih dahulu.",
+                //         icon: "warning",
+                //         confirmButtonText: "OK"
+                //     });
+                //     return;
+                // }
 
                 let myModal = new bootstrap.Modal(document.getElementById("scanModal"));
                 myModal.show();
@@ -1155,7 +1218,7 @@
                     once: true
                 });
 
-                //  loadSelect2Scan();
+                loadCategoryScan(productBySW, productByDesc);
             });
 
 
@@ -1188,7 +1251,7 @@
                 <td class="text-center"></td>
             <td>
                 <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%">
-                <input type="hidden" name="category[]" class="category" style="max-width:100%">
+                <input type="text" name="category[]" class="category" style="max-width:100%">
                 </td>
             <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
@@ -1249,10 +1312,6 @@
                 //     width: '100%'
                 // });
                 reindexRows()
-                loadSelect2();
-
-
-
 
                 newRow.querySelectorAll('.autonumDec2').forEach(el => {
                     new AutoNumeric(el, optionsDec2);
@@ -1280,6 +1339,121 @@
                 // }
                 // let $select = $(newRow).find(".select2");
                 // $select.select2('open');
+            });
+
+            document.getElementById("btnTambahkan").addEventListener("click", function() {
+                if (totalItem.innerText <= 0) {
+                    Swal.fire({
+                        title: "Info",
+                        text: "Data Scan Kosong",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
+
+                if (descInput.value == '') {
+                    Swal.fire({
+                        title: "Info",
+                        text: "Kategori Kosong",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
+                if (itemsTable.rows.length >= 10) {
+                    Swal.fire({
+                        title: "Batas Tercapai",
+                        text: "Maksimal hanya boleh 10 item.",
+                        icon: "info",
+                        confirmButtonText: "OK"
+                    });
+                    return false;
+                }
+
+
+                let subtotalgwall = antotalgwallInput.getNumber() || 0;
+                let subtotalnwall = antotalnwallInput.getNumber() || 0;
+                let gwBaru = parseFloat(totalgw) || 0;
+                let nwBaru = parseFloat(totalnw.toFixed(2)) || 0;
+
+
+                // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
+                // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
+                antotalgwallInput.set(subtotalgwall + nwBaru);
+                antotalnwallInput.set(subtotalnwall + 0);
+
+                let desc_item = descInput.value;
+                let carat = caratInput.value;
+                let itemScangw = 0;
+                let itemScannw = 0;
+                itemScanBcd.forEach(item => {
+                    itemScangw += item.gw;
+                    itemScannw += item.nw;
+                });
+                let newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                 <td class="text-center"></td>
+               <td>
+                   <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%" >
+               <input type="text" name="category[]" class="category" style="max-width:100%">
+                <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
+                <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
+            </td>
+                <td>
+                    <div class="input-group input-group-sm mb-2">
+   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScannw.toFixed(2)}" >
+   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
+</div>
+                    
+                  </td>
+                <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
+                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="0" readonly ></td>
+                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec3 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
+                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
+                <td class="text-center isEdit">
+                    <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
+                </td>
+
+                            `;
+                itemsTable.appendChild(newRow);
+                const input = $(newRow).find('.category_desc');
+                input.val(desc_item).trigger('change');
+
+                newRow.querySelectorAll('.autonumDec2').forEach(el => {
+                    new AutoNumeric(el, optionsDec2);
+                });
+                newRow.querySelectorAll('.autonumDec3').forEach(el => {
+                    new AutoNumeric(el, optionsDec3);
+                });
+
+                newRow.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+
+                newRow.querySelectorAll("td").forEach(td => {
+                    td.style.backgroundColor = "#ffff99";
+                });
+                setTimeout(() => {
+                    newRow.querySelectorAll("td").forEach(td => {
+                        td.style.backgroundColor = "";
+                    });
+                }, 1500);
+
+
+
+
+                itemScanBcd = [];
+                reindexRows();
+                resetTableScan();
+
+                let modalEl = document.getElementById("scanModal");
+                let modal = bootstrap.Modal.getInstance(modalEl);
+                if (!modal) {
+                    modal = new bootstrap.Modal(modalEl);
+                }
+                modal.hide();
             });
 
 
@@ -1602,7 +1776,8 @@
             function resetTableScan() {
                 document.querySelector("#itemScantable tbody").innerHTML = "";
                 barcodeInput.value = '';
-                $('.select2Scan').val('');
+                $('#descItemKat').val('');
+                $('#descItem').val('');
                 totalgw = 0;
                 totalnw = 0;
                 totalItem.innerText = 0;
@@ -1686,124 +1861,7 @@
                 // modal.hide();
 
             });
-            document.getElementById("btnTambahkan").addEventListener("click", function() {
-                if (totalItem.innerText <= 0) {
-                    Swal.fire({
-                        title: "Info",
-                        text: "Data Scan Kosong",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
-                    return false;
-                }
 
-                if (descInput.value == '') {
-                    Swal.fire({
-                        title: "Info",
-                        text: "Kategori Kosong",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
-                    return false;
-                }
-                if (itemsTable.rows.length >= 10) {
-                    Swal.fire({
-                        title: "Batas Tercapai",
-                        text: "Maksimal hanya boleh 10 item.",
-                        icon: "info",
-                        confirmButtonText: "OK"
-                    });
-                    return false;
-                }
-
-
-                let subtotalgwall = antotalgwallInput.getNumber() || 0;
-                let subtotalnwall = antotalnwallInput.getNumber() || 0;
-                let gwBaru = parseFloat(totalgw) || 0;
-                let nwBaru = parseFloat(totalnw.toFixed(2)) || 0;
-
-
-                // totalgwallInput.value = (subtotalgwall + gwBaru).toFixed(2);
-                // totalnwallInput.value = (subtotalnwall + nwBaru).toFixed(3);
-                antotalgwallInput.set(subtotalgwall + nwBaru);
-                antotalnwallInput.set(subtotalnwall + 0);
-
-                let desc_item = descInput.value;
-                let carat = caratInput.value;
-                let itemScangw = 0;
-                let itemScannw = 0;
-                itemScanBcd.forEach(item => {
-                    itemScangw += item.gw;
-                    itemScannw += item.nw;
-                });
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                 <td class="text-center"></td>
-               <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
-                <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
-                <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
-            </td>
-                <td>
-                    <div class="input-group input-group-sm mb-2">
-   <input type="text" name="wbruto[]" class="form-control form-control-sm wbruto text-end autonumDec2" value="${itemScannw.toFixed(2)}" >
-   <button class="btn btn-primary kalibrasi-btn" type="button"><i class="fa-solid fa-scale-balanced"></i></button>
-</div>
-                    
-                  </td>
-                <td><input type="text" name="price[]" class="form-control text-end form-control-sm price autonumDec3" readonly ></td>
-                <td><input type="text" name="wnet[]" class="form-control text-end form-control-sm wnet autonumDec3"  value="0" readonly ></td>
-                <td class="isPriceCust ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="pricecust[]" class="autonumDec3 text-end form-control form-control-sm pricecust"  placeholder="0.00"  ></td>
-                <td class="isPriceCust  ${isHargaCheck.checked ? '' : 'd-none'}"><input type="text" name="wnetocust[]" class="autonumDec3 text-end form-control form-control-sm wnetocust"  readonly></td>
-                <td class="text-center isEdit">
-                    <button type="button" class="btn btn-sm btn-danger removeRow">&times;</button>
-                </td>
-
-                            `;
-                itemsTable.appendChild(newRow);
-
-                let $select = $(newRow).find('.select2').select2({
-                    // placeholder: "Pilih kategori",
-                    // allowClear: true,
-                    theme: 'bootstrap-5',
-                    width: '100%'
-                });
-
-
-                newRow.querySelectorAll('.autonumDec2').forEach(el => {
-                    new AutoNumeric(el, optionsDec2);
-                });
-                newRow.querySelectorAll('.autonumDec3').forEach(el => {
-                    new AutoNumeric(el, optionsDec3);
-                });
-
-                newRow.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest"
-                });
-
-                newRow.querySelectorAll("td").forEach(td => {
-                    td.style.backgroundColor = "#ffff99";
-                });
-                setTimeout(() => {
-                    newRow.querySelectorAll("td").forEach(td => {
-                        td.style.backgroundColor = "";
-                    });
-                }, 1500);
-
-                $select.val(desc_item).trigger("change");
-                loadSelect2();
-
-                itemScanBcd = [];
-                reindexRows();
-                resetTableScan();
-
-                let modalEl = document.getElementById("scanModal");
-                let modal = bootstrap.Modal.getInstance(modalEl);
-                if (!modal) {
-                    modal = new bootstrap.Modal(modalEl);
-                }
-                modal.hide();
-            });
         });
     </script>
 @endsection
