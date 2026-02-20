@@ -1418,7 +1418,7 @@
                             `;
                 itemsTable.appendChild(newRow);
                 const input = $(newRow).find('.category_desc');
-                input.val(desc_item).trigger('change');
+               
 
                 newRow.querySelectorAll('.autonumDec2').forEach(el => {
                     new AutoNumeric(el, optionsDec2);
@@ -1426,6 +1426,8 @@
                 newRow.querySelectorAll('.autonumDec3').forEach(el => {
                     new AutoNumeric(el, optionsDec3);
                 });
+
+                input.val(desc_item).trigger('change');
 
                 newRow.scrollIntoView({
                     behavior: "smooth",
