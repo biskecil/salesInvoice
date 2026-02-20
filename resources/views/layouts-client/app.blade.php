@@ -14,10 +14,28 @@
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('autocomplete/autocomplete.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.6/dist/css/tom-select.css" rel="stylesheet">
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('assets/images/favicon.png') !!}">
 
     <style>
+        .ts-control input::placeholder {
+            font-size: 17px;
+        }
+
+        .ts-dropdown .option {
+            font-size: 17px;
+            padding: 8px;
+        }
+
+        .ts-control .item {
+            font-size: 17px;
+        }
+
+        .ts-control input {
+            font-size: 17px;
+        }
+
         .btn-info-dark {
             background-color: #0bb5d8;
             border-color: #0bb5d8;
@@ -105,170 +123,207 @@
         <div class="d-flex align-items-center">
             <div id="datetime" class="me-3"></div>
             @auth
-                <div class="dropdown">
-                    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2 py-1 rounded-2 bg-dark bg-opacity-25 hover-bg-dark"
-                        href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-4 me-2 text-warning"></i>
-                        <div class="d-flex flex-column lh-sm">
-                            <span class="fw-semibold">
-                                {{ Auth::user()->UserName ?? 'User' }}
-                            </span>
-                            @if (session('event') != '' || session('venue') != '')
-                                <small class="text-light text-opacity-75">
-                                    {{ session('event') ? session('event') . ' :' : '' }}
-                                    {{ session('venue') ?? '-' }}
-                                </small>
-                            @endif
-                        </div>
-                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button"
+                            id="historyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-0 rounded-3"
-                        aria-labelledby="userDropdown">
-                        <li>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                            <i class="fas fa-history me-2"></i>
+                            Riwayat
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow mt-3" style="min-width: 260px;">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="fw-semibold">INV-0001</div>
+                                    <small class="text-muted">20 Feb 2026 13:05</small>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="fw-semibold">INV-0002</div>
+                                    <small class="text-muted">20 Feb 2026 12:40</small>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <div class="fw-semibold">INV-0003</div>
+                                    <small class="text-muted">20 Feb 2026 11:10</small>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2 py-1 rounded-2 bg-dark bg-opacity-25 hover-bg-dark"
+                            href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-4 me-2 text-warning"></i>
+                            <div class="d-flex flex-column lh-sm">
+                                <span class="fw-semibold">
+                                    {{ Auth::user()->UserName ?? 'User' }}
+                                </span>
+                                @if (session('event') != '' || session('venue') != '')
+                                    <small class="text-light text-opacity-75">
+                                        {{ session('event') ? session('event') . ' :' : '' }}
+                                        {{ session('venue') ?? '-' }}
+                                    </small>
+                                @endif
+                            </div>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 rounded-3"
+                            aria-labelledby="userDropdown">
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    @endif
                 </div>
-                @endif
             </div>
-        </div>
-        {{-- Navbar menu --}}
-        @auth
-            <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
-                <div class="container-fluid">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center  {{ request()->is('/') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
-                                href="/">
-                                <i class="bi bi-receipt me-2"></i>
-                                Nota Tagihan
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                                href="/sales/show">
-                                <i class="bi bi-receipt me-2"></i>
-                                Informasi
-                            </a>
-                        </li>
-                        {{-- <li class="nav-item">
+            {{-- Navbar menu --}}
+            @auth
+                <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
+                    <div class="container-fluid">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center  {{ request()->is('/') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                    href="/">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Nota Tagihan
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                    href="/sales/show">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Informasi
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
                     <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pack/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
                         href="/pack/show">
                         <i class="bi bi-receipt me-2"></i>
                         Kemasan
                     </a>
                 </li> --}}
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('grosir/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                                href="/grosir/show">
-                                <i class="bi bi-receipt me-2"></i>
-                                Grosir
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('venue/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                                href="/venue/show">
-                                <i class="bi bi-receipt me-2"></i>
-                                Venue
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
-                                href="/pricelist/show">
-                                <i class="bi bi-receipt me-2"></i>
-                                Pricelist
-                            </a>
-                        </li>
-                        @if (Auth::user() && Auth::user()->Role === 'administrator')
                             <li class="nav-item">
-                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
-                                    href="/user/show">
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('grosir/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                    href="/grosir/show">
                                     <i class="bi bi-receipt me-2"></i>
-                                    Manajemen User
+                                    Grosir
                                 </a>
                             </li>
-                        @endif
-                    </ul>
-                </div>
-            </nav>
-            @endif
+                            <li class="nav-item">
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('venue/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                    href="/venue/show">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Venue
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                                    href="/pricelist/show">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Pricelist
+                                </a>
+                            </li>
+                            @if (Auth::user() && Auth::user()->Role === 'administrator')
+                                <li class="nav-item">
+                                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                        href="/user/show">
+                                        <i class="bi bi-receipt me-2"></i>
+                                        Manajemen User
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                </nav>
+                @endif
 
-            {{-- Content --}}
-            <main class="container-fluid py-4">
-                @yield('content')
-            </main>
-            <script src="{{ mix('js/app.js') }}"></script>
-            <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
-            <script src="{{ asset('select2/select2.min.js') }}"></script>
-            <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-            <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
-            <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
-            <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
-            <script>
-                $("#listVenue").select2({
-                    theme: 'bootstrap-5',
-                    width: '100%',
-                    placeholder: "Pilih Tempat",
-                    allowClear: true,
-                    ajax: {
-                        url: "/getData/Venue/search",
-                        dataType: "json",
-                        delay: 250,
-                        data: function(params) {
-                            return {
-                                q: params.term
-                            };
+                {{-- Content --}}
+                <main class="container-fluid py-4">
+                    @yield('content')
+                </main>
+                <script src="{{ mix('js/app.js') }}"></script>
+                <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+                <script src="{{ asset('select2/select2.min.js') }}"></script>
+                <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.6/dist/js/tom-select.complete.min.js"></script>
+                <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+                <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
+                <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
+                <script src="{{ asset('DevExtreme/js/dx-new.all.js') }}"></script>
+                <script>
+                    $("#listVenue").select2({
+                        theme: 'bootstrap-5',
+                        width: '100%',
+                        placeholder: "Pilih Tempat",
+                        allowClear: true,
+                        ajax: {
+                            url: "/getData/Venue/search",
+                            dataType: "json",
+                            delay: 250,
+                            data: function(params) {
+                                return {
+                                    q: params.term
+                                };
+                            },
+                            processResults: function(data) {
+                                return {
+                                    results: data.map(item => ({
+                                        id: item.Description,
+                                        text: item.Description
+                                    }))
+                                };
+                            },
+                            cache: true
                         },
-                        processResults: function(data) {
-                            return {
-                                results: data.map(item => ({
-                                    id: item.Description,
-                                    text: item.Description
-                                }))
-                            };
-                        },
-                        cache: true
-                    },
-                });
-                $("#listEvent").select2({
-                    theme: 'bootstrap-5',
-                    width: '100%',
-                    placeholder: "Pilih Event",
-                    allowClear: true,
-                    data: [{
-                            'id': 'Pameran',
-                            'text': 'Pameran'
-                        },
-                        {
-                            'id': 'In House',
-                            'text': 'In House'
-                        }
-                    ]
-                });
-                $("#listEvent").val(null).trigger('change');
+                    });
+                    $("#listEvent").select2({
+                        theme: 'bootstrap-5',
+                        width: '100%',
+                        placeholder: "Pilih Event",
+                        allowClear: true,
+                        data: [{
+                                'id': 'Pameran',
+                                'text': 'Pameran'
+                            },
+                            {
+                                'id': 'In House',
+                                'text': 'In House'
+                            }
+                        ]
+                    });
+                    $("#listEvent").val(null).trigger('change');
 
-                function updateDateTime() {
-                    const now = new Date();
-                    const options = {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    };
-                    const formatted = now.toLocaleDateString('id-ID', options);
-                    document.getElementById('datetime').textContent = formatted;
-                }
+                    function updateDateTime() {
+                        const now = new Date();
+                        const options = {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        };
+                        const formatted = now.toLocaleDateString('id-ID', options);
+                        document.getElementById('datetime').textContent = formatted;
+                    }
 
-                updateDateTime();
-                setInterval(updateDateTime, 1000);
-            </script>
-        </body>
+                    updateDateTime();
+                    setInterval(updateDateTime, 1000);
+                </script>
+            </body>
 
-        </html>
+            </html>
