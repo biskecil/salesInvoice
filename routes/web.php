@@ -62,6 +62,7 @@ Route::prefix('user')->group(function () {
     Route::get('/show_data', [MasterController::class, 'show_user_data']);
 });
 Route::prefix('sales')->group(function () {
+    Route::get('/getData/Nota/riwayat', [SalesInvController::class, 'getDataNotaRiwayat']);
     Route::get('/getData/Nota/search', [SalesInvController::class, 'getDataNotaSearch']);
     Route::get('/getData/subGros/', [SalesInvController::class, 'getDataSubGros']);
     Route::get('/getData/Nota/', [SalesInvController::class, 'getDataNota']);

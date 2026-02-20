@@ -116,6 +116,78 @@ class SalesInvController extends Controller
         });
         return response()->json($invoice_list);
     }
+    public function getDataNotaRiwayat()
+    {
+        $data =  DB::table('invoice')
+            ->select('invoice.*')
+            ->selectSub(function ($q) {
+                $q->from('invoiceitem')
+                    ->select('carat.SW as caratSW')
+                    ->Join('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.ID')
+                    ->limit(1);
+            }, 'carat')
+            ->selectSub(function ($q) {
+                $q->from('invoiceitem')
+                    ->Join('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+                    ->whereColumn('invoiceitem.IDM', 'invoice.ID')
+                    ->selectRaw("
+                CASE
+                    WHEN carat.SW = '6K' THEN '#0000FF'
+                    WHEN carat.SW = '8K' THEN '#00FF00'
+                    WHEN carat.SW = '8KP' THEN '#CFB370'
+                    WHEN carat.SW = '10K' THEN '#FFFF00'
+                    WHEN carat.SW = '16K' THEN '#FF0000'
+                    WHEN carat.SW = '17K' THEN '#FF6E01'
+                    WHEN carat.SW = '17KP' THEN '#FF00FF'
+                    WHEN carat.SW = '19K' THEN '#5F2987'
+                    WHEN carat.SW = '20K' THEN '#FFC0CB'
+                    ELSE '#808080'
+                END
+            ")
+                    ->limit(1);
+            }, 'color')
+            ->orderBy('ID', 'DESC')
+            ->where('UserName', auth()->user()->UserName)
+            ->whereNotIN('id', [0])->limit(5)->get();
+
+        $data->transform(function ($row) {
+            $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
+
+            $transDate = Carbon::parse($row->TransDate);
+            $monthMM   = $transDate->format('m');
+            $yearYY    = $transDate->format('y');
+            $notaNum = str_pad($row->SW, 4, '0', STR_PAD_LEFT);
+
+            $row->TransDate = $transDate->format('d/m/y');
+            $row->textColor = $this->getContrastYIQ($row->color);
+            $row->invoice_number = $kode_pameran . $row->Grosir . $yearYY . $monthMM . $notaNum;
+            return $row;
+        });
+
+        //   $data_item = DB::table('invoiceitem')
+        //         ->select(
+        //             'carat.SW as caratSW',
+        //             DB::raw("CASE
+        //             WHEN carat.SW = '6K' THEN '#0000FF'
+        //             WHEN carat.SW = '8K' THEN '#00FF00'
+        //             WHEN carat.SW = '8KP' THEN '#CFB370'
+        //             WHEN carat.SW = '10K' THEN '#FFFF00'
+        //             WHEN carat.SW = '16K' THEN '#FF0000'
+        //             WHEN carat.SW = '17K' THEN '#FF6E01'
+        //             WHEN carat.SW = '17KP' THEN '#FF00FF'
+        //             WHEN carat.SW = '19K' THEN '#5F2987'
+        //             WHEN carat.SW = '20K' THEN '#FFC0CB'
+        //             ELSE '#808080'
+        //         END as color")
+        //         )
+        //         ->leftJoin('carat', 'carat.ID', '=', 'invoiceitem.Carat')
+
+        //         ->where('invoiceitem.IDM', $data->ID)->first();
+
+
+        return response()->json($data);
+    }
     public function getDataGros($id)
     {
         $data = DB::table('customer')
@@ -254,7 +326,7 @@ class SalesInvController extends Controller
 
             $caratCustom = [1, 3, 13, 4, 5, 6];
             $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
-            $desc = DB::table('product')->select('ID','SW','Description')->orderBy('Description', 'ASC')->get();
+            $desc = DB::table('product')->select('ID', 'SW', 'Description')->orderBy('Description', 'ASC')->get();
             $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
@@ -585,7 +657,13 @@ class SalesInvController extends Controller
 
             $list_invoice[] = $this->buildNota($jenis, $noNota);
         }
-
+       
+        //   DB::table('invoice')
+        //     ->where('ID', $list_invoice[0]->ID)
+        //     ->update([
+        //         'PrintDate' => Carbon::now(),
+        //         'UserNamePrint' => auth()->user()->UserName
+        //     ]);
 
         $html = view('invoice.cetakNota', [
             'data' => $list_invoice,

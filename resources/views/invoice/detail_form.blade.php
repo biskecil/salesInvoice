@@ -21,6 +21,8 @@
             <div class="card shadow-sm  card-main ">
                 @include('layouts-client.navbar')
                 <div class="card-body pt-0">
+                    {{-- <span class="text-sm" id="notePrint"><b>*PERHATIAN :</b> Nota ini telah dicetak pada tanggal <b>xx</b> , oleh <b> xx
+                        </b></span> --}}
                     <form method="post" class="mt-4">
                         <div class="row">
                             <!-- LEFT -->
