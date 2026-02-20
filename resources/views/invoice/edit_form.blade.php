@@ -56,9 +56,8 @@
                                     <label class="form-label col-sm-4">Customer*</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
 
-                                        <button type="button"
-                                            class="text-sm btn btn-primary"
-                                            data-bs-toggle="modal" data-bs-target="#scanQRModal" id="qrButton">
+                                        <button type="button" class="text-sm btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#scanQRModal" id="qrButton">
                                             <i class="fa-solid fa-qrcode"></i>
                                         </button>
                                         <input type="text" class="form-control" id="customer" name="customer"
@@ -82,8 +81,8 @@
                                 <div class="mb-2 row">
                                     <label class="form-label col-sm-4">Phone</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Phone" name="phone" id="phone"
-                                            value="{{ $data->Phone }}">
+                                        <input type="text" class="form-control" placeholder="Phone" name="phone"
+                                            id="phone" value="{{ $data->Phone }}">
                                     </div>
                                 </div>
 
@@ -362,7 +361,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 2,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -372,7 +371,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 3,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -394,6 +393,12 @@
                 if (e.altKey && e.key === "ArrowDown") {
                     e.preventDefault();
                     document.getElementById("addRow").click();
+                    setTimeout(() => {
+                        const lastRow = $('#itemsTable tr:last');
+                        const input = lastRow.find('.category_desc');
+
+                        input.focus();
+                    }, 0);
                 }
                 if (e.altKey && e.key.toLowerCase() === "q") {
                     e.preventDefault();
@@ -590,7 +595,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 2,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -600,7 +605,7 @@
                 decimalCharacter: '.',
                 decimalPlaces: 3,
                 minimumValue: "0",
-                roundingMethod: 'D',
+                // roundingMethod: 'D',
                 modifyValueOnUpDownArrow: false,
                 modifyValueOnWheel: false,
                 emptyInputBehavior: "zero"
@@ -658,12 +663,152 @@
     <option value="{{ $d->Description }}">{{ $d->Description }}</option>
 @endforeach
 `;
+            const productData = @json($desc);
+            const productBySW = new Map();
+            const productByDesc = new Map();
+            productData.forEach(item => {
+                productBySW.set((item.SW || '').toLowerCase(), item);
+                productByDesc.set((item.Description || '').toLowerCase(), item);
+            });
 
             setGrosir = '{{ $data->Grosir }}';
             carat = '{{ $data->Carat }}';
             itemScan =
                 @json($data->ItemList);
             addRowItemsTable(itemScan, options_cat);
+
+
+            $(document).on('change', '.category_desc', function() {
+
+                const input = $(this);
+                const rawVal = input.val().trim();
+                const row = input.closest('tr');
+                const categoryField = row.find('.category');
+
+
+                if (!rawVal) {
+                    categoryField.val('')
+                    return;
+                }
+
+                const val = rawVal.toLowerCase();
+
+                let found = productBySW.get(val) || productByDesc.get(val);
+                let cadarInput = row.find('.cadar_item');
+                let brutoInput = row.find('.wbruto')[0];
+                let priceInput = row.find('.price')[0];
+                let priceCustInput = row.find(".pricecust")[0];
+                let netInput = row.find('.wnet')[0];
+                let netInputCust = row.find('.wnetocust')[0];
+
+                let anBruto = AutoNumeric.getAutoNumericElement(brutoInput);
+                let anPrice = AutoNumeric.getAutoNumericElement(priceInput);
+                let anNet = AutoNumeric.getAutoNumericElement(netInput);
+                let anPriceCust = AutoNumeric.getAutoNumericElement(priceCustInput);
+                let anNetCust = AutoNumeric.getAutoNumericElement(netInputCust);
+
+
+                if (found) {
+                    input.val(found.Description);
+                    categoryField.val(found.SW);
+
+
+                    fetchPrice(setGrosir, found.SW, cadarInput.val(), 0).then(hasil => {
+                        if (anPrice) {
+                            anPrice.set(hasil.price);
+                        } else {
+                            console.warn('AutoNumeric belum terpasang di', priceInput);
+                        }
+
+
+
+                        if (priceCustInput) {
+                            let newVal = hasil.priceCust || 0;
+                            anPriceCust.set(newVal);
+                            // if (newVal !== 0) {
+                            // }
+                        }
+
+                        if (brutoInput && priceCustInput) {
+                            let bruto = anBruto.getNumber() || 0;
+                            let priceCust = anPriceCust.getNumber() || 0;
+                            let netCust = new Decimal(bruto).times(priceCust);
+                            anNetCust.set(netCust);
+
+                        }
+                        if (brutoInput && priceInput && netInput) {
+                            let bruto = anBruto.getNumber() || 0;
+                            let price = anPrice.getNumber() || 0;
+                            let net = new Decimal(bruto).times(price);
+                            anNet.set(net);
+                        }
+                        let totalnwall = 0;
+                        document.querySelectorAll(".wnet").forEach(el => {
+                            const an = AutoNumeric.getAutoNumericElement(el);
+                            totalnwall += an.getNumber() || 0;
+                        });
+
+                        antotalnwallInput.set(totalnwall);
+
+                    });
+
+                } else {
+                    invalidate(row);
+                    anPrice.set(0);
+                    anPriceCust.set(0);
+
+
+                    if (brutoInput && priceCustInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let priceCust = anPriceCust.getNumber() || 0;
+                        let netCust = new Decimal(bruto).times(priceCust);
+                        anNetCust.set(netCust);
+
+                    }
+                    if (brutoInput && priceInput && netInput) {
+                        let bruto = anBruto.getNumber() || 0;
+                        let price = anPrice.getNumber() || 0;
+                        let net = new Decimal(bruto).times(price);
+                        anNet.set(net);
+                    }
+                    let totalnwall = 0;
+                    document.querySelectorAll(".wnet").forEach(el => {
+                        const an = AutoNumeric.getAutoNumericElement(el);
+                        totalnwall += an.getNumber() || 0;
+                    });
+
+                    antotalnwallInput.set(totalnwall);
+                }
+
+
+            });
+
+            $(document).on('keydown', '.category_desc', function(e) {
+
+                const input = $(this);
+                const row = input.closest('tr');
+                const categoryField = row.find('.category');
+
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                    e.preventDefault();
+
+                    input.val('');
+                    categoryField.val('');
+                }
+            });
+
+
+            function invalidate(row) {
+                row.find('.category').val('');
+                row.find('.category_desc').val('');
+                Swal.fire({
+                    icon: 'warning',
+                    text: "Item tidak ditemukan",
+                    customClass: {
+                        popup: 'text-sm'
+                    }
+                });
+            }
 
             function addRowItemsTable(item, options_cat) {
 
@@ -677,7 +822,10 @@
                     let newRow = document.createElement("tr");
                     newRow.innerHTML = `
                     <td class="text-center">${index+1}</td>
-           <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%" > ${options_cat}</select></td>
+           <td>
+           <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%" value="${item.desc_item}">
+                <input type="hidden" name="category[]" class="category" style="max-width:100%" value="${item.productSW}">
+            </td>
              <td class="text-center align-middle"><span style="background-color:${item.color};color:${item.textColor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${item.caratSW}" readonly>
             </td>
@@ -697,6 +845,7 @@
 
                         `;
                     itemsTable.appendChild(newRow);
+                    const input = $(newRow).find('.category_desc');
 
                     newRow.querySelectorAll('.autonumDec2').forEach(el => {
                         new AutoNumeric(el, optionsDec2);
@@ -708,9 +857,6 @@
                         theme: 'bootstrap-5',
                         width: '100%'
                     });
-
-                    $select.val(item.desc_item).trigger("change");
-
                 });
             }
 
@@ -769,7 +915,7 @@
 
                     setGrosir = id;
                     document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                        let categorySelect = row.querySelector("select[name='category[]']");
+                        let categorySelect = row.querySelector(".category");
                         let priceInput = row.querySelector(".price");
                         let brutoInput = row.querySelector(".wbruto");
                         let netInput = row.querySelector(".wnet");
@@ -791,7 +937,7 @@
                             if (priceInput) anPrice.set(hasil.price);
                             if (priceCustInput) {
                                 let newVal = hasil.priceCust || 0;
-                               
+
                                 anPriceCust.set(newVal);
                                 // if (newVal !== 0) {
                                 // }
@@ -855,7 +1001,7 @@
                 let promises = [];
 
                 document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
-                    let categorySelect = row.querySelector("select[name='category[]']");
+                    let categorySelect = row.querySelector(".category");
                     let priceInput = row.querySelector(".price");
                     let priceCustInput = row.querySelector(".pricecust");
                     let brutoInput = row.querySelector(".wbruto");
@@ -990,8 +1136,45 @@
                     once: true
                 });
 
-                //  loadSelect2Scan();
+                loadCategoryScan(productBySW, productByDesc);
             });
+
+            function loadCategoryScan(productBySW, productByDesc) {
+                $(document).on('change', '#descItemKat', function() {
+                    const input = $(this);
+                    const rawVal = input.val().trim();
+                    const categoryField = $('#descItem');
+                    const val = rawVal.toLowerCase();
+                    let found = productBySW.get(val) || productByDesc.get(val);
+                    if (!rawVal) {
+                        categoryField.val('')
+                        return;
+                    }
+
+                    if (found) {
+                        input.val(found.Description);
+                        categoryField.val(found.SW);
+                    } else {
+                        input.val('');
+                        categoryField.val('');
+                    }
+                });
+
+                $(document).on('keydown', '#descItemKat', function(e) {
+
+                    const input = $(this);
+                    const categoryField = $('#descItem');
+
+
+                    if (e.key === 'Backspace' || e.key === 'Delete') {
+                        e.preventDefault();
+
+                        input.val('');
+                        categoryField.val('');
+
+                    }
+                });
+            }
 
 
             addRowBtn.addEventListener("click", function() {
@@ -1019,7 +1202,10 @@
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
                  <td class="text-center"></td>
-            <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"> ${options_cat}</select></td>
+            <td>
+                  <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%">
+                <input type="hidden" name="category[]" class="category" style="max-width:100%">
+                </td>
             <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
             </td>
@@ -1430,7 +1616,8 @@
             function resetTableScan() {
                 document.querySelector("#itemScantable tbody").innerHTML = "";
                 barcodeInput.value = '';
-                $('.select2Scan').val('');
+                $('#descItemKat').val('');
+                $('#descItem').val('');
                 totalgw = 0;
                 totalnw = 0;
                 totalItem.innerText = 0;
@@ -1559,7 +1746,10 @@
                 let newRow = document.createElement("tr");
                 newRow.innerHTML = `
                 <td class="text-center"></td>
-                <td><select type="text" name="category[]" class="form-control form-control-sm select2" style="max-width:100%"  value="${desc_item}"> ${options_cat}</select></td>
+                <td>
+                 <input type="text" name="category_desc[]" class="form-control form-control-sm category_desc" style="max-width:100%" >
+               <input type="hidden" name="category[]" class="category" style="max-width:100%">
+                    </td>
                <td class="text-center align-middle"><span style="background-color:${carat_bgcolor};color:${carat_textcolor};padding:2px 6px;border-radius:4px" class="cadar_text">${carat}</span>
                 <input type="text" name="cadar[]" class="form-control form-control-sm cadar_item text-center d-none"  value="${carat}" readonly>
             </td>
@@ -1580,14 +1770,7 @@
 
                             `;
                 itemsTable.appendChild(newRow);
-
-                let $select = $(newRow).find('.select2').select2({
-                    // placeholder: "Pilih kategori",
-                    // allowClear: true,
-                    theme: 'bootstrap-5',
-                    width: '100%'
-                });
-
+                const input = $(newRow).find('.category_desc');
 
                 newRow.querySelectorAll('.autonumDec2').forEach(el => {
                     new AutoNumeric(el, optionsDec2);
@@ -1595,6 +1778,8 @@
                 newRow.querySelectorAll('.autonumDec3').forEach(el => {
                     new AutoNumeric(el, optionsDec3);
                 });
+
+                input.val(desc_item).trigger('change');
 
                 newRow.scrollIntoView({
                     behavior: "smooth",
@@ -1610,11 +1795,7 @@
                     });
                 }, 1500);
 
-                $select.val(desc_item).trigger("change");
-                loadSelect2();
-
-
-
+    
                 itemScanBcd = [];
                 reindexRows()
                 resetTableScan()

@@ -487,28 +487,18 @@
                 } else {
                     input.val('');
                     categoryField.val('');
-                    Swal.fire({
-                        icon: 'warning',
-                        text: "Item tidak ditemukan",
-                        customClass: {
-                            popup: 'text-sm'
-                        }
-                    });
+          
                 }
             });
 
             $(document).on('keydown', '#descItemKat', function(e) {
-
                 const input = $(this);
                 const categoryField = $('#descItem');
 
-
                 if (e.key === 'Backspace' || e.key === 'Delete') {
                     e.preventDefault();
-
                     input.val('');
                     categoryField.val('');
-
                 }
             });
         }

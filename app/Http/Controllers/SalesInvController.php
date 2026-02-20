@@ -254,7 +254,7 @@ class SalesInvController extends Controller
 
             $caratCustom = [1, 3, 13, 4, 5, 6];
             $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
-            $desc = DB::table('product')->select('ID', 'Description')->orderBy('Description', 'ASC')->get();
+            $desc = DB::table('product')->select('ID','SW','Description')->orderBy('Description', 'ASC')->get();
             $desc_filter = DB::table('product')->select('ID', 'Description')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
@@ -1093,7 +1093,7 @@ class SalesInvController extends Controller
                     $total_weight +=  $this->parseNumeric($request->wbruto[$i]);
                     $descCat = $request->category[$i];
                     $descCarat = $request->cadar[$i];
-                    $getProductSW = DB::select("SELECT ID FROM product WHERE Description = ?", [$descCat]);
+                    $getProductSW = DB::select("SELECT ID FROM product WHERE SW = ?", [$descCat]);
                     $getCarat = DB::select("SELECT ID FROM carat  WHERE SW  = ?", [$descCarat]);
 
                     DB::table('invoiceitem')->insertGetId([
