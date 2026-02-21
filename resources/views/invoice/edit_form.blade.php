@@ -336,6 +336,12 @@
             });
         });
 
+        function reindexRows() {
+            [...itemsTable.rows].forEach((row, index) => {
+                row.cells[0].innerText = index + 1; // nomor otomatis
+            });
+        }
+
         function DateNowMax() {
 
             let input = document.getElementById("transDate");
@@ -1795,7 +1801,7 @@
                     });
                 }, 1500);
 
-    
+
                 itemScanBcd = [];
                 reindexRows()
                 resetTableScan()

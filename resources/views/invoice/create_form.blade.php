@@ -362,6 +362,12 @@
         });
 
 
+        function reindexRows() {
+                [...itemsTable.rows].forEach((row, index) => {
+                    row.cells[0].innerText = index + 1; // nomor otomatis
+                });
+            }
+            
         function invalidate(row) {
             row.find('.category').val('');
             row.find('.category_desc').val('');
