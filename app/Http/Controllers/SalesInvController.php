@@ -654,7 +654,7 @@ class SalesInvController extends Controller
 
         if ($jenis == 'hargacust2') {
             $list_invoice[] = $this->buildNota('harga', $noNota);
-            $list_invoice[] = $this->buildNota('hargacust', $noNota);
+            $list_invoice[] = $this->buildNota('kosong', $noNota);
         } else {
 
             $list_invoice[] = $this->buildNota($jenis, $noNota);

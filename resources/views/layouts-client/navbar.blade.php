@@ -21,11 +21,11 @@
                     data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
-                <ul class="dropdown-menu shadow">
+                <ul class="dropdown-menu">
                     <li><button class="dropdown-item" id="btnCetak">Cetak dgn harga</button></li>
                     <li><button class="dropdown-item" id="btnCetakCust">Cetak dgn harga customer</button></li>
                     <li><button class="dropdown-item" id="btnCetakKosong">Cetak tanpa harga</button></li>
-                    {{-- <li><button class="dropdown-item" id="btnCetakCust2">Cetak dgn harga + harga customer (2 Kertas)</button></li> --}}
+                    <li><button class="dropdown-item" id="btnCetakCust2">Cetak dgn harga + tanpa harga (2 Kertas)</button></li>
                 </ul>
             </div>
             <div class="btn-group" role="group">
