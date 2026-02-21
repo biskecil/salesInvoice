@@ -149,7 +149,7 @@ class SalesInvController extends Controller
             }, 'color')
             ->orderBy('ID', 'DESC')
             ->where('UserName', auth()->user()->UserName)
-            ->whereNotIN('id', [0])->limit(5)->get();
+            ->whereNotIN('id', [0])->limit(10)->get();
 
         $data->transform(function ($row) {
             $kode_pameran =  $row->Event == 'Pameran' ? 'P' : 'I';
@@ -476,6 +476,8 @@ class SalesInvController extends Controller
             $invoice->ItemList = $data_list;
             $invoice->linkid = $data->LinkID;
             $invoice->isHarga = $data_item->first()->custprice + $data_item->first()->nettcust  > 0 ? true : false;
+            $invoice->UserPrint = $data->UserPrint;
+            $invoice->PrintDate =  $data->PrintDate ? Carbon::parse($data->PrintDate)->format('d/m/Y H:i') : null;
 
 
             //return response()->json($invoice);
@@ -657,13 +659,13 @@ class SalesInvController extends Controller
 
             $list_invoice[] = $this->buildNota($jenis, $noNota);
         }
-       
-        //   DB::table('invoice')
-        //     ->where('ID', $list_invoice[0]->ID)
-        //     ->update([
-        //         'PrintDate' => Carbon::now(),
-        //         'UserNamePrint' => auth()->user()->UserName
-        //     ]);
+
+        DB::table('invoice')
+            ->where('ID', $list_invoice[0]->ID)
+            ->update([
+                'PrintDate' => Carbon::now(),
+                'UserPrint' => auth()->user()->UserName
+            ]);
 
         $html = view('invoice.cetakNota', [
             'data' => $list_invoice,

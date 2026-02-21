@@ -21,9 +21,12 @@
             <div class="card shadow-sm  card-main ">
                 @include('layouts-client.navbar')
                 <div class="card-body pt-0">
-                    {{-- <span class="text-sm" id="notePrint"><b>*PERHATIAN :</b> Nota ini telah dicetak pada tanggal <b>xx</b> , oleh <b> xx
-                        </b></span> --}}
-                    <form method="post" class="mt-4">
+                    <div id="notePrint" class="alert alert-info text-sm py-0 px-2 d-none mt-2">
+                        Nota ini telah dicetak pada tanggal
+                        <b id="printDate"></b>, oleh
+                        <b id="printUser"></b>
+                    </div>
+                    <form method="post" class="mt-1">
                         <div class="row">
                             <!-- LEFT -->
                             <div class="col-md-4">
@@ -309,9 +312,16 @@
 
         var printService = new WebSocketPrinter();
         $(document).ready(function() {
+            const currentUser = @json(auth()->user()->UserName);
+            const printDateFromDb = @json($data->PrintDate);
+            const userPrintFromDb = @json($data->UserPrint);
             let noNota = $('input[name="noNota"]').val();
             $('.select2').prop('disabled', true);
             let dataNota = "";
+
+            if (printDateFromDb && userPrintFromDb) {
+                showPrintNote(printDateFromDb, userPrintFromDb);
+            }
 
             $('#btnTambah').prop('disabled', false);
             $('#btnBatal').prop('disabled', false);
@@ -345,22 +355,27 @@
             $('#btnCetakParent').on('click', function() {
                 //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
                 printDirectNota('semua', noNota);
+                showPrintNoteNow(currentUser)
             });
             $('#btnCetak').on('click', function() {
                 //window.open('/sales/cetakNota/semua/' + noNota, '_blank');
                 printDirectNota('semua', noNota);
+                showPrintNoteNow(currentUser)
             });
             $('#btnCetakCust').on('click', function() {
                 //window.open('/sales/cetakNota/hargacust/' + noNota, '_blank');
                 printDirectNota('hargacust', noNota);
+                showPrintNoteNow(currentUser);
             });
             $('#btnCetakKosong').on('click', function() {
                 //window.open('/sales/cetakNota/kosong/' + noNota, '_blank');
                 printDirectNota('kosong', noNota);
+                showPrintNoteNow(currentUser);
             });
             $('#btnCetakCust2').on('click', function() {
                 //window.open('/sales/cetakNota/hargacust2/' + noNota, '_blank');
                 printDirectNota('hargacust2', noNota);
+                showPrintNoteNow(currentUser);
             });
             $('#btnCetakBarcode').on('click', function() {
                 //window.open('/sales/cetakBarcode/' + noNota +'/2', '_blank');
@@ -381,6 +396,28 @@
                     $('#btnCari').click();
                 }
             });
+
+            function showPrintNote(date, user) {
+                $('#printDate').text(date);
+                $('#printUser').text(user);
+                $('#notePrint').removeClass('d-none');
+            }
+
+
+            function showPrintNoteNow(username) {
+                const now = new Date();
+
+                const formatted =
+                    now.getDate().toString().padStart(2, '0') + '/' +
+                    (now.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                    now.getFullYear() + ' ' +
+                    now.getHours().toString().padStart(2, '0') + ':' +
+                    now.getMinutes().toString().padStart(2, '0');
+
+                $('#printDate').text(formatted);
+                $('#printUser').text(username);
+                $('#notePrint').removeClass('d-none');
+            }
 
             function printDirectBarcode(data, page) {
                 if (!printService.isConnected()) {

@@ -17,7 +17,7 @@
                             id="barcodeInput" />
                         <h6 class="mt-3">Kategori</h6>
                         <input type="text" class="form-control" placeholder="Ketik kategori" id="descItemKat">
-                        <input type="text" id="descItem">
+                        <input type="hidden" id="descItem">
                         <h6 class="mt-3">Info</h6>
                         <div class="card shadow-sm mt-3">
                             <div class="card-body p-3">
