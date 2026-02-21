@@ -131,7 +131,8 @@
                         Riwayat
                     </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow mt-3" style="min-width: 300px;max-height: 300px; overflow-y: auto;" id="historyList">
+                    <ul class="dropdown-menu dropdown-menu-end shadow mt-3"
+                        style="min-width: 300px;max-height: 300px; overflow-y: auto;" id="historyList">
                         {{-- <li>
                             <a class="dropdown-item" href="#">
                                 <div class="fw-semibold">INV-0001</div>
@@ -176,7 +177,7 @@
                         </div>
                     </a>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow mt-3" aria-labelledby="userDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end shadow mt-2" aria-labelledby="userDropdown">
                         <li>
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
@@ -321,7 +322,8 @@
                 }
 
                 document.getElementById("historyDropdown")
-                    .addEventListener("click", loadRiwayat);
+                    ?.addEventListener("click", loadRiwayat);
+           
 
                 $("#listVenue").select2({
                     theme: 'bootstrap-5',
