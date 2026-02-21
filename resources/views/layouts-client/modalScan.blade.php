@@ -12,12 +12,12 @@
                 <div class="row mt-0">
                     <!-- KANAN: Total -->
                     <div class="col-md-4">
-                        <h6 class="mt-3">Barcode</h6>
-                        <input type="text" class="form-control mt-3" autofocus placeholder="Scan barcode disini"
-                            id="barcodeInput" />
                         <h6 class="mt-3">Kategori</h6>
-                        <input type="text" class="form-control" placeholder="Ketik kategori" id="descItemKat">
+                        <input type="text" class="form-control"  placeholder="Ketik kategori" id="descItemKat">
                         <input type="hidden" id="descItem">
+                        <h6 class="mt-3">Barcode</h6>
+                        <input type="text" class="form-control mt-3"  placeholder="Scan barcode disini"
+                            id="barcodeInput" />
                         <h6 class="mt-3">Info</h6>
                         <div class="card shadow-sm mt-3">
                             <div class="card-body p-3">

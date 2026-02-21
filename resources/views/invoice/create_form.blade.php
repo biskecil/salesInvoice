@@ -362,12 +362,22 @@
         });
 
 
+        // function reindexRows() {
+        //     [...itemsTable.rows].forEach((row, index) => {
+        //         row.cells[0].innerText = index + 1; // nomor otomatis
+        //     });
+        // }
+
         function reindexRows() {
-                [...itemsTable.rows].forEach((row, index) => {
-                    row.cells[0].innerText = index + 1; // nomor otomatis
-                });
-            }
-            
+            const tbody = document
+                .getElementById("itemsTable")
+                .getElementsByTagName("tbody")[0];
+
+            [...tbody.rows].forEach((row, index) => {
+                row.cells[0].innerText = index + 1;
+            });
+        }
+
         function invalidate(row) {
             row.find('.category').val('');
             row.find('.category_desc').val('');
@@ -493,7 +503,7 @@
                 } else {
                     input.val('');
                     categoryField.val('');
-          
+
                 }
             });
 
@@ -903,7 +913,7 @@
                     input.val('');
                     categoryField.val('');
 
-                  
+
                 }
             });
 
@@ -1224,7 +1234,7 @@
                 myModal.show();
 
                 document.getElementById("scanModal").addEventListener("shown.bs.modal", function() {
-                    document.getElementById("barcodeInput").focus();
+                    document.getElementById("descItemKat").focus();
                 }, {
                     once: true
                 });
