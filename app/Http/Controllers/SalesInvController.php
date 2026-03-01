@@ -1292,7 +1292,7 @@ class SalesInvController extends Controller
             }
 
             DB::commit();
-            $data = $this->SetReturn(true, 'Berhasil Disimpan',  $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->TransDate, $getLastNotaID ? $getLastNotaID + 1 : 1), null);
+            $data = $this->SetReturn(true, 'Berhasil Disimpan',  $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->transDate, $getLastNotaID ? $getLastNotaID + 1 : 1), null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
             //throw $th;
