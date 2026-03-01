@@ -1,4 +1,4 @@
-<div class="card-header bg-white border-1 pb-2">
+<div class="card-header bg-white border-1 pb-1">
     <div class="d-flex gap-2 justify-content-between">
         <div class="d-flex flex-wrap gap-2">
             <button type="button" class="btn btn-warning btn-sm buttonForm" id="btnSubmitCreate"><i

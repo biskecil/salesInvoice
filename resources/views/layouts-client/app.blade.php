@@ -19,6 +19,24 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('assets/images/favicon.png') !!}">
 
     <style>
+        #itemsTable th,
+        #itemsTable td {
+            padding: 3px 8px !important;
+            margin: 0 !important;
+            line-height: 1.8 !important;
+            vertical-align: middle !important;
+        }
+
+        #itemsTable th *,
+        #itemsTable td * {
+            margin: 0 !important;
+        }
+
+        .form-control.required-form {
+            border: 1px solid #dc3545;
+        }
+
+
         .ts-control input::placeholder {
             font-size: 17px;
         }
@@ -253,7 +271,7 @@
             @endif
 
             {{-- Content --}}
-            <main class="container-fluid py-4">
+            <main class="container-fluid py-1">
                 @yield('content')
             </main>
             <script src="{{ mix('js/app.js') }}"></script>
@@ -323,7 +341,7 @@
 
                 document.getElementById("historyDropdown")
                     ?.addEventListener("click", loadRiwayat);
-           
+
 
                 $("#listVenue").select2({
                     theme: 'bootstrap-5',

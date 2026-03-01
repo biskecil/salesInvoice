@@ -12,6 +12,19 @@
             /* biar tidak terlalu tinggi */
         }
 
+     
+
+        #grosir+.select2-container .select2-selection {
+            border: 1px solid #dc3545;
+        }
+        #event+.select2-container .select2-selection {
+            border: 1px solid #dc3545;
+        }
+        #carat+.select2-container .select2-selection {
+            border: 1px solid #dc3545;
+        }
+
+ 
         .card-main {
             overflow: hidden;
         }
@@ -44,39 +57,40 @@
                        <input type="text" class="form-control" name="noNota">
                    </div>
                </div> --}}
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Tanggal*</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4 ">Tanggal</label>
                                     <div class="col-sm-8">
-                                        <input type="date" class="form-control" name="transDate" id="transDate">
+                                        <input type="date" class="form-control  required-form" name="transDate"
+                                            id="transDate">
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Customer*</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4 ">Customer</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
                                         <button type="button" class="text-sm btn btn-primary " id="qrButton"
                                             data-bs-toggle="modal" data-bs-target="#scanQRModal">
                                             <i class="fa-solid fa-qrcode"></i>
                                         </button>
-                                        <input type="text" class="form-control" id="customer" name="customer"
-                                            placeholder="Nama Customer" style="flex:1">
+                                        <input type="text" class="form-control required-form" id="customer"
+                                            name="customer" placeholder="Nama Customer" style="flex:1">
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Nama Pembeli</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4 ">Nama Pembeli</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
                                             id="pembeli">
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Alamat</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4 ">Alamat</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" rows="2" placeholder="Alamat"
                                             name="alamat" id="alamat">
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Phone</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4 ">Phone</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Phone" name="phone"
                                             id="phone">
@@ -87,14 +101,14 @@
                             </div>
 
                             <!-- RIGHT -->
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 {{-- <div class="mb-3">
                                     <label class="form-label">No Nota</label>
                                     <input type="text" class="form-control" value="-" name="nota" readonly>
                                 </div> --}}
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Event*</label>
-                                    <div class="col-sm-8">
+                                {{-- <div class="mb-1 row">
+                                    <label class="form-label col-sm-2 ">Event*</label>
+                                    <div class="col-sm-10">
                                         <select class="form-control select2" name="event">
                                             <option value="">Pilih Data</option>
                                             <option value="Pameran" @if (session('event') == 'Pameran') selected @endif>
@@ -103,26 +117,33 @@
                                                 House</option>
                                         </select>
                                     </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Grosir*</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-control select2" name="grosir" id="grosir">
+                                </div> --}}
+                                <div class="mb-1 row g-0 align-items-center">
+                                    <div class="col-sm-5 d-flex align-items-center gap-4">
+                                        <label class="form-label mb-0 text-nowrap">Event</label>
+                                        <select class="form-control form-control-sm select2 required-form" name="event" id="event">
                                             <option value="">Pilih Data</option>
-                                            @foreach ($cust as $d)
-                                                <option value="{{ $d->ID }}">{{ $d->SW }}</option>
+                                            <option value="Pameran" @if (session('event') == 'Pameran') selected @endif>
+                                                Pameran</option>
+                                            <option value="In House" @if (session('event') == 'In House') selected @endif>In
+                                                House</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-7 d-flex align-items-center gap-2 ps-2">
+                                        <label class="form-label mb-0 text-nowrap">Tempat</label>
+                                        <select class="form-control select2" name="tempat">
+                                            <option value="">Pilih Data</option>
+                                            @foreach ($venue as $p)
+                                                <option value="{{ $p->Description }}"
+                                                    @if (session('venue') == $p->Description) selected @endif>
+                                                    {{ $p->Description }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
+
                                 </div>
-                                <div class="mb-3 row">
-                                    <label class="form-label col-12 col-sm-4">Sub Grosir</label>
-                                    <div class="col-12 col-sm-8">
-                                        <input type="text" class="form-control" placeholder="Sub Grosir"
-                                            autocomplete="off" name="sub_grosir" id="sub_grosir">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
+                                {{-- <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Tempat</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2" name="tempat">
@@ -134,36 +155,43 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat</label>
-                                    <div class="col-sm-8">
-                                        <div class="row g-2 align-items-center">
-
-                                            <div class="col-md-6 d-flex flex-column border-end pe-3">
-                                                <div class="d-flex align-items-center justify-content-between small  mb-1">
-                                                    <div>
-                                                        <span class="fw-semibold me-1">Kotor</span>
-                                                        <span class="fw-bold cadar_item">6k</span>
-                                                    </div>
-                                                </div>
-                                                <span id="totalgwall" class="fw-bold text-primary text-end fs-6">0.00</span>
-                                            </div>
-
-
-                                            <div class="col-md-6 d-flex flex-column">
-                                                <div class="d-flex align-items-center justify-content-between small  mb-1">
-                                                    <div>
-                                                        <span class="fw-semibold me-1">Bersih</span>
-                                                        <span class="fw-bold cadar_item">6k</span>
-                                                    </div>
-                                                </div>
-                                                <span id="totalnwall"
-                                                    class="fw-bold text-danger text-end fs-6">0.00</span>
-                                            </div>
-                                        </div>
+                                </div> --}}
+                                {{-- <div class="mb-1 row">
+                                    <label class="form-label col-sm-2">Grosir*</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control select2" name="grosir" id="grosir">
+                                            <option value="">Pilih Data</option>
+                                            @foreach ($cust as $d)
+                                                <option value="{{ $d->ID }}">{{ $d->SW }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div> --}}
+                                <div class="mb-1 row g-0 align-items-center">
+                                    <div class="col-sm-5 d-flex align-items-center gap-4 ">
+                                        <label class="form-label mb-0 text-nowrap">Grosir</label>
+                                        <select class="form-control form-control-sm select2" name="grosir" id="grosir">
+                                            <option value="">Pilih Data</option>
+                                            @foreach ($cust as $d)
+                                                <option value="{{ $d->ID }}">{{ $d->SW }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-7 d-flex align-items-center gap-2 ps-2">
+                                        <label class="form-label mb-0 text-wrap">Sub Grosir</label>
+                                        <input type="text" class="form-control" placeholder="Sub Grosir"
+                                            autocomplete="off" name="sub_grosir" id="sub_grosir">
                                     </div>
                                 </div>
+                                {{-- <div class="mb-1 row">
+                                    <label class="form-label col-12 col-sm-4">Sub Grosir</label>
+                                    <div class="col-12 col-sm-8">
+                                        <input type="text" class="form-control" placeholder="Sub Grosir"
+                                            autocomplete="off" name="sub_grosir" id="sub_grosir">
+                                    </div>
+                                </div> --}}
+
+
 
                                 {{-- <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Total Berat</label>
@@ -188,11 +216,61 @@
                                         </div>
                                     </div>
                                 </div> --}}
+                                <div class="mb-1 row g-0 align-items-center">
+                                    <div class="col-sm-5 d-flex align-items-center gap-4">
+                                        <label class="form-label mb-0 text-nowrap">Kadar</label>
+                                        <select class="form-control form-control-sm select2" id="carat">
+                                            <option value="">Pilih Data</option>
+                                            @foreach ($kadar as $d)
+                                                <option value="{{ $d->SW }}" data-color="{{ $d->color }}">
+                                                    {{ $d->SW }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 d-flex align-items-center gap-2 ps-2">
+                                        <label class="form-label mb-0 text-nowrap">Harga</label>
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="checkbox" name="harga"
+                                                id="is_harga_cust">
+                                            <label class="form-check-label small" for="is_harga_cust">Iya</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-0 row">
+                                    <label class="form-label col-sm-2">Total</label>
+                                    <div class="col-sm-10">
+                                        <div class="row g-2s align-items-center">
+
+                                            <div class="col-md-6 d-flex flex-column border-end pe-3">
+                                                <div class="d-flex align-items-center justify-content-between small  mb-1">
+                                                    <div>
+                                                        <span class="fw-semibold me-1">Kotor</span>
+                                                        <span class="fw-bold cadar_item">6k</span>
+                                                    </div>
+                                                </div>
+                                                <span id="totalgwall"
+                                                    class="fw-bold text-primary text-end fs-6">0.00</span>
+                                            </div>
+
+
+                                            <div class="col-md-6 d-flex flex-column">
+                                                <div class="d-flex align-items-center justify-content-between small  mb-1">
+                                                    <div>
+                                                        <span class="fw-semibold me-1">Bersih</span>
+                                                        <span class="fw-bold cadar_item">6k</span>
+                                                    </div>
+                                                </div>
+                                                <span id="totalnwall"
+                                                    class="fw-bold text-danger text-end fs-6">0.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- RIGHT -->
-                            <div class="col-md-4">
-                                <div class="mb-3 row">
+                            <div class="col-md-3">
+                                {{-- <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Kadar*</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2 " id="carat">
@@ -205,7 +283,7 @@
 
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4 d-block">Harga*</label>
                                     <div class="col-sm-8">
                                         <div class="form-check form-check-inline">
@@ -214,14 +292,14 @@
                                             <label class="form-check-label" for="is_harga_cust">Iya</label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="mb-3 row">
+                                </div> --}}
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Catatan</label>
                                     <div class="col-sm-8">
                                         <textarea class="form-control" rows="2" placeholder="Catatan" name="catatan"></textarea>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4">LinkID</label>
                                     <div class="col-sm-8">
                                         <input class="form-control" rows="2" name="linkid" id="linkid"
@@ -247,7 +325,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: 250px; overflow-y: auto;  ">
-                                    <table class="table table-bordered mb-0 itemsTable" id="itemsTable">
+                                    <table class="table table-border mb-0 itemsTable" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
                                                 <th style="width: 10px" class="text-center">No</th>

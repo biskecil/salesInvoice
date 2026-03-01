@@ -30,22 +30,22 @@
                         <div class="row">
                             <!-- LEFT -->
                             <div class="col-md-4">
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4 ">No Nota*</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4 ">No Nota</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" name="noNota" readonly
                                             value="{{ $data->invoice_number }}">
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Tanggal*</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4">Tanggal</label>
                                     <div class="col-sm-8">
                                         <input type="date" class="form-control" name="transDate"
                                             value="{{ $data->TransDate }}" readonly>
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="form-label col-sm-4">Customer*</label>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-4">Customer</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
                                         <input type="text" class="form-control" id="customer" name="customer"
                                             style="flex:1" value="{{ $data->Customer }}" readonly>
@@ -55,21 +55,21 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Nama Pembeli</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Nama pembeli" name="pembeli"
                                             value="{{ $data->Person }}" readonly>
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Alamat</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" rows="2" placeholder="Alamat"
                                             name="alamat" value="{{ $data->Address }}" id="alamat" readonly>
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Phone</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Phone" name="phone"
@@ -81,20 +81,44 @@
                             </div>
 
                             <!-- RIGHT -->
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 {{-- <div class="mb-3">
                                  <label class="form-label">No Nota</label>
                                  <input type="text" class="form-control" value="-" name="nota" readonly>
                              </div> --}}
-                                <div class="mb-3 row">
+                                <div class="mb-1 row g-0 align-items-center">
+                                    <div class="col-sm-5 d-flex align-items-center gap-4">
+                                        <label class="form-label mb-0 text-nowrap">Event</label>
+                                        <input type="text" class="form-control" readonly value="{{ $data->Event }}">
+                                    </div>
+                                    <div class="col-sm-7 d-flex align-items-center gap-2 ps-2">
+                                        <label class="form-label mb-0 text-nowrap">Tempat</label>
+
+                                        <input type="text" class="form-control" readonly value="{{ $data->Venue }}">
+                                    </div>
+
+                                </div>
+                                {{-- <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Event*</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2" name="event">
                                             <option value="0"> {{ $data->Event }}</option>
                                         </select>
                                     </div>
+                                </div> --}}
+                                <div class="mb-1 row g-0 align-items-center">
+                                    <div class="col-sm-5 d-flex align-items-center gap-4">
+                                        <label class="form-label mb-0 text-nowrap">Grosir</label>
+                                        <input type="text" class="form-control" readonly value="{{ $data->Grosir }}">
+                                    </div>
+                                    <div class="col-sm-7 d-flex align-items-center gap-2 ps-2">
+                                        <label class="form-label mb-0 text-wrap">Sub Grosir</label>
+
+                                        <input type="text" class="form-control" readonly value="{{ $data->SubGrosir }}">
+                                    </div>
+
                                 </div>
-                                <div class="mb-3 row">
+                                {{-- <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Grosir*</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2" name="grosir" id="grosir">
@@ -102,21 +126,21 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Sub Grosir</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Sub Grosir"
                                             name="sub_grosir" readonly value="{{ $data->SubGrosir }}">
                                     </div>
-                                </div>
-                                <div class="mb-3 row">
+                                </div> --}}
+                                {{-- <div class="mb-1 row">
                                     <label class="form-label col-sm-4">Tempat</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2" name="tempat">
                                             <option value="0"> {{ $data->Venue }}</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
                                 {{-- <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Total</label>
                                     <div class="col-sm-8">
@@ -140,9 +164,30 @@
                                         </div>
                                     </div>
                                 </div> --}}
-                                <div class="mb-3 row">
-                                    <label class="form-label col-sm-4">Total Berat</label>
-                                    <div class="col-sm-8">
+
+                                <div class="mb-1 row g-0 align-items-center">
+                                    <div class="col-sm-5 d-flex align-items-center gap-4">
+                                        <label class="form-label mb-0 text-nowrap">Kadar</label>
+                                        <select class="form-control form-control-sm select2" id="carat">
+                                            <option value="">Pilih Data</option>
+                                            @foreach ($kadar as $d)
+                                                <option value="{{ $d->SW }}"
+                                                    {{ $d->SW == $data->Carat ? 'selected' : '' }}
+                                                    data-color="{{ $d->color }}">{{ $d->SW }} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 d-flex align-items-center gap-2 ps-2">
+                                        <label class="form-label mb-0 text-nowrap">Harga</label>
+                                        <div class="form-check m-0">
+                                             <label class="form-label" for="is_harga_cust">
+                                            {{ $data->isHarga ? 'Iya' : 'Tidak' }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-1 row">
+                                    <label class="form-label col-sm-2">Total</label>
+                                    <div class="col-sm-10">
                                         <div class="row g-2 align-items-center">
 
                                             <div class="col-md-6 d-flex flex-column border-end pe-3">
@@ -173,8 +218,8 @@
                             </div>
 
                             <!-- RIGHT -->
-                            <div class="col-md-4">
-                                <div class="mb-3 row">
+                            <div class="col-md-3">
+                                {{-- <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Kadar*</label>
                                     <div class="col-sm-8">
                                         <select class="form-control select2 " id="carat">
@@ -187,8 +232,8 @@
                                         </select>
 
                                     </div>
-                                </div>
-                                <div class="mb-3 row">
+                                </div> --}}
+                                {{-- <div class="mb-3 row">
                                     <label class="form-label col-sm-4 d-block">Harga*</label>
                                     <div class="col-sm-8">
 
@@ -196,7 +241,7 @@
                                             {{ $data->isHarga ? 'Iya' : 'Tidak' }}</label>
 
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="mb-3 row">
                                     <label class="form-label col-sm-4">Catatan</label>
                                     <div class="col-sm-8">
@@ -223,7 +268,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
-                                    <table class="table table-bordered mb-0">
+                                    <table class="table table-bordered mb-0" id="itemsTable">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                             <tr>
                                                 <th style="width: 20px;" class="text-center">No</th>
