@@ -14,7 +14,7 @@
 
      
 
-        #grosir+.select2-container .select2-selection {
+        /* #grosir+.select2-container .select2-selection {
             border: 1px solid #dc3545;
         }
         #event+.select2-container .select2-selection {
@@ -22,7 +22,7 @@
         }
         #carat+.select2-container .select2-selection {
             border: 1px solid #dc3545;
-        }
+        } */
 
  
         .card-main {
@@ -58,14 +58,14 @@
                    </div>
                </div> --}}
                                 <div class="mb-1 row">
-                                    <label class="form-label col-sm-4 ">Tanggal</label>
+                                    <label class="form-label col-sm-4 ">Tanggal*</label>
                                     <div class="col-sm-8">
                                         <input type="date" class="form-control  required-form" name="transDate"
                                             id="transDate">
                                     </div>
                                 </div>
                                 <div class="mb-1 row">
-                                    <label class="form-label col-sm-4 ">Customer</label>
+                                    <label class="form-label col-sm-4 ">Customer*</label>
                                     <div class="col-sm-8 d-flex gap-2 ">
                                         <button type="button" class="text-sm btn btn-primary " id="qrButton"
                                             data-bs-toggle="modal" data-bs-target="#scanQRModal">
@@ -118,9 +118,9 @@
                                         </select>
                                     </div>
                                 </div> --}}
-                                <div class="mb-1 row g-0 align-items-center">
+                                <div class="mb-1 row g-3 align-items-center">
                                     <div class="col-sm-5 d-flex align-items-center gap-4">
-                                        <label class="form-label mb-0 text-nowrap">Event</label>
+                                        <label class="form-label mb-0 text-nowrap">Event*</label>
                                         <select class="form-control form-control-sm select2 required-form" name="event" id="event">
                                             <option value="">Pilih Data</option>
                                             <option value="Pameran" @if (session('event') == 'Pameran') selected @endif>
@@ -167,9 +167,9 @@
                                         </select>
                                     </div>
                                 </div> --}}
-                                <div class="mb-1 row g-0 align-items-center">
+                                <div class="mb-0 row g-3 align-items-center">
                                     <div class="col-sm-5 d-flex align-items-center gap-4 ">
-                                        <label class="form-label mb-0 text-nowrap">Grosir</label>
+                                        <label class="form-label mb-0 text-nowrap">Grosir*</label>
                                         <select class="form-control form-control-sm select2" name="grosir" id="grosir">
                                             <option value="">Pilih Data</option>
                                             @foreach ($cust as $d)
@@ -216,9 +216,9 @@
                                         </div>
                                     </div>
                                 </div> --}}
-                                <div class="mb-1 row g-0 align-items-center">
+                                <div class="mb-0 row g-3 align-items-center">
                                     <div class="col-sm-5 d-flex align-items-center gap-4">
-                                        <label class="form-label mb-0 text-nowrap">Kadar</label>
+                                        <label class="form-label mb-0 text-nowrap">Kadar*</label>
                                         <select class="form-control form-control-sm select2" id="carat">
                                             <option value="">Pilih Data</option>
                                             @foreach ($kadar as $d)
@@ -229,7 +229,7 @@
                                     </div>
                                     <div class="col-sm-4 d-flex align-items-center gap-2 ps-2">
                                         <label class="form-label mb-0 text-nowrap">Harga</label>
-                                        <div class="form-check m-0">
+                                        <div class="form-check m-3">
                                             <input class="form-check-input" type="checkbox" name="harga"
                                                 id="is_harga_cust">
                                             <label class="form-check-label small" for="is_harga_cust">Iya</label>
