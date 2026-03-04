@@ -14,7 +14,7 @@
     <link href="{{ asset('select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('autocomplete/autocomplete.css') }}" rel="stylesheet">
     <link href="{{ asset('select2/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.6/dist/css/tom-select.css" rel="stylesheet">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.6/dist/css/tom-select.css" rel="stylesheet"> --}}
     <link href="{{ asset('jquery-ui/jquery-ui.css') }}" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('assets/images/favicon.png') !!}">
 
@@ -277,7 +277,7 @@
             <script src="{{ mix('js/app.js') }}"></script>
             <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
             <script src="{{ asset('select2/select2.min.js') }}"></script>
-            <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.6/dist/js/tom-select.complete.min.js"></script>
+            {{-- <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.6/dist/js/tom-select.complete.min.js"></script> --}}
             <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
             <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
             <script src="{{ asset('DevExtreme/js/jszip-new.min.js') }}"></script>
