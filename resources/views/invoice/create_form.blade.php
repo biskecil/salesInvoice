@@ -245,7 +245,7 @@
                                                 <div class="d-flex align-items-center justify-content-between small  mb-1">
                                                     <div>
                                                         <span class="fw-semibold me-1">Kotor</span>
-                                                        <span class="fw-bold cadar_item">6k</span>
+                                                        <span class="fw-bold cadar_item"></span>
                                                     </div>
                                                 </div>
                                                 <span id="totalgwall"
@@ -257,7 +257,7 @@
                                                 <div class="d-flex align-items-center justify-content-between small  mb-1">
                                                     <div>
                                                         <span class="fw-semibold me-1">Bersih</span>
-                                                        <span class="fw-bold cadar_item">6k</span>
+                                                        <span class="fw-bold cadar_item"></span>
                                                     </div>
                                                 </div>
                                                 <span id="totalnwall"
