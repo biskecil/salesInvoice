@@ -54,6 +54,10 @@ class MasterController extends Controller
     {
         return view('grosir.show');
     }
+    public function show_produk()
+    {
+        return view('produk.show');
+    }
     public function show_venue()
     {
         return view('venue.show');
@@ -61,6 +65,10 @@ class MasterController extends Controller
     public function create_grosir()
     {
         return view('grosir.create');
+    }
+    public function create_produk()
+    {
+        return view('produk.create');
     }
     public function create_venue()
     {
@@ -105,6 +113,11 @@ class MasterController extends Controller
     {
         $data = DB::table('customer')->where('ID', $id)->first();
         return view('grosir.edit', ['data' => $data]);
+    }
+    public function edit_produk($id)
+    {
+        $data = DB::table('product')->where('ID', $id)->first();
+        return view('produk.edit', ['data' => $data]);
     }
     public function edit_venue($id)
     {
@@ -204,6 +217,42 @@ class MasterController extends Controller
             return response()->json($data, 500);
         }
     }
+    public function update_produk(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+            $validated = Validator::make($request->all(), [
+                'description' => 'required',
+            ]);
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
+            if ($validated->fails()) {
+                $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+            DB::table('product')
+                ->where('ID', $request->id)
+                ->update([
+                    'Description' => $request->description,
+                ]);
+
+
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
+        }
+    }
     public function update_venue(Request $request)
     {
         try {
@@ -267,6 +316,45 @@ class MasterController extends Controller
 
             DB::table('customer')->insert([
                 'ID' => $getLastID,
+                'SW' => $request->sw,
+                'Description' => $request->description,
+            ]);
+
+
+            DB::commit();
+            $data = $this->SetReturn(true, 'Berhasil Disimpan', null, null);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            $data = $this->SetReturn(false, 'Server Error', null, null);
+            return response()->json($data, 500);
+        }
+    }
+    public function store_produk(Request $request)
+    {
+        try {
+            //code...
+            DB::beginTransaction();
+            $validated = Validator::make($request->all(), [
+                'id'    => 'required|integer|unique:product,ID',
+                'sw'    => 'required|unique:product,SW',
+                'description' => 'required',
+            ]);
+
+            if (auth()->user()->Role != 'administrator') {
+                $data = $this->SetReturn(true, 'Role user bukan administrator', null, null);
+                return response()->json($data, 422);
+            }
+
+            if ($validated->fails()) {
+                $data = $this->SetReturn(true, 'Silakan periksa kembali form yang Anda isi', null, null);
+                return response()->json($data, 422);
+            }
+
+
+            DB::table('product')->insert([
+                'ID' => $request->id,
                 'SW' => $request->sw,
                 'Description' => $request->description,
             ]);
@@ -592,6 +680,15 @@ class MasterController extends Controller
             });
 
 
+        return response()->json(['data' => $data]);
+    }
+    public function show_produk_data()
+    {
+        $data = DB::table('product')->orderBy('Description')->get()
+            ->map(function ($item, $index) {
+                $item->no = $index + 1;
+                return $item;
+            });
         return response()->json(['data' => $data]);
     }
     public function show_grosir_data()

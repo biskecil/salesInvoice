@@ -37,6 +37,14 @@ Route::prefix('pricelist')->group(function () {
     Route::get('/edit/{cus}/{cat}/{car}', [MasterController::class, 'edit_pricelist']);
     Route::post('/update', [MasterController::class, 'update_pricelist']);
 });
+Route::prefix('produk')->group(function () {
+    Route::get('/show', [MasterController::class, 'show_produk']);
+    Route::get('/create', [MasterController::class, 'create_produk']);
+    Route::get('/edit/{id}', [MasterController::class, 'edit_produk']);
+    Route::post('/store', [MasterController::class, 'store_produk']);
+    Route::post('/update', [MasterController::class, 'update_produk']);
+    Route::get('/show_data', [MasterController::class, 'show_produk_data']);
+});
 Route::prefix('grosir')->group(function () {
     Route::get('/show', [MasterController::class, 'show_grosir']);
     Route::get('/create', [MasterController::class, 'create_grosir']);

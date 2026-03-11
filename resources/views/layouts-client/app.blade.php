@@ -215,7 +215,7 @@
                 <div class="container-fluid">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center  {{ request()->is('/') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                            <a class="nav-link d-flex align-items-center  {{ request()->is('/')  || request()->is('sales/create') || request()->is('sales/detail/*')  || request()->is('sales/edit/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
                                 href="/">
                                 <i class="bi bi-receipt me-2"></i>
                                 Nota Tagihan
@@ -262,6 +262,13 @@
                                     href="/user/show">
                                     <i class="bi bi-receipt me-2"></i>
                                     Manajemen User
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('produk/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                    href="/produk/show">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    Master Produk
                                 </a>
                             </li>
                         @endif

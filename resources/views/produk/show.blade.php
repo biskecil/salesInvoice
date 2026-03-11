@@ -35,12 +35,12 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-0">
-                    <h5 class="mb-0 text-center fw-bold ">List Grosir</h5>
+                    <h5 class="mb-0 text-center fw-bold ">List Produk</h5>
                 </div>
                 <div class="card-body">
-                    <a type="button" class="btn btn-primary btn-sm" href="/grosir/create"><i class="fa-solid fa-plus"></i>
+                    <a type="button" class="btn btn-primary btn-sm" href="/produk/create"><i class="fa-solid fa-plus"></i>
                         Baru</a>
-                    <div id="grosTable" class="myGrid">
+                    <div id="prdTable" class="myGrid">
                     </div>
                 </div>
             </div>
@@ -50,10 +50,10 @@
     <script>
         $(document).ready(function() {
             $.ajax({
-                url: '/grosir/show_data',
+                url: '/produk/show_data',
                 type: 'GET',
                 success: function(data) {
-                    let dataGrid = $("#grosTable").dxDataGrid({
+                    let dataGrid = $("#prdTable").dxDataGrid({
                         dataSource: data.data,
                         keyExpr: "ID",
                         scrollX: true,
@@ -129,7 +129,7 @@
                                     // Tombol Edit (pencil)
                                     $("<a>")
                                         .addClass("btn btn-sm btn-primary me-1")
-                                        .attr("href", "/grosir/edit/" + id)
+                                        .attr("href", "/produk/edit/" + id)
                                         .attr("title", "Edit")
                                         .html('<i class="fa-solid fa-pencil"></i>')
                                         .appendTo(container);
