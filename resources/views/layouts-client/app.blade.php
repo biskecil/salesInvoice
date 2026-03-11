@@ -77,8 +77,14 @@
         }
 
         .text-active {
-            color: #913030 !important;
+            color: white !important;
+            font-weight: bold;
+            border-radius: 4px;
+            background-color: #913030;
+           
         }
+        
+
 
         input[readonly],
         textarea[readonly] {
@@ -124,6 +130,11 @@
         .autoComplete_wrapper>ul>li mark {
             color: #000;
         }
+        .navbar .nav-link {
+    padding-top: 2px;
+    padding-bottom: 3px;
+}
+
     </style>
 </head>
 
@@ -211,46 +222,46 @@
         </div>
         {{-- Navbar menu --}}
         @auth
-            <nav class="navbar navbar-expand-lg bg-white shadow-sm py-0">
+            <nav class="navbar navbar-expand-lg bg-white shadow-sm py-1">
                 <div class="container-fluid">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center  {{ request()->is('/')  || request()->is('sales/create') || request()->is('sales/detail/*')  || request()->is('sales/edit/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                            <a class="nav-link d-flex align-items-center  {{ request()->is('/')  || request()->is('sales/create') || request()->is('sales/detail/*')  || request()->is('sales/edit/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
                                 href="/">
                                 <i class="bi bi-receipt me-2"></i>
                                 Nota Tagihan
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('sales/show') ? 'text-active' : 'text-secondary fw-semibold' }} "
                                 href="/sales/show">
                                 <i class="bi bi-receipt me-2"></i>
                                 Informasi
                             </a>
                         </li>
                         {{-- <li class="nav-item">
-                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pack/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                    <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pack/*') ? 'text-active' : 'text-secondary fw-semibold' }} "
                         href="/pack/show">
                         <i class="bi bi-receipt me-2"></i>
                         Kemasan
                     </a>
                 </li> --}}
                         <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('grosir/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('grosir/*') ? 'text-active' : 'text-secondary fw-semibold' }} "
                                 href="/grosir/show">
                                 <i class="bi bi-receipt me-2"></i>
                                 Grosir
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('venue/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('venue/*') ? 'text-active' : 'text-secondary fw-semibold' }} "
                                 href="/venue/show">
                                 <i class="bi bi-receipt me-2"></i>
                                 Venue
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }} "
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('pricelist/*') ? 'text-active' : 'text-secondary fw-semibold' }} "
                                 href="/pricelist/show">
                                 <i class="bi bi-receipt me-2"></i>
                                 Pricelist
@@ -258,14 +269,14 @@
                         </li>
                         @if (Auth::user() && Auth::user()->Role === 'administrator')
                             <li class="nav-item">
-                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
                                     href="/user/show">
                                     <i class="bi bi-receipt me-2"></i>
                                     Manajemen User
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('produk/*') ? 'active text-active fw-bold' : 'text-secondary fw-semibold' }}"
+                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('produk/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
                                     href="/produk/show">
                                     <i class="bi bi-receipt me-2"></i>
                                     Master Produk
