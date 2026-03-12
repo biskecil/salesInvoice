@@ -116,7 +116,35 @@
                                 dataType: "string",
                                 caption: "Description",
                                 cssClass: "cls",
-                                width: "69%",
+                                width: "60%",
+                            },
+                            {
+                                dataField: "Active",
+                                dataType: "string",
+                                caption: "Status",
+                                cssClass: "cls",
+                                width: "15%",
+                                cellTemplate: function(container, options) {
+
+                                    if (options.value === "Y") {
+                                        $("<span>")
+                                            .text("Aktif")
+                                            .css({
+                                                "color": "green",
+                                                "font-weight": "600"
+                                            })
+                                            .appendTo(container);
+                                    } else if (options.value === "N") {
+                                        $("<span>")
+                                            .text("NonAktif")
+                                            .css({
+                                                "color": "red",
+                                                "font-weight": "600"
+                                            })
+                                            .appendTo(container);
+                                    }
+
+                                }
                             },
                             {
                                 allowReordering: false,

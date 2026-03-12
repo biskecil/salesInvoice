@@ -61,6 +61,24 @@
                                                     placeholder="Description">
                                             </div>
                                         </div>
+                                        <div class="mb-2 row">
+                                            <label class="form-label col-sm-4">Status</label>
+                                            <div class="col-sm-8">
+                                        
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="active" value="Y"
+                                                        {{ $data->Active == 'Y' ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Aktif</label>
+                                                </div>
+                                        
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="active" value="N"
+                                                        {{ $data->Active == 'N' ? 'checked' : '' }}>
+                                                    <label class="form-check-label">NonAktif</label>
+                                                </div>
+                                        
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>

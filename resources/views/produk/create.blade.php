@@ -50,7 +50,13 @@
                                         <div class="mb-2 row">
                                             <label class="form-label col-sm-4">ID</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" name="id" placeholder="ID">
+                                                <input type="number" class="form-control" name="id" placeholder="ID">
+                                            </div>
+                                        </div>
+                                        <div class="mb-2 row">
+                                            <label class="form-label col-sm-4">Category</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" name="category" placeholder="Category">
                                             </div>
                                         </div>
                                         <div class="mb-2 row">

@@ -81,7 +81,7 @@ class MasterController extends Controller
     public function create_pricelist()
     {
         $caratCustom = [1, 3, 13, 4, 5, 6];
-        $descCustom = ['PGP', 'PCT', 'PAT', 'PCC', 'PGL', 'PLT', 'PST', 'PRB', 'PRT', 'PAV', 'PRV', 'PMN', 'PKP', 'PKR', 'PKL','PG1'];
+        $descCustom = ['PGP', 'PCT', 'PAT', 'PCC', 'PGL', 'PLT', 'PST', 'PRB', 'PRT', 'PAV', 'PRV', 'PMN', 'PKP', 'PKR', 'PKL', 'PG1'];
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
         $desc = DB::table('product')->select('ID', 'SW', 'Description')->whereIN('SW', $descCustom)->orderByRaw("FIELD(SW, '" . implode("','", $descCustom) . "')")->get();
         $kadar = DB::table('carat')->select(
@@ -224,6 +224,7 @@ class MasterController extends Controller
             DB::beginTransaction();
             $validated = Validator::make($request->all(), [
                 'description' => 'required',
+                'active' => 'required',
             ]);
 
             if (auth()->user()->Role != 'administrator') {
@@ -236,10 +237,22 @@ class MasterController extends Controller
                 return response()->json($data, 422);
             }
 
+            $activeCek =   DB::table('product')
+                ->where('SW', $request->sw)
+                ->where('Active', 'Y')
+                ->where('ID','!=',$request->id)
+                ->count();
+
+            if ($activeCek > 0 && $request->active == 'Y') {
+                $data = $this->SetReturn(true, 'Ada SW Produk yg sama aktif', null, null);
+                return response()->json($data, 422);
+            }
+
             DB::table('product')
                 ->where('ID', $request->id)
                 ->update([
                     'Description' => $request->description,
+                    'Active' => $request->active,
                 ]);
 
 
@@ -249,7 +262,7 @@ class MasterController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            $data = $this->SetReturn(false, 'Server Error', null, null);
+            $data = $this->SetReturn(false,  $th->getMessage(), null, null);
             return response()->json($data, 500);
         }
     }
@@ -338,7 +351,8 @@ class MasterController extends Controller
             DB::beginTransaction();
             $validated = Validator::make($request->all(), [
                 'id'    => 'required|integer|unique:product,ID',
-                'sw'    => 'required|unique:product,SW',
+                'category'    => 'required|integer',
+                'sw'    => 'required',
                 'description' => 'required',
             ]);
 
@@ -357,6 +371,8 @@ class MasterController extends Controller
                 'ID' => $request->id,
                 'SW' => $request->sw,
                 'Description' => $request->description,
+                'Category' => $request->category,
+                'Active' => 'N',
             ]);
 
 
