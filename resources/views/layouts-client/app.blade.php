@@ -81,9 +81,9 @@
             font-weight: bold;
             border-radius: 4px;
             background-color: #913030;
-           
+
         }
-        
+
 
 
         input[readonly],
@@ -130,11 +130,11 @@
         .autoComplete_wrapper>ul>li mark {
             color: #000;
         }
-        .navbar .nav-link {
-    padding-top: 2px;
-    padding-bottom: 3px;
-}
 
+        .navbar .nav-link {
+            padding-top: 2px;
+            padding-bottom: 3px;
+        }
     </style>
 </head>
 
@@ -226,7 +226,7 @@
                 <div class="container-fluid">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center  {{ request()->is('/')  || request()->is('sales/create') || request()->is('sales/detail/*')  || request()->is('sales/edit/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
+                            <a class="nav-link d-flex align-items-center  {{ request()->is('/') || request()->is('sales/create') || request()->is('sales/detail/*') || request()->is('sales/edit/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
                                 href="/">
                                 <i class="bi bi-receipt me-2"></i>
                                 Nota Tagihan
@@ -267,6 +267,13 @@
                                 Pricelist
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('produk/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
+                                href="/produk/show">
+                                <i class="bi bi-receipt me-2"></i>
+                                Master Produk
+                            </a>
+                        </li>
                         @if (Auth::user() && Auth::user()->Role === 'administrator')
                             <li class="nav-item">
                                 <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('user/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
@@ -275,13 +282,7 @@
                                     Manajemen User
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary d-flex align-items-center {{ request()->is('produk/*') ? 'text-active' : 'text-secondary fw-semibold' }}"
-                                    href="/produk/show">
-                                    <i class="bi bi-receipt me-2"></i>
-                                    Master Produk
-                                </a>
-                            </li>
+
                         @endif
                     </ul>
                 </div>
