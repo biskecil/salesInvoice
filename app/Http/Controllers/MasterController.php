@@ -83,7 +83,15 @@ class MasterController extends Controller
         $caratCustom = [1, 3, 13, 4, 5, 6];
         $descCustom = ['PGP', 'PCT', 'PAT', 'PCC', 'PGL', 'PLT', 'PST', 'PRB', 'PRT', 'PAV', 'PRV', 'PMN', 'PKP', 'PKR', 'PKL', 'PG1'];
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
-        $desc = DB::table('product')->select('ID', 'SW', 'Description')->whereIN('SW', $descCustom)->orderByRaw("FIELD(SW, '" . implode("','", $descCustom) . "')")->get();
+        $desc = DB::table('product')->select('ID', 'SW', 'Description')
+            ->where('Active', 'Y')
+            ->orderByRaw("
+        CASE 
+            WHEN SW IN ('" . implode("','", $descCustom) . "') THEN 0 
+            ELSE 1 
+        END
+    ")
+            ->orderByRaw("FIELD(SW, '" . implode("','", $descCustom) . "')")->get();
         $kadar = DB::table('carat')->select(
             'ID',
             'SW',
@@ -240,7 +248,7 @@ class MasterController extends Controller
             $activeCek =   DB::table('product')
                 ->where('SW', $request->sw)
                 ->where('Active', 'Y')
-                ->where('ID','!=',$request->id)
+                ->where('ID', '!=', $request->id)
                 ->count();
 
             if ($activeCek > 0 && $request->active == 'Y') {

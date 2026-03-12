@@ -259,7 +259,7 @@
                                     if (match) {
                                         const sw = match[1];
 
-                                        // SW tertentu ditambah 0.5
+                                     
                                         const swPlus = ['PRT', 'PRV'];
                                         const swMin = ['PKR'];
                                         let targetVal = val;
@@ -268,7 +268,7 @@
                                         }
 
                                         anInput.set(
-                                            targetVal); // set nilai dengan AutoNumeric
+                                            targetVal); 
                                     }
                                 });
                             }
