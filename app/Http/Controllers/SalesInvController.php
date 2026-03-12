@@ -52,6 +52,7 @@ class SalesInvController extends Controller
             $category =   DB::table('product')
                 ->where([
                     'SW' => $request->category,
+                    'Active' => 'Y',
                 ])
                 ->first();
 
