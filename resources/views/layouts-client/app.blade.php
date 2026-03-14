@@ -71,6 +71,9 @@
         .btn-primary {
             background-color: #913030 !important;
         }
+        .text-lms {
+            color: #913030;
+        }
 
         .btn-primary {
             background-color: #913030 !important;

@@ -355,6 +355,14 @@
                         </div>
                     </form>
 
+                    <div id="formOverlay" class="d-none position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+                    style="background: rgba(255,255,255,0.7); z-index: 999; border-radius: 8px;">
+                   <div class="text-center">
+                       <div class="spinner-border text-lms" role="status"></div>
+                       <div class="mt-2 fw-semibold text-lms">Menyimpan...</div>
+                   </div>
+               </div>
+
                 </div>
             </div>
         </div>
@@ -715,11 +723,13 @@
             $("#btnSubmitCreate").on("click", function(e) {
                 e.preventDefault();
                 $('.buttonForm').prop('disabled', true);
+                $('#formOverlay').removeClass('d-none').css('display', 'flex');
                 $.ajax({
                     url: $("#salesForm").attr("action"),
                     type: "POST",
                     data: $("#salesForm").serialize(),
                     success: function(response) {
+                        $('#formOverlay').addClass('d-none').css('display', 'flex');
                         Swal.fire({
                             title: "Berhasil",
                             text: "Data telah berhasil disimpan.",
@@ -747,7 +757,9 @@
                                 confirmButtonText: "OK"
                             });
                         }
+                        $('#formOverlay').addClass('d-none').css('display', 'flex');
                         $('.buttonForm').prop('disabled', false);
+
                     }
                 });
             });
