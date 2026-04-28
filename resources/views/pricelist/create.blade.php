@@ -87,7 +87,8 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-0">
-                                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;overflow-x: auto; ">
+                                        <div class="table-responsive"
+                                            style="max-height: 500px; overflow-y: auto;overflow-x: auto; ">
                                             <table class="table table-bordered mb-0 itemsTable" id="itemsTable"
                                                 style="font-size: 11px;">
                                                 <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
@@ -114,22 +115,36 @@
                                                     @foreach ($desc as $d)
                                                         <tr>
                                                             <td
-                                                                @if ($d->SW == 'PRT' || $d->SW == 'PRV') style="font-size:14px;background-color: #cce5ff;"@else  style="font-size:14px;" @endif>
+                                                                @if ($d->SW == 'PRT' || $d->SW == 'PRV') 
+                                                                style="font-size:14px;background-color: #cce5ff;"
+                                                                @elseif ($d->SW == 'PKR')
+                                                                style="font-size:14px;background-color: #FFFF99;"
+                                                                @else  
+                                                                style="font-size:14px;"
+                                                                @endif>
                                                                 <b>{{ $d->SW }}</b>-{{ $d->Description }}
                                                             </td>
                                                             @foreach ($kadar as $k)
                                                                 <td
-                                                                    @if ($d->SW == 'PRT' || $d->SW == 'PRV') style="background-color: #cce5ff;" @endif>
+                                                                    @if ($d->SW == 'PRT' || $d->SW == 'PRV') 
+                                                                    style="background-color: #cce5ff;"
+                                                                     @elseif ($d->SW == 'PKR')
+                                                                    style="font-size:14px;background-color: #FFFF99;"
+                                                                    @endif>
                                                                     <input type="text" class="form-control autonumDec3"
                                                                         style="padding: 2px 4px; height: 26px;"
-                                                                        id="input_{{ $d->SW }}_{{ $k->SW }}"
+                                                                        id="input_{{ $d->ID }}_{{ $k->SW }}"
                                                                         name="input_{{ $d->ID }}_{{ $k->ID }}">
                                                                 </td>
                                                                 <td
-                                                                    @if ($d->SW == 'PRT' || $d->SW == 'PRV') style="background-color: #cce5ff;" @endif>
+                                                                    @if ($d->SW == 'PRT' || $d->SW == 'PRV') 
+                                                                    style="background-color: #cce5ff;"
+                                                                    @elseif ($d->SW == 'PKR')
+                                                                    style="font-size:14px;background-color: #FFFF99;"
+                                                                    @endif>
                                                                     <input type="text" class="form-control autonumDec3"
                                                                         style="padding: 2px 4px; height: 26px;"
-                                                                        id="inputCust_{{ $d->SW }}_{{ $k->SW }}"
+                                                                        id="inputCust_{{ $d->ID }}_{{ $k->SW }}"
                                                                         name="inputCust_{{ $d->ID }}_{{ $k->ID }}">
                                                                 </td>
                                                             @endforeach
@@ -258,17 +273,24 @@
 
                                     if (match) {
                                         const sw = match[1];
-
-                                     
-                                        const swPlus = ['PRT', 'PRV'];
-                                        const swMin = ['PKR'];
+                                        //const swPlus = ['PRT', 'PRV'];
+                                        // const swMin = ['PKR'];
+                                        // const swPlus = ['5629', '5725'];
+                                        const swPlus1 = ['5763', '5765'];
+                                        const swMin = ['5731'];
                                         let targetVal = val;
-                                        if (swPlus.includes(sw)) {
-                                            targetVal += 0.5;
+                                        if (swPlus1.includes(sw)) {
+                                            targetVal += 1;
                                         }
+                                        if (swMin.includes(sw)) {
+                                            targetVal -= 0.5;
+                                        }
+                                        // if (swPlus.includes(sw)) {
+                                        //     targetVal += 0.5;
+                                        // }
 
                                         anInput.set(
-                                            targetVal); 
+                                            targetVal);
                                     }
                                 });
                             }

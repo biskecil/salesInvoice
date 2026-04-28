@@ -650,6 +650,7 @@ class MasterController extends Controller
             ->select(
                 'pricelist.*',
                 'customer.Description as nama_customer',
+                'product.ID as id_produk',
                 'product.SW as nama_produk',
                 'carat.SW as nama_kadar',
             )
@@ -671,7 +672,7 @@ class MasterController extends Controller
 
         $result = [];
         foreach ($data as $item) {
-            $key = $item->nama_produk . '_' . $item->nama_kadar;
+            $key = $item->id_produk . '_' . $item->nama_kadar;
             $result[$key] = $item->Price;
             $result[$key . '_Cust'] = $item->PriceCust;
         }

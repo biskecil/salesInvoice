@@ -8,6 +8,7 @@ use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -327,8 +328,8 @@ class SalesInvController extends Controller
 
             $caratCustom = [1, 3, 13, 4, 5, 6];
             $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
-            $desc = DB::table('product')->select('ID', 'SW', 'Description')->where('Active','Y')->orderBy('Description', 'ASC')->get();
-            $desc_filter = DB::table('product')->select('ID', 'Description')->where('Active','Y')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
+            $desc = DB::table('product')->select('ID', 'SW', 'Description')->where('Active', 'Y')->orderBy('Description', 'ASC')->get();
+            $desc_filter = DB::table('product')->select('ID', 'Description')->where('Active', 'Y')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
             $kadar = DB::table('carat')->select(
                 'ID',
                 'SW',
@@ -988,8 +989,8 @@ class SalesInvController extends Controller
         $caratCustom = [1, 3, 13, 4, 5, 6];
         $venue = DB::table('venue')->orderBy('Description')->get();
         $cust = DB::table('customer')->orderBy('SW', 'ASC')->get();
-        $desc = DB::table('product')->select('ID', 'SW', 'Description')->where('Active','Y')->orderBy('Description', 'ASC')->get();
-        $desc_filter = DB::table('product')->select('ID', 'Description')->where('Active','Y')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
+        $desc = DB::table('product')->select('ID', 'SW', 'Description')->where('Active', 'Y')->orderBy('Description', 'ASC')->get();
+        $desc_filter = DB::table('product')->select('ID', 'Description')->where('Active', 'Y')->whereNotin('ID', [51, 61, 67, 74, 5731, 5732])->orderBy('Description', 'ASC')->get();
         $kadar = DB::table('carat')->select(
             'ID',
             'SW',
@@ -1198,7 +1199,7 @@ class SalesInvController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-
+            Log::error($th->getMessage());
             $data = $this->SetReturn(false, 'Server Error', null, null);
             return response()->json($data, 500);
         }
@@ -1206,7 +1207,6 @@ class SalesInvController extends Controller
 
     public function store(Request $request)
     {
-
         $validated = Validator::make($request->all(), [
             'transDate'   => 'required|date',
             'customer'    => 'required',
@@ -1232,14 +1232,14 @@ class SalesInvController extends Controller
 
 
         try {
+            $transDate = Carbon::parse($request->transDate);
+            $period = $transDate->format('Y-m');
+            DB::statement("SELECT GET_LOCK('invoice_sw_{$period}', 10)");
             DB::beginTransaction();
-            //code...
             $getLastInvID = DB::table('invoice')->max('ID') + 1;
             $getGrosirID = DB::select("SELECT SW FROM customer WHERE ID = ?", [$request->grosir]);
-
-            $transDate = Carbon::parse($request->transDate);
-            $month     = $transDate->format('m');
-            $year      = $transDate->format('Y');
+            $month = $transDate->format('m');
+            $year = $transDate->format('Y');
 
             $getLastNotaID = DB::table('invoice')
                 ->whereMonth('TransDate', $month)
@@ -1294,10 +1294,12 @@ class SalesInvController extends Controller
             $data = $this->SetReturn(true, 'Berhasil Disimpan',  $this->noNotaFormat($request->event, $getGrosirID[0]->SW, $request->transDate, $getLastNotaID ? $getLastNotaID + 1 : 1), null);
             return response()->json($data, 200);
         } catch (\Throwable $th) {
-            //throw $th;
             DB::rollBack();
+            Log::error($th->getMessage());
             $data = $this->SetReturn(false, 'Server Error', null, null);
             return response()->json($data, 500);
+        } finally {
+            DB::statement("SELECT RELEASE_LOCK('invoice_sw_{$period}')");
         }
     }
 }
