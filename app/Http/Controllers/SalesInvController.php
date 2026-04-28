@@ -52,6 +52,7 @@ class SalesInvController extends Controller
             $category =   DB::table('product')
                 ->where([
                     'SW' => $request->category,
+                    'Active' => 'Y',
                 ])
                 ->first();
 
@@ -405,8 +406,6 @@ class SalesInvController extends Controller
 
                 return $row;
             });
-
-
 
             $getGrosirID = DB::select("SELECT ID,SW FROM customer WHERE SW = ?", [$data->Grosir]);
             $data_item = DB::table('invoiceitem')
@@ -1273,7 +1272,7 @@ class SalesInvController extends Controller
                     $total_weight +=  $this->parseNumeric($request->wbruto[$i]);
                     $descCat = $request->category[$i];
                     $descCarat = $request->cadar[$i];
-                    $getProductSW = DB::select("SELECT ID FROM product WHERE SW = ?", [$descCat]);
+                    $getProductSW = DB::select("SELECT ID FROM product WHERE Active = 'Y' AND SW = ?", [$descCat]);
                     $getCarat = DB::select("SELECT ID FROM carat  WHERE SW  = ?", [$descCarat]);
 
                     DB::table('invoiceitem')->insertGetId([
