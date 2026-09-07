@@ -1748,6 +1748,9 @@
                             } else if (data.ws == 'BT SBY') {
                                 $('#grosir').val(1013).trigger('change');
                                 setGrosir = 1013;
+                            } else if (data.ws == 'HKGI') {
+                                $('#grosir').val(1101).trigger('change');
+                                setGrosir = 1101;
                             } else {
                                 $('#grosir').val(1012).trigger('change');
                                 setGrosir = 1012;
