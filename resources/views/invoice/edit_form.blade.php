@@ -1751,6 +1751,12 @@
                             } else if (data.ws == 'HKGI') {
                                 $('#grosir').val(1101).trigger('change');
                                 setGrosir = 1101;
+                            } else if (data.ws == 'RJK ASUN') {
+                                $('#grosir').val(1304).trigger('change');
+                                setGrosir = 1304;
+                            } else if (data.ws == 'ANEKA') {
+                                $('#grosir').val(8).trigger('change');
+                                setGrosir = 8;
                             } else {
                                 $('#grosir').val(1012).trigger('change');
                                 setGrosir = 1012;
