@@ -1912,11 +1912,20 @@
                         // document.getElementById("alamat").value = data.at;
                         // document.getElementById("customer").value = data.nt;
                         // document.getElementById("linkid").value = data.it;
+                        const customerWs = (data.ws ?? '').trim().toUpperCase();
                         document.getElementById("sub_grosir").value = data.pt ?? '';
                         document.getElementById("alamat").value = data.at ?? '';
                         document.getElementById("customer").value = data.nt ?? '';
                         document.getElementById("linkid").value = data.it ?? '';
                         document.getElementById("phone").value = data.np ?? '';
+
+                        if (["ANEKA", "HKGI", "RJK ASUN"].includes(customerWs)) {
+                            document.getElementById("sub_grosir").value = '';
+                            document.getElementById("pembeli").value = data.pt ?? '';
+                        } else if (customerWs.includes("BT") || customerWs.includes("SA")) {
+                            document.getElementById("customer").value = data.pt || data.nt || '';
+                            document.getElementById("pembeli").value = data.nt ?? '';
+                        }
 
                         $('#sub_grosir').trigger('input');
                         $('#alamat').trigger('input');
