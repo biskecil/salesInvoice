@@ -1742,7 +1742,12 @@
                         if (["ANEKA", "HKGI", "RJK ASUN"].includes(customerWs)) {
                             document.getElementById("sub_grosir").value = '';
                             document.getElementById("pembeli").value = data.pt ?? '';
-                        } else if (customerWs.includes("BT") || customerWs.includes("SA")) {
+                        } else if (customerWs.includes("BT")) {
+                            const btCustomer = data.pt || data.nt || '';
+                            document.getElementById("customer").value = btCustomer;
+                            document.getElementById("pembeli").value = btCustomer;
+                            document.getElementById("sub_grosir").value = data.nt ?? '';
+                        } else if (customerWs.includes("SA")) {
                             document.getElementById("customer").value = data.pt || data.nt || '';
                             document.getElementById("pembeli").value = data.nt ?? '';
                         }
