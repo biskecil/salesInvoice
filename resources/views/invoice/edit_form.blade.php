@@ -1743,13 +1743,13 @@
                             document.getElementById("sub_grosir").value = '';
                             document.getElementById("pembeli").value = data.pt ?? '';
                         } else if (customerWs.includes("BT")) {
-                            const btCustomer = data.pt || data.nt || '';
-                            document.getElementById("customer").value = btCustomer;
-                            document.getElementById("pembeli").value = btCustomer;
-                            document.getElementById("sub_grosir").value = data.nt ?? '';
+                            document.getElementById("customer").value = data.nt ?? '';
+                            document.getElementById("pembeli").value = data.pt || data.nt || '';
+                            document.getElementById("sub_grosir").value = data.pt ?? '';
                         } else if (customerWs.includes("SA")) {
-                            document.getElementById("customer").value = data.pt || data.nt || '';
+                            document.getElementById("customer").value = data.nt ?? '';
                             document.getElementById("pembeli").value = data.nt ?? '';
+                            document.getElementById("sub_grosir").value = data.pt ?? '';
                         }
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
