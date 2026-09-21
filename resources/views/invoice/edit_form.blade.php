@@ -1746,10 +1746,10 @@
                             document.getElementById("customer").value = data.nt ?? '';
                             document.getElementById("pembeli").value = data.pt || data.nt || '';
                             document.getElementById("sub_grosir").value = data.pt ?? '';
-                        } else if (customerWs.includes("SA")) {
-                            document.getElementById("customer").value = data.nt ?? '';
+                        } else if (customerWs === '' || customerWs.includes("SA")) {
+                            document.getElementById("customer").value = data.pt ?? '';
                             document.getElementById("pembeli").value = data.nt ?? '';
-                            document.getElementById("sub_grosir").value = data.pt ?? '';
+                            document.getElementById("sub_grosir").value = data.nt ?? '';
                         }
                         let modalEl = document.getElementById('scanQRModal');
                         let modal = bootstrap.Modal.getInstance(modalEl);
